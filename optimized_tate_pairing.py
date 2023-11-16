@@ -38,3 +38,13 @@ print(r * P)
 # print(r, is_prime(r))
 # print(t, is_prime(t))
 # print (p, is_prime(p))
+
+Fpw = Fp['w']; (w,) = Fpw._first_ngens(1)
+Fp12 = Fp.extension(w**12 + 1, names=('w',));
+E12 = EllipticCurve([Fp12(0), Fp12(-3)])
+Q = E12.random_element()
+
+print(Q)
+
+
+
