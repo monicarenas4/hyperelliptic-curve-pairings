@@ -46,7 +46,7 @@ Fp12 = Fp.extension(w**12 + w**6 + 2, names=('w',)); (w,) = Fp12._first_ngens(1)
 print(Fp12)
 E12 = EllipticCurve([Fp12(0), Fp12(-3)])
 Q = E12.random_element()
-print(Q)
+print(E12.order()%r)
 
 
 
