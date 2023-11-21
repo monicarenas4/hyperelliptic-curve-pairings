@@ -49,7 +49,7 @@ E12 = EllipticCurve([Fp12(0), Fp12(-3)])
 
 Q = E12.random_element()
 n12 = E12.order()
-h12 = n12 / r**2
+h12 = n12 / r ** 2
 Q = h12*Q
 print("Point Q = ", Q)
 
