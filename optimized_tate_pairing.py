@@ -6,11 +6,10 @@ from sage.schemes.elliptic_curves.constructor import EllipticCurve
 from sage.rings.finite_rings.finite_field_constructor import FiniteField, GF
 
 
-def polynomials(seed_u: int):
+def generate_curve(seed_u: int):
     """
     seed_u: seed
     """
-
     R = QQ['x']
     (x,) = R._first_ngens(1)
 
@@ -21,7 +20,7 @@ def polynomials(seed_u: int):
     r = ZZ(rx(seed_u))
     t = ZZ(tx(seed_u))
     p = ZZ(px(seed_u))
-    n = p - t + 1  # order of the curve. #E = p-t+1 = hr
+    n = p - t + 1  # order of the curve. #E = p - t + 1 = h*r
     h = n / r  # co-factor
 
     Fp = GF(p, proof=False)
@@ -56,4 +55,4 @@ def polynomials(seed_u: int):
 
 
 u = -ZZ(2 ** 63 + 2 ** 62 + 2 ** 60 + 2 ** 57 + 2 ** 48 + 2 ** 16)
-polynomials(u)
+generate_curve(u)
