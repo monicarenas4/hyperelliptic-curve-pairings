@@ -9,12 +9,10 @@ R = QQ['x']
 (x,) = R._first_ngens(1)
 
 rx = x ** 4 - x ** 2 + 1
-# Trace polynomial
-tx = x + 1
+tx = x + 1  # Trace polynomial
 px = (x ** 6 - 2 * x ** 5 + 2 * x ** 3 + x + 1) / 3
 
-# seed
-u = -ZZ(2 ** 63 + 2 ** 62 + 2 ** 60 + 2 ** 57 + 2 ** 48 + 2 ** 16)
+u = -ZZ(2 ** 63 + 2 ** 62 + 2 ** 60 + 2 ** 57 + 2 ** 48 + 2 ** 16)  # seed
 
 r = ZZ(rx(u))
 t = ZZ(tx(u))
@@ -39,16 +37,13 @@ print(r * P)
 # print(t, is_prime(t))
 # print (p, is_prime(p))
 
-Fpw = Fp['w']; (w,) = Fpw._first_ngens(1)
+Fpw = Fp['w']
+(w,) = Fpw._first_ngens(1)
 
 print("Fp12 = Fp[w]/(w^12 + w^6 + 2)")
-Fp12 = Fp.extension(w**12 + w**6 + 2, names=('w',)); (w,) = Fp12._first_ngens(1)
+Fp12 = Fp.extension(w ** 12 + w ** 6 + 2, names=('w',))
+(w,) = Fp12._first_ngens(1)
 print(Fp12)
 E12 = EllipticCurve([Fp12(0), Fp12(-3)])
 Q = E12.random_element()
-print(E12.order()%r)
-
-
-
-
-
+print("The order is:", E12.order() % r)
