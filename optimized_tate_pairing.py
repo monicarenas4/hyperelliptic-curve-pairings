@@ -6,9 +6,12 @@ from sage.schemes.elliptic_curves.constructor import EllipticCurve
 from sage.rings.finite_rings.finite_field_constructor import FiniteField, GF
 
 
-def generate_curve(u: int):
+def generate_curve(u: int, a: int = 0, b: int = -3):
     """
-    u: seed
+    :param u: seed
+    :param a: coefficient a
+    :param b: coefficients b
+    :return: None
     """
     R = QQ['x']
     (x,) = R._first_ngens(1)
@@ -34,14 +37,12 @@ def generate_curve(u: int):
     # print("Fp12 = Fp[w]/(w^12 + w^6 + 2)")
     Fp12 = Fp.extension(w ** 12 + w ** 6 + 2, names=('w',))
     (w,) = Fp12._first_ngens(1)
-    # print(Fp12)
-    E12 = EllipticCurve([Fp12(0), Fp12(-3)])
+    E12 = EllipticCurve([Fp12(a), Fp12(b)])
     n12 = E12.order()
 
     Q = E12.random_element()
     h12 = n12 / r ** 2
     Q = h12 * Q
-    # print("Point Q = ", Q)
     print("The order is:", E12.order() % r)  # rever!
 
     return None
@@ -49,4 +50,3 @@ def generate_curve(u: int):
 
 u2 = -ZZ(2 ** 63 + 2 ** 62 + 2 ** 60 + 2 ** 57 + 2 ** 48 + 2 ** 16)
 generate_curve(u2)
-# bin_r = int('{0:b}'.format(r))
