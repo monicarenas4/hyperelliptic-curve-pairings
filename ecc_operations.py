@@ -1,11 +1,12 @@
-def DBL_step(R, Q, a: int):
+def DBL_step(Q, R, a: int = 0):
     """
-    R: point in R
-    Q: point in Q
-    a: intercept
+    :param Q: point in Q
+    :param R: point in R
+    :param a: intercept
+    :return: R, l, v
     """
-    xR, yR = R[0], R[1]
     xQ, yQ = Q[0], Q[1]
+    xR, yR = R[0], R[1]
 
     lambda_dbl = (3 * xR + a) / (2 * yR)
     l = yQ - yR - lambda_dbl * (xQ - xR)
@@ -15,11 +16,12 @@ def DBL_step(R, Q, a: int):
     return R, l, v
 
 
-def ADD_step(P, R, Q):
+def ADD_step(P, Q, R):
     """
-    P: point in P
-    R: point in R
-    Q: point in Q
+    :param P: point in P
+    :param Q: point in Q
+    :param R: point in R
+    :return: l, v
     """
     xP, yP = P[0], P[1]
     xR, yR = R[0], R[1]
