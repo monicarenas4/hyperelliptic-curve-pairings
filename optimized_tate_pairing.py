@@ -5,6 +5,8 @@ from sage.rings.integer_ring import ZZ
 from sage.schemes.elliptic_curves.constructor import EllipticCurve
 from sage.rings.finite_rings.finite_field_constructor import FiniteField, GF
 
+from pairings import tate_pairing_miller_loop, final_exponentiation
+
 
 def generate_curve(u: int, a: int = 0, b: int = -3):
     """
@@ -27,7 +29,7 @@ def generate_curve(u: int, a: int = 0, b: int = -3):
     h = n / r  # co-factor
 
     Fp = GF(p, proof=False)
-    E = EllipticCurve([Fp(0), Fp(-3)])
+    E = EllipticCurve([Fp(a), Fp(b)])
     P = E.random_element()
     P = h * P
 
@@ -43,10 +45,15 @@ def generate_curve(u: int, a: int = 0, b: int = -3):
     Q = E12.random_element()
     h12 = n12 / r ** 2
     Q = h12 * Q
-    print("The order is:", E12.order() % r)  # rever!
+    # print("The order is:", E12.order() % r)
 
-    return None
+    miller_function = tate_pairing_miller_loop(P, Q, r)
+    exponentiation = final_exponentiation(miller_function, p, r)
+
+    return miller_function, exponentiation
 
 
-u2 = -ZZ(2 ** 63 + 2 ** 62 + 2 ** 60 + 2 ** 57 + 2 ** 48 + 2 ** 16)
-generate_curve(u2)
+u = -ZZ(2 ** 63 + 2 ** 62 + 2 ** 60 + 2 ** 57 + 2 ** 48 + 2 ** 16)
+miller_funtion, exponentiation = generate_curve(u)
+print(miller_funtion)
+print(exponentiation)
