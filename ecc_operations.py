@@ -27,9 +27,11 @@ def ADD_step(P, Q, R):
     xR, yR = R[0], R[1]
     xQ, yQ = Q[0], Q[1]
 
+    print("They are the same:", xR) if (xR == xP) else None
+
     lambda_add = (yR - yP) / (xR - xP)
     l = yQ - yR - lambda_add * (xQ - xR)
     R = R + P
     v = xQ - xR
 
-    return l, v
+    return R, l, v
