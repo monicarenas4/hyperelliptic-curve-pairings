@@ -10,10 +10,10 @@ from pairings import tate_pairing_miller_loop, final_exponentiation
 
 def generate_curve(u: int, a: int = 0, b: int = -3):
     """
-    :param u: seed
+    :param u: curve seed
     :param a: coefficient a
     :param b: coefficient b
-    :return: None
+    :return: the curves (P,Q) and the integers (p,r)
     """
     R = QQ['x']
     (x,) = R._first_ngens(1)
@@ -45,8 +45,16 @@ def generate_curve(u: int, a: int = 0, b: int = -3):
     Q = E12.random_element()
     h12 = n12 / r ** 2
     Q = h12 * Q
-    # print("The order is:", E12.order() % r)
 
+    return P, Q, p, r
+
+
+def tate_pairing(u):
+    """
+    :param u: curve seed
+    :return: miller function and exponentiation
+    """
+    P, Q, p, r = generate_curve(u)
     miller_function = tate_pairing_miller_loop(P, Q, r)
     exponentiation = final_exponentiation(miller_function, p, r)
 
@@ -54,6 +62,6 @@ def generate_curve(u: int, a: int = 0, b: int = -3):
 
 
 u = -ZZ(2 ** 63 + 2 ** 62 + 2 ** 60 + 2 ** 57 + 2 ** 48 + 2 ** 16)
-miller_funtion, exponentiation = generate_curve(u)
-print(miller_funtion)
+miller_function, exponentiation = tate_pairing(u)
+print(miller_function)
 print(exponentiation)
