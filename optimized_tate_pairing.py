@@ -12,7 +12,7 @@ def generate_curve(u: int, a: int = 0, b: int = -3):
     """
     :param u: seed
     :param a: coefficient a
-    :param b: coefficients b
+    :param b: coefficient b
     :return: None
     """
     R = QQ['x']
