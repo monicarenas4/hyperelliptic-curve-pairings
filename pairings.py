@@ -3,7 +3,7 @@ from sage.rings.integer import Integer
 from ecc_operations import ADD_step, DBL_step
 
 
-def tate_pairing_miller_loop(P, Q, r: int):
+def miller_loop_tate_pairing(P, Q, r: int):
     """
     :param P: point on the curve E(Fp)
     :param Q: point on the extension filed E(Fp12)
