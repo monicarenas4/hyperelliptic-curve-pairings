@@ -51,7 +51,7 @@ def generate_curve(u: int, a: int = 0, b: int = -3):
     return P, Q, p, r
 
 
-def tate_pairing(u):
+def tate_pairing(u, check=False):
     """
     :param u: curve seed
     :return: m, pairing value
@@ -61,10 +61,10 @@ def tate_pairing(u):
     pairing_value = final_exponentiation(miller_function, p, r)
 
     # Bilinearity check
-    tate_pairing_bilinearity_check(P, Q, pairing_value, p, r)
+    tate_pairing_bilinearity_check(P, Q, pairing_value, p, r) if check == True else None
 
     return miller_function, pairing_value
 
 
 u = -ZZ(2 ** 63 + 2 ** 62 + 2 ** 60 + 2 ** 57 + 2 ** 48 + 2 ** 16)
-tate_pairing(u)
+tate_pairing(u, check=True)
