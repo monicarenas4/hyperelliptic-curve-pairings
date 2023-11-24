@@ -11,7 +11,7 @@ def DBL_step(Q, R, a: int = 0):
     lambda_dbl = (3 * xR ** 2 + a) / (2 * yR)
     l = yQ - yR - lambda_dbl * (xQ - xR)
     R = 2 * R
-    v = xQ - xR
+    v = xQ - R[0]
 
     return R, l, v
 
@@ -27,11 +27,14 @@ def ADD_step(P, Q, R):
     xR, yR = R[0], R[1]
     xQ, yQ = Q[0], Q[1]
 
-    print("They are the same:", xR) if (xR == xP) else None
-
-    lambda_add = (yR - yP) / (xR - xP)
-    l = yQ - yR - lambda_add * (xQ - xR)
-    R = R + P
-    v = xQ - xR
+    if xR != xP:
+        lambda_add = (yR - yP) / (xR - xP)
+        l = yQ - yR - lambda_add * (xQ - xR)
+        R = R + P
+        v = xQ - R[0]
+    else:
+        l = xQ - xP
+        R = R + P
+        v = 1
 
     return R, l, v

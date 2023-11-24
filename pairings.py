@@ -10,22 +10,17 @@ def tate_pairing_miller_loop(P, Q, r: int):
     :param r: prime number that divides the oder of the curve
     :return: miller_function
     """
-    bin_r = Integer(r).digits(2)
-    bin_r.reverse()
-    print(len(bin_r))
+    bin_r = [int(x) for x in "{0:0b}".format(r)][1:]
     R = P
     miller_function = 1
-    count = 0
 
-    for bit in bin_r[1:]:
-        count += 1
-        print(count)
+    for bit in bin_r:
         R, l, v = DBL_step(Q, R)
-        print("R\t", R) if count == 254 else None
         miller_function = miller_function ** 2 * (l / v)
         if bit == 1:
             R, l, v = ADD_step(P, Q, R)
             miller_function = miller_function * (l / v)
+
     return miller_function
 
 
