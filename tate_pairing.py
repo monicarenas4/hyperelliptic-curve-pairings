@@ -6,6 +6,7 @@ from sage.schemes.elliptic_curves.constructor import EllipticCurve
 from sage.rings.finite_rings.finite_field_constructor import FiniteField, GF
 
 from pairings import miller_loop_tate_pairing, final_exponentiation
+from checks import tate_pairing_bilinearity_check
 from random import randint
 
 
@@ -56,19 +57,11 @@ def tate_pairing(u):
     :return: m, pairing value
     """
     P, Q, p, r = generate_curve(u)
-    a, b = randint(0, r - 1), randint(0, r - 1)
-
-    # pairing of P and Q
     miller_function = miller_loop_tate_pairing(P, Q, r)
     pairing_value = final_exponentiation(miller_function, p, r)
-    pairing_value = pairing_value ** (a * b)
 
-    # pairing of P' and Q'
-    P_prime, Q_prime = a * P, b * Q
-    miller_function_prime = miller_loop_tate_pairing(P_prime, Q_prime, r)
-    pairing_value_prime = final_exponentiation(miller_function_prime, p, r)
-
-    print("Bilinearity Check:", (pairing_value == pairing_value_prime))
+    # Bilinearity check
+    tate_pairing_bilinearity_check(P, Q, pairing_value, p, r)
 
     return miller_function, pairing_value
 
