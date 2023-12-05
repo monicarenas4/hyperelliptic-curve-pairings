@@ -9,3 +9,10 @@ SO we would have a table like the following, where we can report the timings:
 Pairing type | Miller loop | Final expo | Total pairing |
 :------------|:-----------:|:----------:|--------------:|
 Tate pairing v1 | | | |
+
+**Step 2: Final espo** 
+Assume that the output of the Miller function is $f \in \mathbb{F}_{p^{12}}$. 
+Then we need to compute $f^{(p^{12} - 1)/r}$, where $(p^{12} - 1)/r$ is an exponent of size 4317-bit.
+Raising an element $f \in \mathbb{F}_{p^{12}}$ to such an expoenent is a very expensive operation. 
+Hence we need to apply certain tricks to speed-up this process. We write: 
+
