@@ -5,11 +5,12 @@ from sage.rings.integer_ring import ZZ
 from sage.schemes.elliptic_curves.constructor import EllipticCurve
 from sage.rings.finite_rings.finite_field_constructor import FiniteField, GF
 
-from pairings import tate_pairing_miller_loop, final_exponentiation
+from pairings import miller_loop_tate_pairing, final_exponentiation_BLS12
+from correctness_tests import tate_pairing_bilinearity_check
 from random import randint
 
 
-def tate_pairing(u: int, a: int = 0, b: int = -3):
+def generate_BLS12_curve(u: int, a: int = 0, b: int = -3):
     """
     :param u: curve seed
     :param a: coefficient a
@@ -47,22 +48,23 @@ def tate_pairing(u: int, a: int = 0, b: int = -3):
     h12 = n12 / r ** 2
     Q = h12 * Q
 
-    a_randint, b_randint = randint(0, r - 1), randint(0, r - 1)
+    return P, Q, p, r
 
-    # pairing of P and Q
-    miller_function = tate_pairing_miller_loop(P, Q, r)
-    pairing_value = final_exponentiation(miller_function, p, r)
-    pairing_value = pairing_value ** (a_randint * b_randint)
 
-    # pairing of P' and Q'
-    P_prime, Q_prime = a_randint * P, b_randint * Q
-    miller_function_prime = tate_pairing_miller_loop(P_prime, Q_prime, r)
-    pairing_value_prime = final_exponentiation(miller_function_prime, p, r)
+def tate_pairing(u, check=False):
+    """
+    :param u: curve seed
+    :return: m, pairing value
+    """
+    P, Q, p, r = generate_BLS12_curve(u)
+    miller_function = miller_loop_tate_pairing(P, Q, r)
+    pairing_value = final_exponentiation_BLS12(miller_function, p, r)
 
-    print("Bilinearity Check:", (pairing_value == pairing_value_prime))
+    # Bilinearity check
+    tate_pairing_bilinearity_check(P, Q, pairing_value, p, r) if check == True else None
 
     return miller_function, pairing_value
 
 
 u = -ZZ(2 ** 63 + 2 ** 62 + 2 ** 60 + 2 ** 57 + 2 ** 48 + 2 ** 16)
-tate_pairing(u)
+tate_pairing(u, check=True)
