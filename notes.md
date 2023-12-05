@@ -9,13 +9,13 @@ SO we would have a table like the following, where we can report the timings:
 
 Pairing type | Miller loop | Final expo | Total pairing |
 :------------|:-----------:|:----------:|--------------:|
-Tate pairing v1 | | | |
+Tate pairing v1 | 0.114225 | 0.058757 | 0.172982 |
 
 ## **Step 2: Final expo** 
 
 Assume that the output of the Miller function is $f \in \mathbb{F}_{p^{12}}$. 
 Then we need to compute $f^{(p^{12} - 1)/r}$, where $(p^{12} - 1)/r$ is an exponent of size 4317-bit.
-Raising an element $ f $ to such an expoenent is a very expensive operation. 
+Raising an element $f$ to such an expoenent is a very expensive operation. 
 Hence we need to apply certain tricks to speed-up this process. We write: 
 
 $$ \dfrac{p^{12} - 1}{r} = \dfrac{(p^6 - 1)(p^2 + 1)(p^4 - p^2 + 1)}{r} $$
@@ -29,3 +29,39 @@ In order to do this, we first raise $f$ to the exponent $(p^6 - 1)(p^2 + 1)$.
 We call this the *easy part* of the final exponentiation. 
 Then we raise the result to the exponent $(p^4 - p^2 + 1)/r$. 
 We call this the *hard part* of the final exponentiation. 
+
+No the function final_exponentiation_BLS12 will be split in two parts, the **easy part** and the **hard part** and it will look like: 
+
+```r
+final_exponentiation_BLS12(f) {
+  f <- final_exp_easy_k12(f)
+  f <- final_exp_hard_BLS12(f)
+}
+```
+
+We examine each of the functions final_exp_easy_k12 and final_exp_hard_BLS12 in separate. 
+
+### Final exponentiation: easy part
+
+On input the Miller function $f$, we need to compute the value: 
+
+$$ f^{(p^6 - 1)(p^2 + 1)} $$
+
+This is done with the function final_exp_easy_k12 as follows: 
+
+```r
+final_exp_easy_k12(f) {
+  inv_f <- 1/f         // inv_f = f^(-1)
+  f     <- f^(p^6)     // f = f^(p^6)
+  f     <- f * inv_f   // f = f^(p^6) * f^(-1) = f^(p^6 - 1)
+  f2    <- f^(p^2)     // f2 = f^(p^2) = [f^(p^6 - 1)]^(p^2)
+  f     <- f2 * f      // f = f2 * f = [f^(p^6 - 1)]^(p^2) * [f^(p^6 - 1)] = f^[(p^6 - 1)(p^2 + 1)]
+  return(f)
+}
+```
+### Final exponentiation: hard part
+
+On input the output $f$ of the function final_exp_easy_k12, we need to compute the value: 
+
+$$ f^{\dfrac{p^4 - p^2 + 1}{r}} $$
+
