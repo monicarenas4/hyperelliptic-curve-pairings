@@ -20,3 +20,12 @@ Hence we need to apply certain tricks to speed-up this process. We write:
 
 $$ \dfrac{p^{12} - 1}{r} = \dfrac{(p^6 - 1)(p^2 + 1)(p^4 - p^2 + 1)}{r} $$
 
+Now instead of raising $f$ to the left hand-side, we can raise it to the right hand-side. 
+That is, wee need to compute the value: 
+
+$$ f^{\dfrac{(p^6 - 1)(p^2 + 1)(p^4 - p^2 + 1)}{r}} = f^{(p^6 - 1)(p^2 + 1)\dfrac{p^4 - p^2 + 1}{r}} $$
+
+In order to do this, we first raise $f$ to the exponent $(p^6 - 1)(p^2 + 1)$. 
+We call this the *easy part* of the final exponentiation. 
+Then we raise the result to the exponent $(p^4 - p^2 + 1)/r$. 
+We call this the *hard part* of the final exponentiation. 
