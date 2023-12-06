@@ -65,3 +65,35 @@ On input the output $f$ of the function final_exp_easy_k12, we need to compute t
 
 $$ f^{\dfrac{p^4 - p^2 + 1}{r}} $$
 
+By constraction and by the definition of the parameters, we know that $r$ divides $p^4 - p^2 + 1$. 
+Then the exponent $(p^4 - p^2 + 1)/r$ can be written as follows: 
+
+$$\dfrac{p^4 - p^2 + 1}{r} = \lambda_3 p^3 + \lambda_2 p^2 + \lambda_1p + \lambda_0$$
+
+where the $\lambda_i$ are polynomials in the seed $u \in \mathbb{Z}$ for every $i = 0, 1, 2, 3$. 
+Obtaining these $\lambda_i$ is out of the scope for now, we assume they are fixed as follows: 
+
+$$ \lambda_3 = (u - 1)^2, \quad \lambda_2 = u\lambda_3, \quad \lambda_1 = u \lambda_2 - \lambda_3, \quad \lambda_0 = u \lambda_1 + 3 $$
+
+Observe that the seed for the curve BLS12-381 is $u = -(2^{63} + 2^{62} + 2^{60} + 2^{57} + 2^{48} + 2^{16})$. 
+Hence it is negative and can be written as $u = - u_0$, where $u_0 = 2^{63} + 2^{62} + 2^{60} + 2^{57} + 2^{48} + 2^{16}$. 
+Thus, the above $\lambda_i$ can be written in terms of $u_0$ as follows: 
+
+$$ \lambda_3 = (-u_0 - 1)^2 = (u_0 + 1)^2, \quad \lambda_2 = -u_0\lambda_3, \quad \lambda_1 = -u_0\lambda_2 - \lambda_3 = -(u_0\lambda_2 + \lambda_3), \quad \lambda_0 = - u_0 \lambda_1 + 3 $$
+
+Based on this, we need to compute the exponentiation: 
+
+$$ f^{\lambda_3 p^3 + \lambda_2 p^2 + \lambda_1p + \lambda_0} = f^{\lambda_0 + p (\lambda_1 + p (\lambda_2 + p \lambda_3))} $$
+
+This is done using the following function: 
+
+```r
+final_exp_hard_BLS12(f, u0) {
+  inv_f <- 1/f         // inv_f = f^(-1)
+  f     <- f^(p^6)     // f = f^(p^6)
+  f     <- f * inv_f   // f = f^(p^6) * f^(-1) = f^(p^6 - 1)
+  f2    <- f^(p^2)     // f2 = f^(p^2) = [f^(p^6 - 1)]^(p^2)
+  f     <- f2 * f      // f = f2 * f = [f^(p^6 - 1)]^(p^2) * [f^(p^6 - 1)] = f^[(p^6 - 1)(p^2 + 1)]
+  return(f)
+}
+```
