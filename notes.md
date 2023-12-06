@@ -89,11 +89,22 @@ This is done using the following function:
 
 ```r
 final_exp_hard_BLS12(f, u0) {
-  inv_f <- 1/f         // inv_f = f^(-1)
-  f     <- f^(p^6)     // f = f^(p^6)
-  f     <- f * inv_f   // f = f^(p^6) * f^(-1) = f^(p^6 - 1)
-  f2    <- f^(p^2)     // f2 = f^(p^2) = [f^(p^6 - 1)]^(p^2)
-  f     <- f2 * f      // f = f2 * f = [f^(p^6 - 1)]^(p^2) * [f^(p^6 - 1)] = f^[(p^6 - 1)(p^2 + 1)]
-  return(f)
+  f3 <- f^(u0 + 1)         // f3 = f^(u0 + 1)
+  f3 <- f3^(u0 + 1)        // f3 = f^(u0 + 1)^2 = f^(λ3)
+  res <- f3^p              // res = f3^p = f^(λ3*p)
+  f2 <- f3^u0              // f2 = f^[u0(u0 + 1)^2] = f^[u0*λ3]
+  f2 <- 1/f2               // f2 = f2^(-1) = f^[-u0*λ3] = f^(λ2)           
+  res <- res * f2          // res = f^(λ3*p) * f^(λ2) = f^(λ2 + pλ3)
+  f1 <- f2^u0              // f1 = f2^u0 = f^(u0*λ2)
+  f1 <- f1 * f3            // f1 = f1 * f3 = f^(u0*λ2) * f^(λ3) = f^[u0*λ2 + λ3]
+  f1 <- 1/f1               // f1 = f1^(-1) = f^[-(u0*λ2 + λ3)] = f^(λ1)
+  res <- res^p             // res = res^p = f^[p(λ2 + pλ3)]
+  res <- res * f1          // res = res * f1 = f^[p(λ2 + pλ3)] * f^(λ1) = f^[λ1 + p(λ3*p + λ2)]
+  f0 <- f1^u0              // f0 = f1^u0 = f^(u0*λ1)
+  f0 <- 1/f0               // f0 = f0^(-1) = f^(-u0*λ1)
+  f0 <- f0 * f^2 * f       // f0 = f0 * f^3 = f^(-u0*λ1 + 3) = f^(λ0)
+  res <- res^p             // res = res^p = res^[p(λ1 + p(λ3*p + λ2))]
+  res <- res * f0          // res = res * f0 = f^[p(λ1 + p(λ3*p + λ2))] * f^(λ0) = f^[λ0 + p(λ1 + p(λ3*p + λ2))]    
+  return(res)
 }
 ```
