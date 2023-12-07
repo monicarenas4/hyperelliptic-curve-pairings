@@ -108,3 +108,24 @@ final_exp_hard_BLS12(f, u0) {
   return(res)
 }
 ```
+*Remark 1*. One expensive operation in the above algorithms is raising an element to the exponent $p$, where the size of $p$ is 381-bit. 
+In order to speedup these exponentiations, we use the $\texttt{frobenius()}$ function that exists in the Sage $\texttt{Integer}$ folder. 
+In particular we have the following equivalence: 
+
+```r
+from sage.all import Integer
+
+f^(p^i) = f.frobenius(i) 
+```
+
+for all $i = 1, 2, \ldots, k - 1$, where in this case $k = 12$. 
+Replacing the exponentiation to powers of $p$ with the $\texttt{frobenius()}$ function will speedup the easy part and hard part of the final exponentiation. 
+
+*Remark 2*. Another expensive operation in the hard part of the final exponentiation is computing the inverse of an element in $\mathbb{F}_{p^{12}}$. 
+Our construction offers one important property to do this. In particular, computing the inverse of an element $f$ is equivalent to raising this element to the power $p^6$. 
+In other words, we have: 
+
+```r
+1/f = f.frobenius(6) 
+```
+Applying this trick will also speedup the final exponentiation.
