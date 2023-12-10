@@ -129,3 +129,104 @@ In other words, we have:
 1/f = f.frobenius(6) 
 ```
 Applying this trick will also speedup the final exponentiation.
+
+## **Step 3: Addition/doubling and computation of lines** 
+
+Usually in ECC implementations use the projective coordinate system to represent elliptic curve points and for executing the addition, doubling and line computation processes. 
+The reason is that with projective coordinates we avoid the inverstions that appear both in addition and doubling. 
+Recall that a point $P = (x_P, y_P)$ when written like this, it is in *affine form*, and satisfies the affine Weierstrass elliptic curve equation: 
+
+$$E: y^2 = x^3 + ax + b$$
+
+meaning that sabstituting the coordinates of $P$ in the equation of $E$ we get: $y_P^2 - x_P^3 - ax_P + b = 0$. 
+
+A point on a curve in *projective form* has three coordinates and it is written as $P = (X_P : Y_P : Z_P)$. 
+Then the corresponding projective Weierstrass elliptic curve equation is: 
+
+$$E: Y^3Z = X^3 + aXZ^2 + bZ^3$$
+
+meaning that sabstituting the coordinates of $P$ in the equation of $E$ we get: $y_P^2Z_P - x_P^3 - ax_PZ_P^2 + bZ_P^3 = 0$. 
+
+What is relevant in pairing implementations is adding two points, doubling a point and computing the line functions $\ell$ and $v$. The algorithms for doing these computations are given below. 
+
+### Doubling step
+
+Given a point $P = (X_P : Y_P : Z_P)$ on a curve $E$, we want to compute the point $R = [2]P = (X_R : Y_R : Z_R)$. 
+The coordinates of this new point are defined as follows: 
+
+$$ X_R = 9X_P^4 - 8X_PY_P, \quad Y_R = 9X_R^3(4Y_R^2 - 3X_R^3) - 8Y_R^4, \quad Z_R = 2Y_RZ_R$$
+
+In the Miller loop, in the doubling step, we need to compute the line $\ell_{R}(Q)$ (the tangent line that passes through $R$ and is evaluated at $Q = (x_Q, y_Q)$) and the line $v_R(Q)$ (the vertical line that passes through $R$ and is evaluated at $Q = (x_Q, y_Q)$).
+Note that the second point $Q$ is in affine form, since we don't really do any computation on it. 
+Then the lines $\ell_{R}(Q)$ and $v_R(Q)$ are:
+
+$$\ell_R(Q) = 4Y_R^2 (2y_QY_RZ_R^3 - 3x_QX_R^2Z_R^2 + 3X_R^3 - 2Y_R^2), \quad v_R(Q) = 4x_QY_R^2Z_R^2 - 9X_R^4 + 8X_RY_R^2$$
+
+The algorithm for efficiently computing the double of a point $R$ and the two lines $\ell_{R}(Q)$ and $v_R(Q)$ is the following (note that for BLS12-381, $a = 0$):
+
+```r
+DBL_step(R, Q, a = 0) {
+  xR <- R[0], yR <- R[1], zR <- R[2]         
+  xQ <- Q[0], yQ <- Q[1]
+  T1 <- zR^2                                                                           
+  A <- yR^2                                                                            
+  B <- xR*A                            // B = xRyR^2                          
+  C <- 3*xR^2                          // C = 3*xR^2 
+  X3 = C^2 - 8*B                       // X3 = 9*xR^2 - 8*xR*yR^2  
+  Z3 = (yR + zR)^2 - A - T1            // Z3 = 2*yR*zR
+  Y3 = C*(4*B - X3) - 8*A^2            // Y3 = 9*xR^3(4*yR^2 - 3*xR^3) - 8*yR^4
+  T3 = Z3^2                            // T3 = 4*yR^2*zR^2
+  R = [X3, Y3, Z3]                          
+  l = T3*(yQ*Z3 - C*xQ) + Y3 + C*X3    // l = 4*yR^2(2*yQ*yRzR^3 - 3*xQ*xR^2*zR^2 + 3*xR^3 - 2*yR^2)
+  v = (xQ*T3 - X3)                     // v = 4*xQ*yR^2*zR^2 - 9*xR^4 + 8*xR*yR^2
+  return(R, l, v)
+}
+```
+
+### Addition step
+
+Given a point $R = (X_R : Y_R : Z_R)$ and a point $P = (x_P, y_P)$ on a curve $E$, we want to compute the point $R = R + P = (X_R : Y_R : Z_R)$. 
+Note that in the pairing computation, the point $P$ is in affine form, since we don't really do any computation on it. 
+The coordinates of this new point are defined as follows: 
+
+$$ X_R = 4(y_PZ_R^3 - Y_R)^2 - 4(x_PZ_R^2 + X_R)(x_PZ_R^2 - X_R)^2 $$ 
+
+$$ Y_R = 8(x_PZ_R^2 + 2X_R)(y_PZ_R^3 - Y_R)(x_PZ_R^2 - X_R)^2 - 8(y_PZ_R^3 - Y_R)^3 - 8Y_R(x_PZ_R^2 - X_R)^3$$
+
+$$ Z_R = 2Z_R(x_PZ_R^2 - X_R) $$
+
+In the Miller loop, in the doubling step, we need to compute the line $\ell_{R,P}(Q)$ (the tangent line that passes through $R$ and $P$ and is evaluated at $ Q = (x_Q, y_Q) $) and the line $v_{R + P}(Q)$ (the vertical line that passes through $R + P$ and is evaluated at $Q = (x_Q, y_Q)$).
+Note that the second point $Q$ is in affine form, since we don't really do any computation on it. 
+Then the lines $\ell_{R,P}(Q)$ and $v_{R + P}(Q)$ are:
+
+$$\ell_{R, P}(Q) = (2y_QZ_R - 2y_PZ_R)(x_PZ_R^2 - X_R) - (2x_Q - 2x_P)(y_PZ_R^3 - Y_R)$$
+
+$$v_{R + P}(Q) = 4x_QZ_R^2(x_PZ_R^2 - X_R)^2 -  4(y_PZ_R^3 - Y_R)^2 - 4(x_PZ_R^2 + X_R)(x_PZ_R^2 - X_R)^2$$
+
+The algorithm for efficiently computing the sum of two points $R = (X_R : Y_R : Z_R)$ and $P = (x_P, y_P)$ and the two lines $\ell_{R,P}(Q)$ and $v_{R + P}(Q)$ is the following:
+
+```r
+ADD_step(R, P, Q) {
+  xR <- R[0], yR <- R[1], zR <- R[2]
+  xP <- P[0], yP <- P[1]     
+  xQ <- Q[0], yQ <- Q[1]
+  T1 <- zR^2
+  B <- xP*T1                           // B = xP*zR^2      
+  R2 <- yP^2                      
+  D <- ((yP + zR)^2 - R2 - T1)*T1      // D = 2*yP*zR^3
+  H <- B - xR                          // H = xP*zR^2 - xR
+  I <- H^2                             // I = (xP*zR^2 - xR)^2
+  E <- 4*I                             // E = 4*(xP*zR^2 - xR)^2
+  J <- H*E                             // J = 4*(xP*zR^2 - xR)^3
+  r <- D - 2*yR                        // r = 2*yP*zR^3 - 2*yR
+  v <- xR*E                            // v = 4*xR*(xP*zR^2 - xR)^2
+  X3 <- r^2 - J - 2*v                  // X3 = (2*yP*zR^3 - 2*yR)^2 - 4*(xP*zR^2 - xR)^3 - 8*xR*(xP*zR^2 - xR)^2
+  Y3 <- r*(v - X3) - 2*yR*J            // Y3 = 8*(xP*zR^2 + 2*xR)(yP*zR^3 - yR)(xP*zR^2 - xR)^2 - 8*(yP*zR^3 - yR)^3 - 8*yR*(xP*zR^2 - xR)^3
+  Z3 <- ((zR + H)^2 - T1 - I)          // Z3 = 2*zR*(xP*zR^2 - xR)
+  T3 <- Z3^2                           // T3 = 4*zR^2*(xP*zR^2 - xR)^2
+  R <- [X3, Y3, Z3]
+  l <- (yQ - yP)*Z3 - (xQ - xP)*r      // l = (2*yQ*zR - 2*yP*zR)(xP*zR^2 - xR) - (2*xQ - 2*xP)(yP*zR^3 - yR)
+  v <- (xQ*T3 - X3)                    // v = 4*xQ*zR^2*(xP*zR^2 - xR)^2 -  4*(yP*zR^3 - yR)^2 - 4*(xP*zR^2 + xR)*(xP*zR^2 - xR)^2
+  return(R, l, v)
+}
+```
