@@ -265,3 +265,59 @@ Q = Q' - Q                // Set Q = Q' - Q
 
 Using this script, the new point $Q$ satisfies the property: $(x_Q^p, y_Q^p) = [p] (x_Q, y_Q)$. 
 Note that the first three lines are the same as in the Tate pairing implementation. 
+
+### Reduce the length of the Miller loop
+
+The formula for computing the optimal ate pairing on BLS12 curves is: 
+
+$$ e(Q, P) = f_{Q,|u|}(P)^{\dfrac{p^{12} - 1}{r}} $$
+
+The above notation means that the length of the Miller loop of the optimal ate pairing for BLS12 curves depends on the binary representation of the seed $u$ and more precisely, because the seed can be negative, it depends on the binary representation of the absolute value of the seed, i.e. $|u|$.
+The optimal ate pairing essentially requires much less doubling and addition steps. 
+In particular, it requires $\log_2(|u|)-1$ doubling steps and $\text{hw}(|u|) - 1$ addition steps, as opposed to $\log_2(r)-1$ doubling steps and $\text{hw}(r) - 1$ addition steps in the case of the Tate pairing. 
+
+Assuming that the size of $|u|$ is $\log_2(|u|) = n$ and its binary representation is $|u| = (b_{n}, b_{n - 1}, \ldots, b_1, b_0)$, the algorithm for computing the Miller function of the optimal ate pairing is given as follows. 
+
+```r
+optimal_ate_Miller_function_BLS12(Q, P, u)
+  u0 <- abs(u)
+  R <- Q
+  f1 = 1                          // Two components for the Miller function: f1 and f2
+  f2 = 1
+  for i = b_{n - 1} to b_0 do: 
+    R <- [2]R                     // Doubling depends on the point Q over the big field
+    f1 <- f1^2 * l
+    f2 <- f2^2 * v
+    if b_i == 1 then:  
+      R <- R + Q                  // Addition depends on the point Q over the big field
+      f1 <- f1 * l
+      f2 <- f2 * v
+  if u < 0 then: f <- f2/f1      
+  else: f <- f1/f2
+  return(f)
+```
+
+Note that when the seed is negative, we need to compute the inverse of the Miller function. 
+
+Alternatively, in order to avoid even this one inversion of the Miller function at the end when the seed is negative, we can do the following. 
+When the seed is negative, we can set the point $Q$ as $-Q$ and then **we do not need any inversion of the Miller function in the end**. 
+The algorithm for computing the optimal ate pairing in this case should be as follows: 
+
+```r
+optimal_ate_Miller_function_BLS12(Q, P, u)
+  u0 <- abs(u)
+  if u < 0 then: Q <- -Q = (xQ, -yQ)
+  R <- Q
+  f1 = 1                              // Two components for the Miller function: f1 and f2
+  f2 = 1
+  for i = b_{n - 1} to b_0 do: 
+    R <- [2]R                         // Doubling depends on the point Q over the big field
+    f1 <- f1^2 * l
+    f2 <- f2^2 * v
+    if b_i == 1 then:  
+      R <- R + Q                      // Addition depends on the point Q over the big field
+      f1 <- f1 * l
+      f2 <- f2 * v
+  f <- f1/f2
+  return(f)
+```
