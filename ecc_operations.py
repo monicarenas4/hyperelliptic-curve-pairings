@@ -1,7 +1,7 @@
 def DBL_step(Q, R, a: int = 0):
     """
-    :param Q: point in Q
-    :param R: point in R
+    :param Q: Q-point with (x,y,z)-coordinates
+    :param R: R-point with (x,y,z)-coordinates
     :param a: intercept
     :return: R, l, v
     """
@@ -18,10 +18,10 @@ def DBL_step(Q, R, a: int = 0):
 
 def ADD_step(P, Q, R):
     """
-    :param P: point in P
-    :param Q: point in Q
-    :param R: point in R
-    :return: l, v
+    :param P: P-point with (x,y,z)-coordinates
+    :param Q: Q-point with (x,y,z)-coordinates
+    :param R: R-point with (x,y,z)-coordinates
+    :return: R, l, v
     """
     xP, yP = P[0], P[1]
     xR, yR = R[0], R[1]
@@ -41,8 +41,14 @@ def ADD_step(P, Q, R):
 
 
 def DBL_miller_point(Q, R, a: int = 0):
-    xQ, yQ = Q[0], Q[1]
-    xR, yR, zR = R[0], R[1], R[2]
+    """
+    :param Q: Q-point with (x,y,z)-coordinates
+    :param R: R-point with (x,y,z)-coordinates
+    :param a: int
+    :return: R, l, v
+    """
+    xQ, yQ, _ = Q
+    xR, yR, zR = R
     T1 = zR ** 2
     A = yR ** 2
     B = xR * A
@@ -54,31 +60,36 @@ def DBL_miller_point(Q, R, a: int = 0):
     R = [X3, Y3, Z3]
     l = T3 * (yQ * Z3 - C * xQ) + Y3 + C * X3
     v = (xQ * T3 - X3)
-    # h = l / v
+
     return R, l, v
 
 
 def ADD_miller_point(P, Q, R):
-    xP, yP, zP = P[0], P[1], P[2]
-    xQ, yQ = Q[0], Q[1]
-    xR, yR = R[0], R[1]
-    T1 = zP ** 2
-    B = xR * T1
-    R2 = yR ** 2
-    D = ((yR + zP) ** 2 - R2 - T1) * T1
-    H = B - xP
+    """
+    :param P: P-point with (x,y,z)-coordinates
+    :param Q: Q-point with (x,y,z)-coordinates
+    :param R: R-point with (x,y,z)-coordinates
+    :return: R, l, v
+    """
+    xP, yP, _ = P
+    xQ, yQ, _ = Q
+    xR, yR, zR = R
+    T1 = zR ** 2
+    B = xP * T1
+    R2 = yP ** 2
+    D = ((yP + zR) ** 2 - R2 - T1) * T1
+    H = B - xR
     I = H ** 2
     E = 4 * I
     J = H * E
-    r = D - 2 * yP
-    v = xP * E
+    r = D - 2 * yR
+    v = xR * E
     X3 = r ** 2 - J - 2 * v
-    Y3 = r * (v - X3) - 2 * yP * J
-    Z3 = ((zP + H) ** 2 - T1 - I)
+    Y3 = r * (v - X3) - 2 * yR * J
+    Z3 = ((zR + H) ** 2 - T1 - I)
     T3 = Z3 ** 2
     R = [X3, Y3, Z3]
-    l = (yQ - yR) * Z3 - (xQ - xR) * r * 1
+    l = (yQ - yP) * Z3 - (xQ - xP) * r * 1
     v = (xQ * T3 - X3)
-    # h = l / v
 
     return R, l, v
