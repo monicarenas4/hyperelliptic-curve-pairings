@@ -195,7 +195,7 @@ $$ Y_R = 8(x_PZ_R^2 + 2X_R)(y_PZ_R^3 - Y_R)(x_PZ_R^2 - X_R)^2 - 8(y_PZ_R^3 - Y_R
 
 $$ Z_R = 2Z_R(x_PZ_R^2 - X_R) $$
 
-In the Miller loop, in the doubling step, we need to compute the line $\ell_{R,P}(Q)$ (the tangent line that passes through $R$ and $P$ and is evaluated at $ Q = (x_Q, y_Q) $) and the line $v_{R + P}(Q)$ (the vertical line that passes through $R + P$ and is evaluated at $Q = (x_Q, y_Q)$).
+In the Miller loop, in the doubling step, we need to compute the line $\ell_{R,P}(Q)$ (the tangent line that passes through $R$ and $P$ and is evaluated at $Q = (x_Q, y_Q)$) and the line $v_{R + P}(Q)$ (the vertical line that passes through $R + P$ and is evaluated at $Q = (x_Q, y_Q)$).
 Note that the second point $Q$ is in affine form, since we don't really do any computation on it. 
 Then the lines $\ell_{R,P}(Q)$ and $v_{R + P}(Q)$ are:
 
@@ -230,3 +230,38 @@ ADD_step(R, P, Q) {
   return(R, l, v)
 }
 ```
+## **Step 4: Optimal ate pairing**
+
+The most efficient type of pairings on elliptic curves is the *optimal ate* pairing. 
+One can derive the optimal ate pairing from the tate pairing with just a few small modifications. 
+We describe these modifications in the case of optimal ate pairing on the BLS12-381 curve. 
+
+### Reverse the order of points
+
+Let $P \in E(\mathbb{F}_p)[r]$ and $Q \in E(\mathbb{F}_q)[r]$, where $q = p^{12}$. 
+That is, $P$ and $Q$ are both points of order $r$, but their coordinates are defined over different fields. 
+In the case of the Tate pairing, the first input is the point $P$ and the second input is $Q$. 
+This means that the doubling and addition operations involve the point $P$ and hence they are performed over $\mathbb F_p$, while the point $Q$ is used only to evaluate the lines $\ell$ and $v$. 
+In the case of the optimal ate pairing, the input points are reversed. 
+That is, the first input is the point $Q$ and the second input is $P$. 
+This means that the doubling and addition operations will now involve the point $Q$ and hence they will be performed over the big field $\mathbb F_q$, while the point $P$ is used only to evaluate the lines $\ell$ and $v$. 
+
+However, in the case of the optimal ate pairing, the point $Q$ needs to be fixed a bit differently. 
+In addition to $Q$ having order $r$ on the big curve $E/F_q$, we also need to make sure that raising the coordinates of $Q$ to the power $p$ is equal to the point $[p]Q$. 
+In other words, for the point $Q = (x_Q, y_Q)$, let $Q' = (x_Q^p, y_Q^p)$, we must have $Q' = [p]Q$. 
+Fixing a point $Q$ such that it satisfies this property can be done with the following script: 
+
+```r
+Q = E12.random_element()  // Generate random point Q on the big curve E(Fq)
+h12 = n12 / r ** 2        // Find the cofactor h12 of the big curve 
+Q = h12 * Q               // This ensures that Q has order r
+Q' = Q
+xQ' = Q[0].frobenius()    // Raise x-coordinate of Q to the power p
+yQ' = Q[1].frobenius()    // Raise y-coordinate of Q to the power p
+Q' = E12(xQ',yQ')         // Set Q' as a point on the big curve E(Fq)
+Q = Q' - Q                // Set Q = Q' - Q
+}
+```
+
+Using this script, the new point $Q$ satisfies the property: $(x_Q^p, y_Q^p) = [p] (x_Q, y_Q)$. 
+Note that the first three lines are the same as in the Tate pairing implementation. 
