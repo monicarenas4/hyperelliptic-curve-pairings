@@ -1,5 +1,5 @@
 from sage.all_cmdline import *
-from ecc_operations import ADD_step, DBL_step, ADD_miller_point, DBL_miller_point
+from elliptic_curve.ecc_operations import ADD_step, DBL_step, ADD_miller_point, DBL_miller_point
 
 
 def miller_loop_tate_pairing(P, Q, r: int):
