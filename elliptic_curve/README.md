@@ -1,3 +1,11 @@
+
+# Table of Content
+- [Optimizing BLS12-381 pairings](#optimizing-bls12-381-pairings)
+  * [**Step 1**: Measure the time for the current implementation of the Tate pairing.](#--step-1----measure-the-time-for-the-current-implementation-of-the-tate-pairing)
+  * [**Step 2: Final expo**](#--step-2--final-expo--)
+
+
+
 # Optimizing BLS12-381 pairings
 
 ## **Step 1**: Measure the time for the current implementation of the Tate pairing. 
