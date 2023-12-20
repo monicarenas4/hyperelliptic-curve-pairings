@@ -1,6 +1,9 @@
-# Genus 2 pairings for $k = 8$
+# Table of Content
+- [General notes on genus 2 hyperelliptic curves](#general-notes-on-genus-2-hyperelliptic-curves)
+- [Genus 2 pairings for $k = 8$](#genus-2-pairings-for--k---8-)
 
-## General notes on genus 2 hyperelliptic curves
+
+# General notes on genus 2 hyperelliptic curves
 
 Elliptic curves are genus 1 curves and in the context of cryptographic applications they are represented in short Weierstrass form over a prime field $\mathbb F_p$ as:
 
@@ -29,7 +32,7 @@ The problem with genus 2 is that such a set **is not** a group.
 Then if we want to develop DLP-based protocols using genus 2 curves, we need a different object associated to the curve $C$. 
 We call this *special* object the *Jacobian of a genus 2 curve* and we denoted as $J(\mathbb F_p)$.   
 
-### The Jacobian 
+## The Jacobian 
 
 The elements in the Jacobian **are not points on the curve**, but they are derived from two points on the curve. 
 In particular, let $P_1 = (x_1, y_1)$ and $P_2 = (x_2, y_2)$ be two points on the curve $C$. 
@@ -59,9 +62,10 @@ Using this representation of elements in a Jacobian $J(\mathbb F_p)$, we can def
 
 Now we study how to define pairings on Jacobians of genus 2 curves. 
 
-## A concrete example of a pairing an a genus 2 curve with embedding degree $k = 8$
 
-### Functions that will be implemented
+# Genus 2 pairings for $k = 8$
+
+## Functions that will be implemented
 
 For this example, we will need to implement the following functions which will be put in specific folders: 
 
