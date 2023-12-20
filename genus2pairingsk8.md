@@ -61,6 +61,12 @@ Now we study how to define pairings on Jacobians of genus 2 curves.
 
 ## A concrete example of a pairing an a genus 2 curve with embedding degree $k = 8$
 
+### Functions that will be implemented
+
+For this example, we will need to implement the following functions which will be put in specific folders: 
+
+- Function `generate_Jacobian_params`. 
+
 We consider a genus 2 hyperelliptic curve of the form:
 
 $$ C/\mathbb F_p: y^2 = x^5 + 3x $$
