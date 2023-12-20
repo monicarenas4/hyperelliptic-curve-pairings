@@ -68,7 +68,9 @@ Now we study how to define pairings on Jacobians of genus 2 curves.
 
 For this example, we will need to implement the following functions which will be put in specific folders: 
 
-- Function `generate_Jacobian_params`. 
+- Function `generate_Jacobian_params`.
+
+## Setup
 
 We consider a genus 2 hyperelliptic curve of the form:
 
