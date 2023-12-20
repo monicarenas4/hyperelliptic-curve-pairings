@@ -109,7 +109,7 @@ We can ensure this by multiplying the point with the cofactor $h$.
 The resulting point will have order $r$ as needed. 
 
 ```r
-P = J_random_element(C)  //Pick random point in Jacobian J(Fp) 
+P = J_random_element(C)  //Pick random element in Jacobian J(Fp) 
 P = h*P                  //Force P to have order r
 ```
 In this example we are working with Jacobians with embedding degree 8. 
@@ -137,9 +137,16 @@ C8 = HyperellipticCurve(Fp8x([0, 3, 0, 0, 0, 1]))  //Fix the equation of the cur
 J8 = C8.jacobian()                                 //J8 is the Jacobian of the curve C8, i.e. over the extension field Fp^8
 ```
 Now we need to pick a second element $Q$ from the Jacobian $J8(\mathbb F_{p^8})$. 
-We do this again with the function `J8_random_element()`. 
+We do this again with the function `J_random_element()`. 
 Note that such a random element $Q \in J8(\mathbb F_p)$ will be of the form 
 
 $$ Q = [u'(x), v'(x)] = [x^2 + u'_1x + u'_0, v'_1 x + v'_0] $$
 
-where $u'_0, u'_1, v'_0, v'_1 $ are elements in the extension field. 
+where $u'_0, u'_1, v'_0, v'_1$ are elements in the extension field $\mathbb F_{p^8}$. 
+
+```r
+Q = J_random_element(C8)  //Pick random element in Jacobian J8(Fp8) 
+Q = h'*Q                  //Force Q to have order r
+```
+Note that picking a random element $Q$ from $J8(\mathbb F_{p^8})$ means that $Q$ will have order $h'r$, where $h'$ is the cofactor of the Jacobian $J8(\mathbb F_{p^8})$.
+We can force $Q$ to have order $R$ by multiplying with the cofactor $h'$. 
