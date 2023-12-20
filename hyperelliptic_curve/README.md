@@ -62,7 +62,7 @@ Using this representation of elements in a Jacobian $J(\mathbb F_p)$, we can def
 
 Now we study how to define pairings on Jacobians of genus 2 curves. 
 
-# Genus 2 pairings for k = 8
+# Genus 2 pairings with embedding degree 8
 
 ## Functions that will be implemented
 
