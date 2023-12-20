@@ -1,10 +1,10 @@
 from sage.all_cmdline import *
 from sage.rings.integer_ring import ZZ
 
-from pairings import tate_pairing, optimized_tate_pairing, optimal_ate_pairing
+from elliptic_curve.pairings import tate_pairing, optimized_tate_pairing, optimal_ate_pairing
 import datetime
 from os.path import exists
-from utils_ import make_folder, head_text_file, write_results
+from _utils import make_folder, head_text_file, write_results
 
 TODAY = str(datetime.date.today()).replace('-', '')
 make_folder('results')
