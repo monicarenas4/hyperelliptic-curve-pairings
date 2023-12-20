@@ -1,6 +1,6 @@
 # Table of Content
 - [General notes on genus 2 hyperelliptic curves](#general-notes-on-genus-2-hyperelliptic-curves)
-- [Genus 2 pairings for k = 8](#genus-2-pairings-for-k-8)
+- [Genus 2 pairings for k = 8](#genus-2-pairings-for-k---8)
 
 
 # General notes on genus 2 hyperelliptic curves
@@ -63,7 +63,7 @@ Using this representation of elements in a Jacobian $J(\mathbb F_p)$, we can def
 Now we study how to define pairings on Jacobians of genus 2 curves. 
 
 
-# Genus 2 pairings for $k = 8$
+# Genus 2 pairings for k = 8
 
 ## Functions that will be implemented
 
