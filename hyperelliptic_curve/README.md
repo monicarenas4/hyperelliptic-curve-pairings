@@ -68,10 +68,11 @@ Now we study how to define pairings on Jacobians of genus 2 curves.
 
 For this example, we will need to implement the following functions which will be put in specific folders: 
 
-- Function `generate_Jacobian_params`.
+- Function `generate_Jacobian_params_k8.py`. This function will generate the necessary parameters for the example of a genus 2 curve and its Jacobian with embedding degree 8. These include the equation of the genus 2 curve, the base field prime $p$, the Jacobian of the curve and it's order. It will also generate the required Jacobians over extension field $\mathbb F_{p^8}$, as well as the two elements $P$ and $Q$ for which the pairing will be computed.  
 
 ## Setup
 
+We describe the function `generate_Jacobian_params_k8.py`. 
 We consider a genus 2 hyperelliptic curve of the form:
 
 $$ C/\mathbb F_p: y^2 = x^5 + 3x $$
@@ -84,4 +85,25 @@ This particular curve has a Jacobian $J(\mathbb F_p)$ of composite order $n = hr
   r = 0xff0060739e18d7594a978b0ab6ae4ce3dbfd52a9d00197603fffdf0000000101
   h = 0x26cad1cf6fb1762e04b1549002acb3556aa8178f23bd901d1d01f940fb055fb7ca43e8b854a30786a394a65690a583fbb88c4c850a7fcf78daf75074603484a1c06a742ea4a9d002bf9b63808aeee5759acee12b509649987d7270d3c561273221ebfbba91d5a0c2
   n = 0x26a4159b3400bfed201dba82df5c3f55f75b70984638ccda45d4079e5d3b97c8b78d2bb8fbff84726afe91c6c4112fb96ca0a1716c12a0eae299b835cd4c05623913386752579775193e447b5ebf1b530b78dc7b5bcfedfb337885eae68ea3a4b994ee7ea2a443d8c1daf95bc29d0b37b8037ae7968df83ff7c1a7a9523b6b78042eb44c677662c2
+```
+
+Based on these values, we can define in SageMath the base field $\mathbb F_p$, the equation of the hyperelliptic curve and its Jacobian with the following commands: 
+
+```r
+  Fp = GF(p, proof=False)              //Fix the prime field Fp
+  Fpx = Fp['x']                        //Fix Fpx as the ring of polynomials in x, with coefficients in Fp
+  (x,) = Fpx._first_ngens(1)
+  C = HyperellipticCurve(x**5 + 3*x)   //Set the equation of the hyperelliptic curve C
+  J = C.jacobian()                   //Jac is the Jacobian of the curve C
+```
+Note that the Jacobian $J$ is defined over $\mathbb F_p$ and hence the elements in $J(\mathbb F_p)$ will be defined over $\mathbb F_p$.
+We can generate a random element $P$ in the Jacobian $J(\mathbb F_p)$ using the function `J_random_element()`. 
+Recall that when choosing a random element in $J(\mathbb F_p)$, this element will have order $hr$. 
+Then we need to make sure that the element $P$ has prime order $r$. 
+We can ensure this by multiplying the point with the cofactor $h$. 
+The resulting point will have order $r$ as needed. 
+
+```r
+  P = J_random_element(C)
+  P = h*P
 ```
