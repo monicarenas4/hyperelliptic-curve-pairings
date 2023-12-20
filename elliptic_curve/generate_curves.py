@@ -6,7 +6,7 @@ from sage.schemes.elliptic_curves.constructor import EllipticCurve
 from sage.rings.finite_rings.finite_field_constructor import FiniteField, GF
 
 
-def BLS12_curve(u: int, a: int = 0, b: int = -3, type: str = 'tate'):
+def BLS12_curve(u: int, a: int = 0, b: int = -3, type: str = None):
     """
     :param u: curve seed
     :param a: coefficient a

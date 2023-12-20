@@ -1,11 +1,11 @@
 from sage.all_cmdline import *
 
-from pairings import miller_loop_tate_pairing, miller_loop_opt_tate_pairing, miller_loop_opt_ate_pairing
-from pairings import final_exp_BLS12, final_exp_BLS12_optimized
+from elliptic_curve.pairings import miller_loop_tate_pairing, miller_loop_opt_tate_pairing, miller_loop_opt_ate_pairing
+from elliptic_curve.pairings import final_exp_BLS12, final_exp_BLS12_optimized
 from random import randint
 
 
-def pairing_bilinearity_check(P, Q, pairing_value, p: int, r: int, type: str = 'tate', u=None):
+def pairing_bilinearity_check(P, Q, pairing_value, p: int, r: int, type: str = None, u=None):
     """
     :param P: P-point in (x,y,z)-coordinates
     :param Q: Q-point in (x,y,z)-coordinates
@@ -31,6 +31,9 @@ def pairing_bilinearity_check(P, Q, pairing_value, p: int, r: int, type: str = '
     elif 'optimal_ate' == type:
         miller_function_prime = miller_loop_opt_ate_pairing(Q_prime, P_prime, u)
         pairing_value_prime = final_exp_BLS12_optimized(miller_function_prime, u, p)
+    else:
+        print("Test not performed. Speel the type correctly.")
+        pairing_value_prime = None
 
     # print('Pairing value 2:', pairing_value_prime)
     print("Bilinearity Check:", (pairing_value == pairing_value_prime))
