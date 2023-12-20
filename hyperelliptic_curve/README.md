@@ -1,6 +1,5 @@
 # Table of Content
 - [General notes on genus 2 hyperelliptic curves](#general-notes-on-genus-2-hyperelliptic-curves)
-- [Testing again](#testing-again)
 - [Genus 2 pairings for k = 8](#genus-2-pairings-for-k---8)
 
 
@@ -62,8 +61,6 @@ A few remarks based on the above definition of Jacobian elements:
 Using this representation of elements in a Jacobian $J(\mathbb F_p)$, we can define an addition law in $J(\mathbb F_p)$, making it a group. 
 
 Now we study how to define pairings on Jacobians of genus 2 curves. 
-
-# Testing again
 
 # Genus 2 pairings for k = 8
 
