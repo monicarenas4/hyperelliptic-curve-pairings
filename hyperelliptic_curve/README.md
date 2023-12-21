@@ -74,7 +74,7 @@ For this example, we will need to implement the following functions which will b
 
 We describe the function `generate_Jacobian_params_k8.py`. 
 
-### Constructing the curve and Jacobian over the base field $\mathbb F_p$
+### Generating the curve and Jacobian parameters
 
 We consider a genus 2 hyperelliptic curve of the form:
 
@@ -117,7 +117,7 @@ xt = t**4 + 4*Y*t**3 + 8*Y**2*t**2 + 4*p*Y*t + p**2     //Define the characteris
 assert n == xt(t = 1)                                   //Check is the order is correct
 ```
 
-### Constructing the curve and Jacobian over the extension field $\mathbb F_{p^8}$
+### Constructing the curve and Jacobian over the base field $\mathbb F_p$
 
 Based on these values, we can define in SageMath the base field $\mathbb F_p$, the equation of the hyperelliptic curve and its Jacobian with the following commands: 
 
@@ -142,13 +142,17 @@ We can ensure this by multiplying the point with the cofactor $h$.
 The resulting point will have order $r$ as needed. 
 
 ```r
+//SageMath code
 P = J_random_element(C)  //Pick random element in Jacobian J(Fp) 
 P = h*P                  //Force P to have order r
 ```
+### Constructing the curve and Jacobian over the extension field $\mathbb F_{p^8}$
+
 In this example we are working with Jacobians with embedding degree 8. 
 Then we need to define an extension field of degree 8. 
 
 ```r
+//SageMath code
 Fpw = Fp['w']                                  //Fpw: polynomial ring in w with coefficients in Fp
 (w,) = Fpw._first_ngens(1)
 Fp8 = Fp.extension(w ** 8 + 3, names=('w',))   //Fp8: degree 8 extension of Fp. 
@@ -164,10 +168,21 @@ Now we need to define the curve and its Jacobian over the extension field $\math
 We do this with the following commands:
 
 ```r
+//SageMath code
 Fp8x = Fp8['x']                                    //Fix Fp8x as the ring of polynomials in x, with coefficients in Fp^8
 (x,) = Fp8x._first_ngens(1)    
 C8 = HyperellipticCurve(Fp8x([0, 3, 0, 0, 0, 1]))  //Fix the equation of the curve over the extension field Fp8 as C8: y^2 = x^3 + 3x
 J8 = C8.jacobian()                                 //J8 is the Jacobian of the curve C8, i.e. over the extension field Fp^8
+```
+We also need to compute the order of the Jacobian $J8(\mathbb F_{p^8})$. 
+This can be done use the resultant of the polynomials $t^8 - 1$ and the characteristic polynomial of Frobenius. 
+In particular, we use the following SageMath script.
+
+```r
+//SageMath code
+Res = (t**8 - 1).resultant(xt)  //Compute the resultant  of the polynomials t^8 - 1 and \chi(t)
+h' = Res // r**4                //Compute the cofactor of the Jacobian J8 
+n' = h' * r                     //Compute the order of the Jacobian J8 
 ```
 Now we need to pick a second element $Q$ from the Jacobian $J8(\mathbb F_{p^8})$. 
 We do this again with the function `J_random_element()`. 
@@ -175,11 +190,30 @@ Note that such a random element $Q \in J8(\mathbb F_p)$ will be of the form
 
 $$ Q = [u'(x), v'(x)] = [x^2 + u'_1x + u'_0, v'_1 x + v'_0] $$
 
-where $u'_0, u'_1, v'_0, v'_1$ are elements in the extension field $\mathbb F_{p^8}$
-
+where $u'_0, u'_1, v'_0, v'_1$ are elements in the extension field $\mathbb F_{p^8}$.
 ```r
+//SageMath code
 Q = J_random_element(C8)  //Pick random element in Jacobian J8(Fp8) 
 Q = h'*Q                  //Force Q to have order r
 ```
 Note that picking a random element $Q$ from $J8(\mathbb F_{p^8})$ means that $Q$ will have order $h'r$, where $h'$ is the cofactor of the Jacobian $J8(\mathbb F_{p^8})$.
 We can force $Q$ to have order $R$ by multiplying with the cofactor $h'$. 
+
+### The length of the Miller loop
+
+In this example the pairing we are going to use is the *twisted ate pairing*. 
+In this case, the length of the Miller loop is defined by the parameter 
+
+$$ T \equiv p \bmod r = \texttt{0xffc00020fffffffc} $$
+
+This is a short integer as its size is $\log_2(T) = 64$-bits. 
+This means that in the Miller loop we will need to perform 64 doubling steps. 
+On the other hand, the hamming weight of $T$ will determine the number of the addition steps and this integer $T$ has a relatively high hamming weight. 
+Instead what we can do is use the *NAF representation* of the integer $T$. 
+This is still a binary representation, but allowing also -1 to appear in the representation. 
+Then the integer $T$ can be written as follows: 
+
+$$ T = \texttt{0xffc00020fffffffc} = 2^{64} - 2^{54} + 2^{37} + 2^{32} - 2^2 $$
+
+This representation has *NAF hamming weight* 5, meaning that we only need 4 addition steps in the Miller loop. 
+Whenever the bit is 1 we add the element $Q$ and whenever the bit is -1 we add the element $-Q$. 
