@@ -207,13 +207,57 @@ In this case, the length of the Miller loop is defined by the parameter
 $$ T \equiv p \bmod r = \texttt{0xffc00020fffffffc} $$
 
 This is a short integer as its size is $\log_2(T) = 64$-bits. 
-This means that in the Miller loop we will need to perform 64 doubling steps. 
-On the other hand, the hamming weight of $T$ will determine the number of the addition steps and this integer $T$ has a relatively high hamming weight. 
-Instead what we can do is use the *NAF representation* of the integer $T$. 
+This means that in the Miller loop we will need to perform 63 doubling steps. 
+On the other hand, the hamming weight of $T$ will determine the number of the addition steps to be executed in the Miller loop and this integer $T$ has a relatively high hamming weight, particularly $\text{hw}(T) = 41$. 
+This means that in the Miller loop we will need to perform 40 addition steps, which is quite expensive.
+We can compute the hamming weight of an integer with the following function implemented in SageMath.
+```r
+// Hamming weight computation 
+def hw(bit_x):                      // The input bit_x is the binary representartion of a positive integer
+    count = 0
+    for i in range(0, len(bit_x)):
+        if bit_x[i] == 1:
+            count = count + 1
+    return count
+```
+Alternatively,  what we can do is use the *Non-Adjacent Form (NAF) representation* of the integer $T$. 
 This is still a binary representation, but allowing also -1 to appear in the representation. 
-Then the integer $T$ can be written as follows: 
+Using the NAF representation, the integer $T$ can be written as follows: 
 
 $$ T = \texttt{0xffc00020fffffffc} = 2^{64} - 2^{54} + 2^{37} + 2^{32} - 2^2 $$
 
-This representation has *NAF hamming weight* 5, meaning that we only need 4 addition steps in the Miller loop. 
+The SageMath code for obtaining the NAF representation of a positive integer is the following. 
+
+```r
+// NAF representation of integer
+def bits_2naf(x):                                            // Input is a positive integer x
+    naf_x = []
+    xx = Integer(x)
+    assert x >= 0
+    while xx > 0 :
+        rr = xx % 4
+        if rr == 3 :
+            rr = -1
+        else:
+            rr = rr % 2
+        naf_x.append(rr)
+        xx -= rr
+        xx,rr = xx.quo_rem(2)
+        assert rr == 0
+    assert x == sum([r*2**i for i,r in enumerate(naf_x)])
+    return naf_x
+```
+
+The NAF representation of the integer $T$ has *NAF hamming weight* 5, meaning that we only need 4 addition steps in the Miller loop. 
 Whenever the bit is 1 we add the element $Q$ and whenever the bit is -1 we add the element $-Q$. 
+The SageMath code for calculating the NAF hamming weight of an integer is the following. 
+
+```r
+# NAF Hamming Weight
+def naf_hw(naf_x):                              // The input naf_x is the NAF representartion of a positive integer
+    count = 0
+    for i in range(0, len(naf_x)):
+        if (naf_x[i] == 1) or (naf_x[i] == -1):
+            count = count + 1
+    return count
+```
