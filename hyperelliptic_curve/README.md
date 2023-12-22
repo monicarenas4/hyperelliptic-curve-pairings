@@ -261,3 +261,28 @@ def naf_hw(naf_x):                              // The input naf_x is the NAF re
             count = count + 1
     return count
 ```
+
+### New coordinate system for Jacobian elements
+
+Given an element $D$ in the Jacobian over any finite field, we need to use a specific coordinate system to be able to speedup the doubling and addition steps in the Miller loop. 
+Recall that $D$ has the following form: 
+
+$$ D = [x^2 + U_1x + U_0, V_1x + V_0] $$
+
+Then we define the following 8-coordinate system for $D$: 
+
+$$ D = [U_1, U_0, V_1, V_0, Z_1, Z_2, z_1, z_2] $$
+
+where $z_1 = Z_1^2$ and $z_2 = Z_2^2$. The code in SageMath is: 
+
+```r
+// New coordinate system
+def new_coordinates(D):
+    U1, U0 = D[0][1], D[0][0]
+    V1, V0 = D[1][1], D[1][0]
+    Z1, Z2 = (1), (1)
+    z1, z2 = (Z1**2), (Z2**2)
+    D_ = [U1, U0, V1, V0, Z1, Z2, z1, z2]
+
+    return D_
+```
