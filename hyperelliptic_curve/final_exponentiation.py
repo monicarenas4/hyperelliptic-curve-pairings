@@ -1,15 +1,13 @@
-def final_exponentiation(f, U, K):
+def final_exponentiation(f, U: list, K):
     """
-    :param f:
-    :param U:
+    :param f: output of the miller loop
+    :param U: 4-elements vector 
     :param K: field Fp
-    :return:
+    :return: final pairing output
     """
     u, u0, lx, ly = U[0], U[1], U[2], U[3]
     t0 = 1
-    # f = Frobenius(f, K, 4) / f
     f = f.frobenius(4) / f
-    # fp = Frobenius(f, K, 1)
     fp = f.frobenius(1)
     fu1 = f ** u
     f1 = fp * fu1
