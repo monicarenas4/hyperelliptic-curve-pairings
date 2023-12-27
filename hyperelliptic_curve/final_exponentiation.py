@@ -54,8 +54,3 @@ def final_exponentiation(f, U: list, K):
     t0 = N / M
 
     return t0
-
-def final_expo_trivial(f, pow):
-    t = f**pow
-    
-    return t
