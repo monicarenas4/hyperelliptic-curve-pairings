@@ -105,10 +105,10 @@ def DBL(D1, E, F):
     return D3, lcE
 
 
-def new_coordinates(D):
+def new_coordinates(D) -> list:
     """
-    :param D:
-    :return:
+    :param D: [x^2+U1x+U0, V1x + V0]
+    :return: 8-element vector
     """
     U1, U0 = D[0][1], D[0][0]
     V1, V0 = D[1][1], D[1][0]
