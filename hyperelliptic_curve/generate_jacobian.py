@@ -1,4 +1,4 @@
-from operations import JC_random_element, HEC_random_point, ADD, DBL
+from operations import JC_random_element, HEC_random_point, ADD, DBL, Precomputation_general_div
 from sage.rings.finite_rings.finite_field_constructor import FiniteField, GF
 from sage.schemes.hyperelliptic_curves.constructor import HyperellipticCurve
 from sage.rings.integer_ring import ZZ
@@ -69,55 +69,75 @@ def generate_jacobian(k=8, a=3):
     Fp8x = Fp8['x']
     (x,) = Fp8x._first_ngens(1)
     C8 = HyperellipticCurve(Fp8x([0, 3, 0, 0, 0, 1]))
-    
-    # print(C8)
     Jac8 = C8.jacobian()
-    # print(Jac8)
-
+    Res = (t ** 8 - 1).resultant(xt)  # Compute the resultant  of the polynomials t^8 - 1 and \chi(t)
+    h_ = Res // r ** 4  # Compute the cofactor of the Jacobian J8
+    n_ = h_ * r  # Compute the order of the Jacobian J8
+    
     g = x**8 - l
     roots = g.roots()
     c = roots[7]
     c = c[0]
 
-    Q = HEC_random_point(Ct)
-    xQ = Q[0]
-    yQ = Q[1]
- 
-    Q = Ct([xQ,yQ])
-
-    xQ = xQ / (c**2)
-    yQ = yQ / (c**5)
-
-    Q = C8([xQ,yQ])
+    cases = ['case1', 'case2']
     
-    Q = [-xQ, yQ, xQ**2, -xQ**3]
+    for case in cases:
+        if case == 'case1':
+            # case 1 => Degenerate Divisor
+            b = 1
+            Q = HEC_random_point(Ct)
+            xQ, yQ = Q[0], Q[1]
 
-    Res = (t ** 8 - 1).resultant(xt)  # Compute the resultant  of the polynomials t^8 - 1 and \chi(t)
-    h_ = Res // r ** 4  # Compute the cofactor of the Jacobian J8
-    n_ = h_ * r  # Compute the order of the Jacobian J8
-    
-#    R, line = ADD(D1, D2, Q, F)
-#    S, line = DBL(D1, Q, F)
-#
-#    assert R1[0][0] == R[1]/R[6]
-#    assert R1[0][1] == R[0]/R[6]
-#    assert R1[1][0] == R[3]/(R[6]*R[4]*R[5])
-#    assert R1[1][1] == R[2]/(R[6]*R[4]*R[5])
-#
-#    assert R2[0][0] == S[1]/S[6]
-#    assert R2[0][1] == S[0]/S[6]
-#    assert R2[1][0] == S[3]/(S[6]*S[4]*S[5])
-#    assert R2[1][1] == S[2]/(S[6]*S[4]*S[5])
-    
-    pow = (p**k - 1)//r
-        
-    t1 = Twisted_Ate_k8(D2, D2_, Q, F, NAF_T, U, Fp, pow)
-    t2 = Twisted_Ate_k8(D1, D1_, Q, F, NAF_T, U, Fp, pow)**a
+            Q = Ct([xQ,yQ])
 
-    print(t1)
-    print(t2)
-    
-    print(t1 == t2)
+            xQ, yQ = xQ / (c**2), yQ / (c**5)
+
+            Q = C8([xQ,yQ])
+
+            # Q = [-xQ, yQ, xQ**2, -xQ**3]
+            Q1, Q2 = [-xQ, yQ],  [-xQ, yQ]
+            Q1_vec, Q2_vec = [xQ**2, -xQ**3], [xQ**2, -xQ**3]
+        else:
+            # case 2 => General divisor
+            Q1 = HEC_random_point(Ct)
+            Q2 = HEC_random_point(Ct)
+            xQ1 = Q1[0]
+            yQ1 = Q1[1]
+            xQ2 = Q2[0]
+            yQ2 = Q2[1]
+
+            xQ1 = xQ1 / (c**2)
+            yQ1 = yQ1 / (c**5)
+            xQ2 = xQ2 / (c**2)
+            yQ2 = yQ2 / (c**5)
+
+            Q1 = C8([xQ1,yQ1])
+            Q2 = C8([xQ2,yQ2])
+            
+            u21 = -(xQ1 + xQ2)
+            u20 = xQ1*xQ2
+
+            v21 = (yQ2 - yQ1)/(xQ2 - xQ1)
+            v20 = ((xQ2 - xQ1)*yQ1 - (yQ2 - yQ1)*xQ1) / (xQ2 - xQ1)
+
+            ux = x**2 + u21*x + u20
+            vx = v21*x + v20
+            
+            Q1 = Jac8([ux,vx])
+            Q1 = h_*Q1
+
+            Q1_vec = Precomputation_general_div(Q1)
+
+            b = randint(0, r - 1)
+            Q2 = b*Q1
+            Q2_vec = Precomputation_general_div(Q2)
+                    
+        t1 = Twisted_Ate_k8(D2, D2_, Q2_vec, Q2, F, NAF_T, U, Fp, case)
+        t2 = Twisted_Ate_k8(D1, D1_, Q1_vec, Q1, F, NAF_T, U, Fp, case)**(a*b)
+        print(case)
+        print(t1)
+        print(t2)
+        print(t1 == t2)
     
     return U
 

@@ -57,7 +57,3 @@ def final_exponentiation(f, U, K):
 
     return t0
 
-def final_expo_trivial(f, pow):
-    t = f**pow
-    
-    return t
