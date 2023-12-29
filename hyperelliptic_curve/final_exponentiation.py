@@ -54,3 +54,7 @@ def final_exponentiation(f, U: list, K):
     t0 = N / M
 
     return t0
+<<<<<<< HEAD
+
+=======
+>>>>>>> 604ae00b99a0421935a137deddfdaa63f00ba287
