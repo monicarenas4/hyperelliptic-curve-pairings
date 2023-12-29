@@ -4,7 +4,7 @@ from sage.schemes.hyperelliptic_curves.constructor import HyperellipticCurve
 from sage.rings.integer_ring import ZZ
 from _utils import NAF
 from operations import new_coordinates
-from twisted_operations import Twisted_Ate_k8
+from twisted_operations import twisted_ate_k8
 from random import randint
 
 
@@ -134,9 +134,9 @@ def generate_jacobian(k: int = 8, a: int = 3):
             Q2 = randint_b * Q1
             Q2_vec = precomputation_general_div(Q2)
 
-        t1 = Twisted_Ate_k8(D=D2, Dn=D2_, Q_vec=Q2_vec, Q=Q2, F=F, s=NAF_T, U=U, K=Fp, L=L, case=case)
-        t2 = Twisted_Ate_k8(D=D1, Dn=D1_, Q_vec=Q1_vec, Q=Q1, F=F, s=NAF_T, U=U, K=Fp, L=L, case=case) ** (
-                    randint_a * randint_b)
+        t1 = twisted_ate_k8(D=D2, Dn=D2_, Q_vec=Q2_vec, Q=Q2, F=F, s=NAF_T, U=U, K=Fp, L=L, case=case)
+        t2 = twisted_ate_k8(D=D1, Dn=D1_, Q_vec=Q1_vec, Q=Q1, F=F, s=NAF_T, U=U, K=Fp, L=L, case=case) ** (
+                randint_a * randint_b)
         print(case)
         print(t1)
         print(t2)
@@ -145,4 +145,23 @@ def generate_jacobian(k: int = 8, a: int = 3):
     return U
 
 
-generate_jacobian()
+def generate_jacobian_k16(k: int = 16, a: int = 7):
+    p = 181719387350846402258408331453297757946729258382457366625430654452293350633483530831001970004107195455558298447898711835548471646916729
+    q = 57897811812841009202322560055933031236877427048905361176638324396695847898321
+    s = k // 8
+    n = 33021935739166955422199953152441046146308803561480659736433494768502274567814491933750685972110257939854083791052404039879470958004035729650284528263025598740149760605242062131671534764935139463281403382582917247193199131944467649083148527112908110604954916883271978754
+    h = n // q
+    X = 13480333354589062322310777220329101661186639779498822561421683303129
+    Y = -365382379729919832036904271650901274013716193362
+
+    Zx = ZZ['t']  # Define the ring of polynomials with integer coefficients
+    (t,) = Zx._first_ngens(1)
+    xt = t ** 4 + 4 * Y * t ** 3 + 8 * Y ** 2 * t ** 2 + 4 * p * Y * t + p ** 2
+    assert n == xt(t=1)  # Check is the order is correct
+
+    Fp = GF(p, proof=False)  # Fix the prime field Fp
+    Fpx = Fp['x']  # Fix Fpx as the ring of polynomials in x, with coefficients in Fp
+    (x,) = Fpx._first_ngens(1)
+
+    # Hyperelliptic curve
+    C = HyperellipticCurve(x ** 5 + a * x)  # Set the equation of the hyperelliptic curve C
