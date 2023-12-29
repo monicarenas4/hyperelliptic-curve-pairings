@@ -99,7 +99,7 @@ def precomputation_general_div(D2):
     return Q
 
 
-def ADD(D1, D2, Q_vec, Q, F, L, case: str = 'case1'):
+def ADD(D1, D2, Q_vec, Q, F, L=None, case: str = 'case1'):
     """
     :param D1:
     :param D2:
@@ -156,7 +156,7 @@ def ADD(D1, D2, Q_vec, Q, F, L, case: str = 'case1'):
     return D3, lcE
 
 
-def DBL(D1, Q_vec, Q, F, L, case: str = 'case1'):
+def DBL(D1, Q_vec, Q, F, L=None, case: str = 'case1'):
     """
     :param D1:
     :param Q_vec:
