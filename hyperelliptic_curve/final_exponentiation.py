@@ -1,7 +1,7 @@
-def final_exponentiation(f, U: list, K):
+def final_exponentiation_cp8(f, U: list, K):
     """
     :param f: output of the miller loop
-    :param U: 4-elements vector 
+    :param U: 4-elements vector
     :param K: field Fp
     :return: final pairing output
     """
@@ -54,7 +54,62 @@ def final_exponentiation(f, U: list, K):
     t0 = N / M
 
     return t0
-<<<<<<< HEAD
 
-=======
->>>>>>> 604ae00b99a0421935a137deddfdaa63f00ba287
+def final_exponentiation_k16(f, U, K):
+    """
+    :param f:
+    :param U:
+    :param K: field Fp
+    :return:
+    """
+#    u, um = U[0], U[1]
+#    p = K.characteristic()
+##    f = f.frobenius(8) / f
+#    f = f**(p**8)/f
+#    f1 = f
+#    f2 = f1 ** 2
+#    f4 = f2 ** 2
+#    f8 = f4 ** 2
+#    fum1 = f ** um
+#    fu1 = fum1 * f1
+#    fup1 = fu1 * f1
+#    fum2 = fum1 ** um
+#    f2u1 = fu1 ** 2
+#    f4u1 = f2u1 ** 2
+#    fup2 = fum2 * f4u1
+#    g1 = fum2 ** u
+#    g2 = g1 ** u
+#    g3 = g2 ** u
+#    g4 = g3 ** u
+#    g5 = g4 ** 2
+#    fl0 = fup2 * g5
+#    fl0u = fl0 ** u
+#    fl0u2 = fl0u ** u
+#    fl0u3 = fl0u2 ** u
+#    fn = f8 * fl0u3
+#    fnu1 = fn ** u
+#    fnu2 = fnu1 ** u
+#    fnu3 = fnu2 ** u
+#    fnu4 = fnu3 ** u
+#    N0 = fl0
+##    N1 = fn.frobenius()
+##    N2 = fnu3.frobenius(2)
+##    N3 = fl0u.frobenius(3)
+##    N4 = fnu1.frobenius(4)
+##    N5 = fnu4.frobenius(5)
+##    N6 = fl0u2.frobenius(6)
+##    N7 = fnu2.frobenius(7)
+#    N1 = fn**p
+#    N2 = fnu3**(p**2)
+#    N3 = fl0u**(p**3)
+#    N4 = fnu1**(p**4)
+#    N5 = fnu4**(p**5)
+#    N6 = fl0u2**(p**6)
+#    N7 = fnu2**(p**7)
+#
+#    N, M = (N0 * N2 * N3 * N5 * N6), (N1 * N4 * N7)
+#    t0 = N / M
+
+    t0 = f**K
+
+    return t0
