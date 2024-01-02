@@ -1,4 +1,4 @@
-def Line_case1(D2_vec, D2, C, L):
+def Line_case1(D2_vec, D2, C, L, twist: str = None):
     """
     :param D2_vec:
     :param D2: [-xQ, yQ, xQ^2, -xQ^3]
@@ -6,17 +6,22 @@ def Line_case1(D2_vec, D2, C, L):
     :param L: 4-element vector
     :return: evaluation of the line
     """
+
     x2, y2, x22, x23 = D2[0], D2[1], D2_vec[0], D2_vec[1]
     l3, l2, l1, l0, l = C[0], C[1], C[2], C[3], C[4]
     c, c2, c3, c5 = L[0], L[1], L[2], L[3]
 
-    l3, l2, l1, l0 = (l3 * c2), (l2 * c), (l1 * c3), (l0 * c5)
+    if twist == None:
+        l3, l2, l1, l0 = l3, l2, l1, l0
+    else:
+        l3, l2, l1, l0 = (l3 * c), (l2 / c), (l1 / c ** 3), (l0 / c ** 5)
+
     cD2 = (y2 * l + l3 * x23 - l2 * x22 + l1 * x2 - l0)
 
     return cD2
 
 
-def Line_case2(D2_vec, D2, D3, C):
+def Line_case2(D2_vec, D2, D3, C, L):
     """
     :param D2_vec:
     :param D2:
@@ -66,26 +71,27 @@ def Line_case2(D2_vec, D2, D3, C):
 
 
 def precomputation_general_div(D2):
-    """
-    :param D2:
-    :return:
-    """
     u21, u20, v21, v20 = D2[0][1], D2[0][0], D2[1][1], D2[1][0]
 
-    t1, t2 = u20 * v21, u21 * v20
+    t1 = u20 * v21
+    t2 = u21 * v20
     t3 = t1 - t2
     t4 = v21 * t3
     t5 = v20 ** 2
     t6 = t4 + t5
     t7 = u21 * v21
     t8 = 2 * v20 - t7
-    t9, t10, t11 = (t1 + t3), (u21 * t3), (u20 * v20)
-    t12, t13 = (t10 + 2 * t11), (u21 ** 2)
+    t9 = t1 + t3
+    t10 = u21 * t3
+    t11 = u20 * v20
+    t12 = t10 + 2 * t11
+    t13 = u21 ** 2
     t14 = t3 * t13
     t15 = 2 * t3 - t2
     t16 = u20 * t15
     t17 = t14 - t16
-    t18, t19 = (u20 * u21), (u20 ** 2)
+    t18 = u20 * u21
+    t19 = u20 ** 2
     t20 = t19 * u20
     t21 = t19 * u21
     t22 = t13 - 2 * u20
@@ -99,7 +105,7 @@ def precomputation_general_div(D2):
     return Q
 
 
-def ADD(D1, D2, Q_vec, Q, F, L=None, case: str = 'case1'):
+def ADD(D1, D2, Q_vec, Q, F, L=None, case: str = 'case1', twist: str = None):
     """
     :param D1:
     :param D2:
@@ -148,15 +154,17 @@ def ADD(D1, D2, Q_vec, Q, F, L=None, case: str = 'case1'):
     line = [l3, l2, l1, l0, l]
 
     D3 = [U31, U30, V31, V30, Z31, Z32, z31, z32]
-    if case == 'case1':
+    if case == 'case1' and twist == None:
         lcE = Line_case1(Q_vec, Q, line, L)
+    elif case == 'case1' and twist != None:
+        lcE = Line_case1(Q_vec, Q, line, L, twist='k16')
     else:
-        lcE = Line_case2(Q_vec, Q, D3, line)
+        lcE = Line_case2(Q_vec, Q, D3, line, L)
 
     return D3, lcE
 
 
-def DBL(D1, Q_vec, Q, F, L=None, case: str = 'case1'):
+def DBL(D1, Q_vec, Q, F, L=None, case: str = 'case1', twist: str = None):
     """
     :param D1:
     :param Q_vec:
@@ -213,10 +221,13 @@ def DBL(D1, Q_vec, Q, F, L=None, case: str = 'case1'):
     line = [l3, l2, l1, l0, l]
 
     D3 = [U31, U30, V31, V30, Z31, Z32, z31, z32]
-    if case == 'case1':
+
+    if case == 'case1' and twist == None:
         lcE = Line_case1(Q_vec, Q, line, L)
+    elif case == 'case1' and twist != None:
+        lcE = Line_case1(Q_vec, Q, line, L, twist='k16')
     else:
-        lcE = Line_case2(Q_vec, Q, D3, line)
+        lcE = Line_case2(Q_vec, Q, D3, line, L)
 
     return D3, lcE
 
@@ -236,10 +247,6 @@ def new_coordinates(D) -> list:
 
 
 def HEC_random_point(C):
-    """
-    :param C:
-    :return:
-    """
     f = C.hyperelliptic_polynomials()[0]
     while True:
         x_r = f.base_ring().random_element()
@@ -249,11 +256,6 @@ def HEC_random_point(C):
 
 
 def HEC_random_points_uniq(C, n):
-    """
-    :param C:
-    :param n:
-    :return:
-    """
     f = C.hyperelliptic_polynomials()[0]
     res = []
     for i in range(1, n + 1):
@@ -270,10 +272,6 @@ def HEC_random_points_uniq(C, n):
 
 
 def JC_random_element(C):
-    """
-    :param C:
-    :return:
-    """
     f = C.hyperelliptic_polynomials()[0]
     R = f.base_ring()['x']
     (x,) = R._first_ngens(1)

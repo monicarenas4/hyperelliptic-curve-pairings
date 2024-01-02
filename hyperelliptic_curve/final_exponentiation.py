@@ -1,12 +1,12 @@
-def final_exponentiation_k8(f, U: list, K):
+def final_exponentiation_cp8(f, U: list, K):
     """
     :param f: output of the miller loop
-    :param U: 4-elements vector 
+    :param U: 4-elements vector
     :param K: field Fp
     :return: final pairing output
     """
     u, u0, lx, ly = U[0], U[1], U[2], U[3]
-
+    t0 = 1
     f = f.frobenius(4) / f
     fp = f.frobenius(1)
     fu1 = f ** u
@@ -63,95 +63,54 @@ def final_exponentiation_k16(f, U, K):
     :param K: field Fp
     :return:
     """
-    u, um = U[0], U[1]
+    #    u, um = U[0], U[1]
+    #    p = K.characteristic()
+    ##    f = f.frobenius(8) / f
+    #    f = f**(p**8)/f
+    #    f1 = f
+    #    f2 = f1 ** 2
+    #    f4 = f2 ** 2
+    #    f8 = f4 ** 2
+    #    fum1 = f ** um
+    #    fu1 = fum1 * f1
+    #    fup1 = fu1 * f1
+    #    fum2 = fum1 ** um
+    #    f2u1 = fu1 ** 2
+    #    f4u1 = f2u1 ** 2
+    #    fup2 = fum2 * f4u1
+    #    g1 = fum2 ** u
+    #    g2 = g1 ** u
+    #    g3 = g2 ** u
+    #    g4 = g3 ** u
+    #    g5 = g4 ** 2
+    #    fl0 = fup2 * g5
+    #    fl0u = fl0 ** u
+    #    fl0u2 = fl0u ** u
+    #    fl0u3 = fl0u2 ** u
+    #    fn = f8 * fl0u3
+    #    fnu1 = fn ** u
+    #    fnu2 = fnu1 ** u
+    #    fnu3 = fnu2 ** u
+    #    fnu4 = fnu3 ** u
+    #    N0 = fl0
+    ##    N1 = fn.frobenius()
+    ##    N2 = fnu3.frobenius(2)
+    ##    N3 = fl0u.frobenius(3)
+    ##    N4 = fnu1.frobenius(4)
+    ##    N5 = fnu4.frobenius(5)
+    ##    N6 = fl0u2.frobenius(6)
+    ##    N7 = fnu2.frobenius(7)
+    #    N1 = fn**p
+    #    N2 = fnu3**(p**2)
+    #    N3 = fl0u**(p**3)
+    #    N4 = fnu1**(p**4)
+    #    N5 = fnu4**(p**5)
+    #    N6 = fl0u2**(p**6)
+    #    N7 = fnu2**(p**7)
+    #
+    #    N, M = (N0 * N2 * N3 * N5 * N6), (N1 * N4 * N7)
+    #    t0 = N / M
 
-    f = f.frobenius(8) / f
-    f1 = f
-    f2 = f1 ** 2
-    f4 = f2 ** 2
-    f8 = f4 ** 2
-    fum1 = f ** um
-    fu1 = fum1 * f1
-    fup1 = fu1 * f1
-    fum2 = fum1 ** um
-    f2u1 = fu1 ** 2
-    f4u1 = f2u1 ** 2
-    fup2 = fum2 * f4u1
-    g1 = fum2 ** u
-    g2 = g1 ** u
-    g3 = g2 ** u
-    g4 = g3 ** u
-    g5 = g4 ** 2
-    fl0 = fup2 * g5
-    fl0u = fl0 ** u
-    fl0u2 = fl0u ** u
-    fl0u3 = fl0u2 ** u
-    fn = f8 * fl0u3
-    fnu1 = fn ** u
-    fnu2 = fnu1 ** u
-    fnu3 = fnu2 ** u
-    fnu4 = fnu3 ** u
-    N0 = fl0
-    N1 = fn.frobenius()
-    N2 = fnu3.frobenius(2)
-    N3 = fl0u.frobenius(3)
-    N4 = fnu1.frobenius(4)
-    N5 = fnu4.frobenius(5)
-    N6 = fl0u2.frobenius(6)
-    N7 = fnu2.frobenius(7)
-    N, M = (N0 * N2 * N3 * N5 * N6), (N1 * N4 * N7)
-    t0 = N / M
-
-    return t0
-
-
-def final_exponentiation_k16_FK(f, U, K):
-    """
-    :param f:
-    :param U:
-    :param K:
-    :return:
-    """
-    u, up = U[0], U[1]
-
-    f = f.frobenius(8) / f
-    f1 = f
-    f2 = f1 ** 2
-    f4 = f2 ** 2
-    f8 = f4 ** 2
-    fup1 = f ** up
-    fup12 = fup1 ** up
-    gu1 = fup12 ** u
-    gu2 = gu1 ** u
-    gu3 = gu2 ** u
-    gu4 = gu3 ** u
-    gu5 = gu4 ** u
-    gu6 = gu5 ** u
-    y1 = gu6
-    y2 = 1 / gu5
-    y3 = y1 * y2
-    y4 = y3 ** 2
-    y5 = y4 ** 2
-    y6 = y5 * gu4
-    y7 = y6 ** 2
-    fl0 = f8 * fup12 * y7
-    fl0u1 = fl0 ** u
-    fl0u2 = fl0u1 ** u
-    fl0u3 = fl0u2 ** u
-    fl1 = f8 * fl0u3
-    hu1 = fl1 ** u
-    hu2 = hu1 ** u
-    hu3 = hu2 ** u
-    hu4 = hu3 ** u
-    N0 = fl0
-    N1 = fl1.frobenius()
-    N2 = hu3.frobenius(2)
-    N3 = fl0u1.frobenius(3)
-    N4 = hu1.frobenius(4)
-    N5 = hu4.frobenius(5)
-    N6 = fl0u2.frobenius(6)
-    N7 = hu2.frobenius(7)
-    N, M = (N0 * N2 * N3 * N5 * N6), (N1 * N4 * N7)
-    t0 = N / M
+    t0 = f ** K
 
     return t0
