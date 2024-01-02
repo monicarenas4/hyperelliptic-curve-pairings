@@ -3,6 +3,19 @@ from miller_loop import general_miller_function
 
 
 def twisted_ate_cp8_general(P, Q, Q_prec, c_vec, F, length_miller, U, K, case: str = 'case1', NAF_rep=False):
+    """
+    :param P:
+    :param Q:
+    :param Q_prec:
+    :param c_vec:
+    :param F:
+    :param length_miller:
+    :param U:
+    :param K:
+    :param case:
+    :param NAF_rep:
+    :return:
+    """
     if NAF_rep == False:
         miller_function = general_miller_function(P, Q, Q_prec, c_vec, F, length_miller, case)
     else:
@@ -15,6 +28,19 @@ def twisted_ate_cp8_general(P, Q, Q_prec, c_vec, F, length_miller, U, K, case: s
 
 
 def ate_i_general(Q, P, P_prec, c_vec, F, length_miller, U, K, case: str = 'case1', NAF_rep=False):
+    """
+    :param Q:
+    :param P:
+    :param P_prec:
+    :param c_vec:
+    :param F:
+    :param length_miller:
+    :param U:
+    :param K:
+    :param case:
+    :param NAF_rep:
+    :return:
+    """
     if NAF_rep == False:
         miller_function = general_miller_function(Q, P, P_prec, c_vec, F, length_miller, case, twist='k16')
     else:
