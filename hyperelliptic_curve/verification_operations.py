@@ -1,5 +1,5 @@
 from jacobian_operations import JC_random_element, HEC_random_point, new_coordinates, precomputation_general_div
-from pairing_types import Twisted_Ate_cp8, Twisted_Ate_naf_cp8, Ate_i, Ate_i_naf
+from pairing_types import twisted_ate_cp8_general, ate_i_general
 from random import randint
 
 
@@ -24,9 +24,9 @@ def test_bilinearity_Twisted_Ate(curves, jacobians, fields, c_vec, F, U, p, r, h
             # case 1 => Degenerate Divisor
             Q = HEC_random_point(Ct)
             xQ, yQ = Q[0], Q[1]
-            Q = Ct([xQ, yQ])
+            # Q = Ct([xQ, yQ])
             xQ, yQ = xQ / (c2), yQ / (c5)
-            Q = C8([xQ, yQ])
+            # Q = C8([xQ, yQ])
 
             Q1 = [-xQ, yQ]
             Q1_prec = [xQ ** 2, -xQ ** 3]
@@ -58,21 +58,22 @@ def test_bilinearity_Twisted_Ate(curves, jacobians, fields, c_vec, F, U, p, r, h
             Q1 = randint_Q * Q2
             Q1_prec = precomputation_general_div(Q1)
 
-        pairing_value1 = Twisted_Ate_cp8(P1, Q1, Q1_prec, c_vec, F, length_miller, U, Fp, case)
+        pairing_value1 = twisted_ate_cp8_general(P1, Q1, Q1_prec, c_vec, F, length_miller, U, Fp, case)
         print('pairing value 1 = ', pairing_value1)
-        pairing_value2 = Twisted_Ate_cp8(P2, Q2, Q2_prec, c_vec, F, length_miller, U, Fp, case) ** (
-                    randint_P * randint_Q)
+        pairing_value2 = twisted_ate_cp8_general(P2, Q2, Q2_prec, c_vec, F, length_miller, U, Fp, case) ** (
+                randint_P * randint_Q)
         print('pairing value 2 = ', pairing_value2)
         print('bilinearity test: ', pairing_value1 == pairing_value2)
 
-        pairing_value_naf1 = Twisted_Ate_naf_cp8(P1, Q1, Q1_prec, c_vec, F, length_miller, U, Fp, case)
+        pairing_value_naf1 = twisted_ate_cp8_general(P1, Q1, Q1_prec, c_vec, F, length_miller, U, Fp, case,
+                                                     NAF_rep=True)
         print('pairing value NAF 1 = ', pairing_value_naf1)
-        pairing_value_naf2 = Twisted_Ate_naf_cp8(P2, Q2, Q2_prec, c_vec, F, length_miller, U, Fp, case) ** (
-                    randint_P * randint_Q)
+        pairing_value_naf2 = twisted_ate_cp8_general(P2, Q2, Q2_prec, c_vec, F, length_miller, U, Fp, case,
+                                                     NAF_rep=True) ** (randint_P * randint_Q)
         print('pairing value NAF 2 = ', pairing_value_naf2)
         print('bilinearity NAF test: ', pairing_value_naf1 == pairing_value_naf2)
 
-    return 0
+    return None
 
 
 def test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, length_miller):
@@ -116,17 +117,18 @@ def test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, 
             P1 = randint_P * P2
             P1_prec = precomputation_general_div(P1)
 
-        pairing_value1 = Ate_i(Q1, P1, P1_prec, c_vec, F, length_miller, U, pow, case)
+        pairing_value1 = ate_i_general(Q1, P1, P1_prec, c_vec, F, length_miller, U, pow, case)
         print('pairing value 1 = ', pairing_value1)
-        pairing_value2 = Ate_i(Q2, P2, P2_prec, c_vec, F, length_miller, U, pow, case) ** (randint_Q * randint_P)
+        pairing_value2 = ate_i_general(Q2, P2, P2_prec, c_vec, F, length_miller, U, pow, case) ** (
+                randint_Q * randint_P)
         print('pairing value 2 = ', pairing_value2)
         print('bilinearity test: ', pairing_value1 == pairing_value2)
 
-        pairing_value_naf1 = Ate_i_naf(Q1, P1, P1_prec, c_vec, F, length_miller, U, pow, case)
+        pairing_value_naf1 = ate_i_general(Q1, P1, P1_prec, c_vec, F, length_miller, U, pow, case, NAF_rep=True)
         print('pairing value NAF 1 = ', pairing_value_naf1)
-        pairing_value_naf2 = Ate_i_naf(Q2, P2, P2_prec, c_vec, F, length_miller, U, pow, case) ** (
+        pairing_value_naf2 = ate_i_general(Q2, P2, P2_prec, c_vec, F, length_miller, U, pow, case, NAF_rep=True) ** (
                     randint_Q * randint_P)
         print('pairing value NAF 2 = ', pairing_value_naf2)
         print('bilinearity NAF test: ', pairing_value_naf1 == pairing_value_naf2)
 
-    return 0
+    return None
