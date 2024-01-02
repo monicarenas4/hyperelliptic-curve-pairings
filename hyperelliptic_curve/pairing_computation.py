@@ -1,4 +1,4 @@
-from jacobian_operations import JC_random_element, HEC_random_point, new_coordinates, Precomputation_general_div
+from jacobian_operations import JC_random_element, HEC_random_point, new_coordinates, precomputation_general_div
 from pairing_types import Twisted_Ate_cp8, Twisted_Ate_naf_cp8, Ate_i, Ate_i_naf
 
 def test_twisted_ate_cp8(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, length_miller):
@@ -24,7 +24,6 @@ def test_twisted_ate_cp8(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, le
 
             Q = [-xQ, yQ]
             Q_prec = [xQ**2, -xQ**3]
-
         else:
             Q = JC_random_element(Ct)
             Q = h_ * Q
@@ -43,7 +42,7 @@ def test_twisted_ate_cp8(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, le
             vx = v1*x + v0
 
             Q = J8([ux,vx])
-            Q_prec = Precomputation_general_div(Q)
+            Q_prec = precomputation_general_div(Q)
 
         pairing_value = Twisted_Ate_cp8(P, Q, Q_prec, c_vec, F, length_miller, U, Fp, case)
         print('pairing value = ', pairing_value)
@@ -80,7 +79,7 @@ def test_twisted_ate_k16(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, le
         else:
             P= JC_random_element(C)
             P = h * P
-            P_prec = Precomputation_general_div(P)
+            P_prec = precomputation_general_div(P)
 
         pairing_value = Ate_i(Q, P, P_prec, c_vec, F, length_miller, U, pow, case)
         print('pairing value = ', pairing_value)
