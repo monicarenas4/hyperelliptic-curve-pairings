@@ -1,69 +1,68 @@
-def Line_case1(D2_vec, D2, C):
+def Line_case1(D2_vec, D2, C, L, twist=None):
+    """
+    :param D2_vec:
+    :param D2: [-xQ, yQ, xQ^2, -xQ^3]
+    :param C: coefficients of the line
+    :param L: 4-element vector
+    :return: evaluation of the line
+    """
+    
     x2, y2, x22, x23 = D2[0], D2[1], D2_vec[0], D2_vec[1]
     l3, l2, l1, l0, l = C[0], C[1], C[2], C[3], C[4]
+    c, c2, c3, c5 = L[0], L[1], L[2], L[3]
+    if twist == None:
+        l3, l2, l1, l0 = (l3), (l2), (l1), (l0)
+    else:
+        l3, l2, l1, l0 = (l3 * c), (l2 / c), (l1 / c**3), (l0 / c**5)
     cD2 = (y2 * l + l3 * x23 - l2 * x22 + l1 * x2 - l0)
 
     return cD2
 
-def Line_case2(D2_vec, D2, D3, C):
-    t1,t2,t3,t4,t5 = D2_vec[0], D2_vec[1], D2_vec[2], D2_vec[3], D2_vec[4]
-    t6,t7,t8,t9,t10 = D2_vec[5], D2_vec[6], D2_vec[7], D2_vec[8], D2_vec[9]
-    t11,t12,t13,t14,t15 = D2_vec[10], D2_vec[11], D2_vec[12], D2_vec[13], D2_vec[14]
-    t16,t17,t18,t19,t20 = D2_vec[15], D2_vec[16], D2_vec[17], D2_vec[18], D2_vec[19]
-    t21,t22,t23,t24,t25 = D2_vec[20], D2_vec[21], D2_vec[22], D2_vec[23], D2_vec[24]
-    
-    u21 = D2[0][1]
-    u20 = D2[0][0]
-    v21 = D2[1][1]
-    v20 = D2[1][0]
-            
-    U31 = D3[0]
-    U30 = D3[1]
-    z31 = D3[6]
-    
+
+def Line_case2(D2_vec, D2, D3, C, L):
+    """
+    :param D2_vec:
+    :param D2:
+    :param D3:
+    :param C:
+    :return:
+    """
+    # t1, t2, t3, t4, t5 = D2_vec[0], D2_vec[1], D2_vec[2], D2_vec[3], D2_vec[4]
+    t6, t7, t8, t9, t10 = D2_vec[5], D2_vec[6], D2_vec[7], D2_vec[8], D2_vec[9]
+    t11, t12, t13, t14, t15 = D2_vec[10], D2_vec[11], D2_vec[12], D2_vec[13], D2_vec[14]
+    t16, t17, t18, t19, t20 = D2_vec[15], D2_vec[16], D2_vec[17], D2_vec[18], D2_vec[19]
+    t21, t22, t23, t24, t25 = D2_vec[20], D2_vec[21], D2_vec[22], D2_vec[23], D2_vec[24]
+
+    u21, u20 = D2[0][1], D2[0][0]
+    # v21, v20 = D2[1][1], D2[1][0]
+
+    # U31, U30, z31 = D3[0], D3[1], D3[6]
     l3, l2, l1, l0, l = C[0], C[1], C[2], C[3], C[4]
-    
-    w1 = l
-    w2 = l3
-    w3 = w1*t6
-    w4 = w2*t17
-    w5 = l2*t12
-    w6 = l1*t9
-    w7 = l0*t8
+
+    w1, w2 = l, l3
+    w3, w4 = (w1 * t6), (w2 * t17)
+    w5, w6, w7 = (l2 * t12), (l1 * t9), (l0 * t8)
     w8 = w3 - w4 + w5 - w6 - w7
-    w9 = w1*w8
-    w10 = w2*t20
-    w11 = l2*t21
-    w12 = l1*t23
-    w13 = l0*t25
+    w9 = w1 * w8
+    w10, w11, w12, w13 = (w2 * t20), (l2 * t21), (l1 * t23), (l0 * t25)
     w14 = w10 - w11 + w12 - w13
-    w15 = w2*w14
-    w16 = l2*t19
-    w17 = l1*t18
-    w18 = l0*t22
+    w15 = w2 * w14
+    w16, w17, w18 = (l2 * t19), (l1 * t18), (l0 * t22)
     w19 = w16 - w17 + w18
-    w20 = l2*w19
-    w21 = l1*u20
-    w22 = l0*u21
+    w20 = l2 * w19
+    w21, w22 = (l1 * u20), (l0 * u21)
     w23 = w21 - w22
-    w24 = l1*w23
-    w25 = l0**2
-    
+    w24, w25 = (l1 * w23), (l0 ** 2)
+
     cD2 = (w9 + w15 + w20 + w24 + w25)
-    
-    i1 = z31**2
-    i2 = z31*U30
-    i3 = U30**2
-    i4 = i1*t19
-    i5 = U31*u20
-    i6 = z31*t18
-    i7 = U30*u21
-    i8 = i5 - i6 - i7
-    i9 = U31*i8
-    i10 = i2*t22
-    
-    u3D2 = i3 + i4 + i9 + i10
-    
+
+    # i1, i2, i3 = (z31 ** 2), (z31 * U30), (U30 ** 2)
+    # i4 = i1 * t19
+    # i5, i6, i7 = (U31 * u20), (z31 * t18), (U30 * u21)
+    # i8 = i5 - i6 - i7
+    # i9, i10 = (U31 * i8), (i2 * t22)
+    # u3D2 = i3 + i4 + i9 + i10
+
     lD2 = cD2
 
     return lD2
@@ -101,8 +100,17 @@ def Precomputation_general_div(D2):
 
     return Q
 
-def ADD(D1, D2, Q_vec, Q, F, case: str = 'case1'):
-    f0, f1, f2, f3, f4 = F[0], F[1], F[2], F[3], F[4]
+def ADD(D1, D2, Q_vec, Q, F, L=None, case: str = 'case1', twist = None):
+    """
+    :param D1:
+    :param D2:
+    :param Q_vec:
+    :param Q:
+    :param F:
+    :param case: case1 => degenerate divisor or case2 => general divisor
+    :return:
+    """
+    # f0, f1, f2, f3, f4 = F[0], F[1], F[2], F[3], F[4]
     U11, U10, V11, V10 = D1[0], D1[1], D1[2], D1[3]
     U21, U20, V21, V20 = D2[0], D2[1], D2[2], D2[3]
     Z21, Z22, z21, z22 = D2[4], D2[5], D2[6], D2[7]
@@ -112,12 +120,11 @@ def ADD(D1, D2, Q_vec, Q, F, case: str = 'case1'):
     y1, y2 = (Ut11 - U21), (U20 - Ut10)
     y3 = U11 * y1
     y4 = y2 + y3
-    r = y2 * y4 + y1**2 * U10
+
+    r = y2 * y4 + y1 ** 2 * U10
     inv1, inv0 = y1, y4
-    w0 = V10 * z24 - V20
-    w1 = V11 * z24 - V21
-    w2 = inv0 * w0
-    w3 = inv1 * w1
+    w0, w1 = (V10 * z24 - V20), (V11 * z24 - V21)
+    w2, w3 = (inv0 * w0), (inv1 * w1)
     s1p = y1 * w0 + y2 * w1
     s0p = w2 - U10 * w3
     rt = r * z23
@@ -140,17 +147,27 @@ def ADD(D1, D2, Q_vec, Q, F, case: str = 'case1'):
     V30 = U30 * w1 - z31 * l0 * s1p
     V31 = U31 * w1 + z31 * (U30 - l1p)
     line = [l3, l2, l1, l0, l]
-    D3 = [U31, U30, V31, V30, Z31, Z32, z31, z32]
-    if case == 'case1':
-        lcE = Line_case1(Q_vec, Q, line)
-    else:
-        lcE = Line_case2(Q_vec, Q, D3, line)
 
+    D3 = [U31, U30, V31, V30, Z31, Z32, z31, z32]
+    if case == 'case1' and twist != None:
+        lcE = Line_case1(Q_vec, Q, line, L, twist = 'k16')
+    elif case == 'case1':
+        lcE = Line_case1(Q_vec, Q, line, L)
+    else:
+        lcE = Line_case2(Q_vec, Q, D3, line, L)
 
     return D3, lcE
 
 
-def DBL(D1, Q_vec, Q, F, case: str = 'case1'):
+def DBL(D1, Q_vec, Q, F, L=None, case: str = 'case1', twist = None):
+    """
+    :param D1:
+    :param Q_vec:
+    :param Q:
+    :param F:
+    :param case: case1 => degenerate divisor or case2 => general divisor
+    :return:
+    """
     f0, f1, f2, f3, f4 = F[0], F[1], F[2], F[3], F[4]
     U11, U10, V11, V10 = D1[0], D1[1], D1[2], D1[3]
     Z11, Z12, z11, z12 = D1[4], D1[5], D1[6], D1[7]
@@ -197,15 +214,16 @@ def DBL(D1, Q_vec, Q, F, case: str = 'case1'):
     V30 = U30 * w1 - z31 * l0 * s1p
     V31 = U31 * w1 + z31 * (U30 - l1 * s1p)
     line = [l3, l2, l1, l0, l]
-    
+
     D3 = [U31, U30, V31, V30, Z31, Z32, z31, z32]
-    if case == 'case1':
-        lcE = Line_case1(Q_vec, Q, line)
+    if case == 'case1' and twist != None:
+        lcE = Line_case1(Q_vec, Q, line, L, twist = 'k16')
+    elif case == 'case1':
+        lcE = Line_case1(Q_vec, Q, line, L)
     else:
-        lcE = Line_case2(Q_vec, Q, D3, line)
+        lcE = Line_case2(Q_vec, Q, D3, line, L)
 
     return D3, lcE
-
 
 def new_coordinates(D) -> list:
     """
@@ -219,7 +237,6 @@ def new_coordinates(D) -> list:
     D_ = [U1, U0, V1, V0, Z1, Z2, z1, z2]
 
     return D_
-
 
 def HEC_random_point(C):
     f = C.hyperelliptic_polynomials()[0]
@@ -258,4 +275,3 @@ def JC_random_element(C):
     v = f.parent().lagrange_polynomial(points)
 
     return J([u, v])
-
