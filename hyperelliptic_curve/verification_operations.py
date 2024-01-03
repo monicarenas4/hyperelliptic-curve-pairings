@@ -1,9 +1,23 @@
 from jacobian_operations import JC_random_element, HEC_random_point, new_coordinates, precomputation_general_div
-from pairing_types import twisted_ate_cp8_general, ate_i_general
+from pairing_types import twisted_ate_cp8, ate_i
 from random import randint
 
 
 def test_bilinearity_Twisted_Ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, length_miller):
+    """
+    :param curves:
+    :param jacobians:
+    :param fields:
+    :param c_vec:
+    :param F:
+    :param U:
+    :param p:
+    :param r:
+    :param h:
+    :param h_:
+    :param length_miller:
+    :return:
+    """
     C, Ct, C8 = curves[0], curves[1], curves[2]
     J, Jt, J8 = jacobians[0], jacobians[1], jacobians[2]
     Fp, Fp8 = fields[0], fields[1]
@@ -58,18 +72,18 @@ def test_bilinearity_Twisted_Ate(curves, jacobians, fields, c_vec, F, U, p, r, h
             Q1 = randint_Q * Q2
             Q1_prec = precomputation_general_div(Q1)
 
-        pairing_value1 = twisted_ate_cp8_general(P1, Q1, Q1_prec, c_vec, F, length_miller, U, Fp, case)
+        pairing_value1 = twisted_ate_cp8(P1, Q1, Q1_prec, c_vec, F, length_miller, U, Fp, case)
         print('pairing value 1 = ', pairing_value1)
-        pairing_value2 = twisted_ate_cp8_general(P2, Q2, Q2_prec, c_vec, F, length_miller, U, Fp, case) ** (
+        pairing_value2 = twisted_ate_cp8(P2, Q2, Q2_prec, c_vec, F, length_miller, U, Fp, case) ** (
                 randint_P * randint_Q)
         print('pairing value 2 = ', pairing_value2)
         print('bilinearity test: ', pairing_value1 == pairing_value2)
 
-        pairing_value_naf1 = twisted_ate_cp8_general(P1, Q1, Q1_prec, c_vec, F, length_miller, U, Fp, case,
-                                                     NAF_rep=True)
+        pairing_value_naf1 = twisted_ate_cp8(P1, Q1, Q1_prec, c_vec, F, length_miller, U, Fp, case,
+                                             NAF_rep=True)
         print('pairing value NAF 1 = ', pairing_value_naf1)
-        pairing_value_naf2 = twisted_ate_cp8_general(P2, Q2, Q2_prec, c_vec, F, length_miller, U, Fp, case,
-                                                     NAF_rep=True) ** (randint_P * randint_Q)
+        pairing_value_naf2 = twisted_ate_cp8(P2, Q2, Q2_prec, c_vec, F, length_miller, U, Fp, case,
+                                             NAF_rep=True) ** (randint_P * randint_Q)
         print('pairing value NAF 2 = ', pairing_value_naf2)
         print('bilinearity NAF test: ', pairing_value_naf1 == pairing_value_naf2)
 
@@ -77,6 +91,20 @@ def test_bilinearity_Twisted_Ate(curves, jacobians, fields, c_vec, F, U, p, r, h
 
 
 def test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, length_miller):
+    """
+    :param curves:
+    :param jacobians:
+    :param fields:
+    :param c_vec:
+    :param F:
+    :param U:
+    :param p:
+    :param r:
+    :param h:
+    :param h_:
+    :param length_miller:
+    :return:
+    """
     C, Ct, C16 = curves[0], curves[1], curves[2]
     J, Jt, J16 = jacobians[0], jacobians[1], jacobians[2]
     Fp, Fp2, Fq8 = fields[0], fields[1], fields[2]
@@ -117,17 +145,17 @@ def test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, 
             P1 = randint_P * P2
             P1_prec = precomputation_general_div(P1)
 
-        pairing_value1 = ate_i_general(Q1, P1, P1_prec, c_vec, F, length_miller, U, pow, case)
+        pairing_value1 = ate_i(Q1, P1, P1_prec, c_vec, F, length_miller, U, pow, case)
         print('pairing value 1 = ', pairing_value1)
-        pairing_value2 = ate_i_general(Q2, P2, P2_prec, c_vec, F, length_miller, U, pow, case) ** (
+        pairing_value2 = ate_i(Q2, P2, P2_prec, c_vec, F, length_miller, U, pow, case) ** (
                 randint_Q * randint_P)
         print('pairing value 2 = ', pairing_value2)
         print('bilinearity test: ', pairing_value1 == pairing_value2)
 
-        pairing_value_naf1 = ate_i_general(Q1, P1, P1_prec, c_vec, F, length_miller, U, pow, case, NAF_rep=True)
+        pairing_value_naf1 = ate_i(Q1, P1, P1_prec, c_vec, F, length_miller, U, pow, case, NAF_rep=True)
         print('pairing value NAF 1 = ', pairing_value_naf1)
-        pairing_value_naf2 = ate_i_general(Q2, P2, P2_prec, c_vec, F, length_miller, U, pow, case, NAF_rep=True) ** (
-                    randint_Q * randint_P)
+        pairing_value_naf2 = ate_i(Q2, P2, P2_prec, c_vec, F, length_miller, U, pow, case, NAF_rep=True) ** (
+                randint_Q * randint_P)
         print('pairing value NAF 2 = ', pairing_value_naf2)
         print('bilinearity NAF test: ', pairing_value_naf1 == pairing_value_naf2)
 

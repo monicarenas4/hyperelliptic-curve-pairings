@@ -8,6 +8,17 @@ from verification_operations import test_bilinearity_Twisted_Ate
 
 
 def generate_jacobian_cp8(u, X, Y, lx, ly, l, k=8, a=3):
+    """
+    :param u: defines the length of the Miller loop
+    :param X: used to construct the prime p as: p = X^2 + 2Y^2
+    :param Y: used to construct the prime p as: p = X^2 + 2Y^2
+    :param lx: used to construct the prime p as: p = X^2 + 2Y^2
+    :param ly: used to construct the prime p as: p = X^2 + 2Y^2
+    :param l: is used to define the twist of the Hyperelliptic curve C
+    :param k: embedding degree
+    :param a:
+    :return:
+    """
     # Hyperelliptic curve + Jacobian parameters
     r = u ** 4 + 1
     # Lifts for X and Y
@@ -64,7 +75,7 @@ def generate_jacobian_cp8(u, X, Y, lx, ly, l, k=8, a=3):
     # Compute the order of the Jacobian over Fp8
     Res = (t ** 8 - 1).resultant(xt)  # Compute the resultant  of the polynomials t^8 - 1 and \chi(t)
     h_ = Res // r ** 4  # Compute the cofactor of the Jacobian J8
-    n_ = h_ * r  # Compute the order of the Jacobian J8
+    # n_ = h_ * r  # Compute the order of the Jacobian J8
 
     curves = [C, Ct, C8]
     jacobians = [J, Jt, J8]

@@ -9,6 +9,12 @@ from verification_operations import test_bilinearity_Ate_i
 
 
 def generate_jacobian_k16(u, k=16, a=7):
+    """
+    :param u: defines the length of the Miller loop
+    :param k: embedding degree
+    :param a:
+    :return:
+    """
     # Polynomial family for k = 16
     R = QQ['x']
     (x,) = R._first_ngens(1)

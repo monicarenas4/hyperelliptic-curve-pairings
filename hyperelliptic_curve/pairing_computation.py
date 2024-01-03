@@ -1,8 +1,23 @@
-from jacobian_operations import JC_random_element, HEC_random_point, new_coordinates, precomputation_general_div
-from pairing_types import twisted_ate_cp8_general, ate_i_general
+from jacobian_operations import JC_random_element, HEC_random_point, new_coordinates, precomputation_general_div, \
+    precomputation_degenerate_div
+from pairing_types import twisted_ate_cp8, ate_i
 
 
 def test_twisted_ate_cp8(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, length_miller):
+    """
+    :param curves:
+    :param jacobians:
+    :param fields:
+    :param c_vec:
+    :param F:
+    :param U:
+    :param p:
+    :param r:
+    :param h:
+    :param h_:
+    :param length_miller:
+    :return:
+    """
     C, Ct, C8 = curves[0], curves[1], curves[2]
     J, Jt, J8 = jacobians[0], jacobians[1], jacobians[2]
     Fp, Fp8 = fields[0], fields[1]
@@ -46,15 +61,29 @@ def test_twisted_ate_cp8(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, le
             Q = J8([ux, vx])
             Q_prec = precomputation_general_div(Q)
 
-        pairing_value = twisted_ate_cp8_general(P, Q, Q_prec, c_vec, F, length_miller, U, Fp, case)
+        pairing_value = twisted_ate_cp8(P, Q, Q_prec, c_vec, F, length_miller, U, Fp, case)
         print('pairing value = ', pairing_value)
-        pairing_value_naf = twisted_ate_cp8_general(P, Q, Q_prec, c_vec, F, length_miller, U, Fp, case, NAF_rep=True)
+        pairing_value_naf = twisted_ate_cp8(P, Q, Q_prec, c_vec, F, length_miller, U, Fp, case, NAF_rep=True)
         print('pairing value NAF = ', pairing_value_naf)
 
     return 0
 
 
 def test_twisted_ate_k16(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, length_miller):
+    """
+    :param curves:
+    :param jacobians:
+    :param fields:
+    :param c_vec:
+    :param F:
+    :param U:
+    :param p:
+    :param r:
+    :param h:
+    :param h_:
+    :param length_miller:
+    :return:
+    """
     C, Ct, C16 = curves[0], curves[1], curves[2]
     J, Jt, J16 = jacobians[0], jacobians[1], jacobians[2]
     Fp, Fp2, Fq8 = fields[0], fields[1], fields[2]
@@ -69,24 +98,22 @@ def test_twisted_ate_k16(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, le
     pow = (p ** 16 - 1) // r
 
     cases = ['case1', 'case2']
+    # case1 => Degenerate Divisor
+    # case2 =>
 
     for case in cases:
         if case == 'case1':
-            # case 1 => Degenerate Divisor
             P = HEC_random_point(C)
-            xP, yP = P[0], P[1]
-            P = C([xP, yP])
-
-            P = [-xP, yP]
-            P_prec = [xP ** 2, -xP ** 3]
+            P_prec = precomputation_degenerate_div(P)
+            P = [-P[0], P[1]]
         else:
             P = JC_random_element(C)
             P = h * P
             P_prec = precomputation_general_div(P)
 
-        pairing_value = ate_i_general(Q, P, P_prec, c_vec, F, length_miller, U, pow, case)
+        pairing_value = ate_i(Q, P, P_prec, c_vec, F, length_miller, U, pow, case)
         print('pairing value = ', pairing_value)
-        pairing_value_naf = ate_i_general(Q, P, P_prec, c_vec, F, length_miller, U, pow, case, NAF_rep=True)
+        pairing_value_naf = ate_i(Q, P, P_prec, c_vec, F, length_miller, U, pow, case, NAF_rep=True)
         print('pairing value NAF = ', pairing_value_naf)
 
     return 0

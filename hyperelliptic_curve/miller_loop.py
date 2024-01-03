@@ -3,7 +3,7 @@ from jacobian_operations import ADD, DBL
 from _utils import NAF
 
 
-def general_miller_function(P, Q, Q_prec, c_vec, F, length_miller, case: str, twist: str = None, P_neg=None):
+def miller_function(P, Q, Q_prec, c_vec, F, length_miller, case: str, twist: str = None, P_neg=None):
     """
     :param P:
     :param Q:
@@ -11,7 +11,7 @@ def general_miller_function(P, Q, Q_prec, c_vec, F, length_miller, case: str, tw
     :param c_vec:
     :param F:
     :param length_miller:
-    :param case:
+    :param case: case1 => degenerate divisor or case2 => general divisor
     :param twist:
     :param P_neg:
     :return:
@@ -25,12 +25,12 @@ def general_miller_function(P, Q, Q_prec, c_vec, F, length_miller, case: str, tw
 
     for i in range(len(length_miller) - 2, -1, -1):
         T, lc = DBL(T, Q_prec, Q, F, c_vec, case=case, twist=twist)
-        fc = lc * fc ** 2
+        fc = lc * fc ** 2  # M1 S1
         if length_miller[i] == 1:
             T, lc = ADD(P, T, Q_prec, Q, F, c_vec, case=case, twist=twist)
-            fc = lc * fc
+            fc = lc * fc  # M2
         elif length_miller[i] == -1:
             T, lc = ADD(P_neg, T, Q_prec, Q, F, c_vec, case=case, twist=twist)
-            fc = lc * fc
+            fc = lc * fc  # M2
 
     return fc
