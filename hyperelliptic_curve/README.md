@@ -64,7 +64,7 @@ Now we study how to define pairings on Jacobians of genus 2 curves.
 
 # Genus 2 pairings with embedding degree 8
 
-![alt text]([image link](https://github.com/monicarenas4/hyperelliptic-curve-pairings/blob/mpa/hyperelliptic_curve/CP8_example.png))
+![alt text](https://github.com/monicarenas4/hyperelliptic-curve-pairings/blob/mpa/hyperelliptic_curve/CP8_example.png)
 
 ## Functions that will be implemented
 
