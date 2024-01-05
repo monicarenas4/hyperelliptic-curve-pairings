@@ -1,4 +1,5 @@
-from jacobian_operations import JC_random_element, HEC_random_point, new_coordinates, precomputation_general_div, precomputation_degenerate_div
+from jacobian_operations import JC_random_element, HEC_random_point, new_coordinates, precomputation_general_div, \
+    precomputation_degenerate_div
 from pairing_types import twisted_ate_cp8, ate_i
 from random import randint
 
@@ -51,6 +52,7 @@ def test_bilinearity_Twisted_Ate(curves, jacobians, fields, c_vec, F, U, p, r, h
             Q1 = randint_Q * Q2
             Q1_prec = precomputation_general_div(Q1)
 
+        print('CASE:', case)
         pairing_value1 = twisted_ate_cp8(P1, Q1, Q1_prec, c_vec, F, length_miller, U, Fp, case)
         print('pairing value 1 = ', pairing_value1)
         pairing_value2 = twisted_ate_cp8(P2, Q2, Q2_prec, c_vec, F, length_miller, U, Fp, case) ** (
@@ -77,6 +79,7 @@ def test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h
     :param c_vec:
     :param F:
     :param U:
+    :param W:
     :param p:
     :param r:
     :param h:
@@ -124,6 +127,7 @@ def test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h
             P1 = randint_P * P2
             P1_prec = precomputation_general_div(P1)
 
+        print('CASE:', case)
         pairing_value1 = ate_i(Q1, P1, P1_prec, c_vec, F, length_miller, U, W, case)
         print('pairing value 1 = ', pairing_value1)
         pairing_value2 = ate_i(Q2, P2, P2_prec, c_vec, F, length_miller, U, W, case) ** (
