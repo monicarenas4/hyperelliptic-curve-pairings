@@ -89,6 +89,7 @@ def line_case2(D2_vec, D2, D3, C, L, twist=None):
 
     return cD2
 
+
 def precomputation_degenerate_div(P):
     """
     :param P:
@@ -190,11 +191,11 @@ def ADD(D1, D2, Q_vec, Q, F, L=None, case: str = 'case1', twist: str = None):
     line = [l3, l2, l1, l0, l]
 
     D3 = [U31, U30, V31, V30, Z31, Z32, z31, z32]
-    if case == 'case1' and twist != None:
+    if case == 'case1' and twist is not None:
         lcE = line_case1(Q_vec, Q, line, L, twist='k16')
     elif case == 'case1':
         lcE = line_case1(Q_vec, Q, line, L)
-    elif case == 'case2' and twist != None:
+    elif case == 'case2' and twist is not None:
         lcE = line_case2(Q_vec, Q, D3, line, L, twist='k16')
     else:
         lcE = line_case2(Q_vec, Q, D3, line, L)
@@ -260,11 +261,11 @@ def DBL(D1, Q_vec, Q, F, L=None, case: str = 'case1', twist: str = None):
 
     D3 = [U31, U30, V31, V30, Z31, Z32, z31, z32]
 
-    if case == 'case1' and twist != None:
+    if case == 'case1' and twist is not None:
         lcE = line_case1(Q_vec, Q, line, L, twist='k16')
     elif case == 'case1':
         lcE = line_case1(Q_vec, Q, line, L)
-    elif case == 'case2' and twist != None:
+    elif case == 'case2' and twist is not None:
         lcE = line_case2(Q_vec, Q, D3, line, L, twist='k16')
     else:
         lcE = line_case2(Q_vec, Q, D3, line, L)
