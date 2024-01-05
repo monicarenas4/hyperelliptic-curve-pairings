@@ -6,7 +6,7 @@ from sage.rings.rational_field import QQ
 from jacobian_operations import HEC_random_point, JC_random_element
 from pairing_computation import test_twisted_ate_k16
 from verification_operations import test_bilinearity_Ate_i
-
+from _utils import w_powers_p, w_p_i, frobenius_power
 
 def generate_jacobian_k16(u, k=16, a=7):
     """
@@ -91,7 +91,10 @@ def generate_jacobian_k16(u, k=16, a=7):
     for i in range(1, k):
         c_vec.append(c ** i)
 
-    test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, u)
+    W = w_powers_p(w, p, k)
+
+#    test_twisted_ate_k16(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u)
+    test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u)
 
     return 0
 

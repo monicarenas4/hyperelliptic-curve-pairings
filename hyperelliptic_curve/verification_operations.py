@@ -1,4 +1,4 @@
-from jacobian_operations import JC_random_element, HEC_random_point, new_coordinates, precomputation_general_div
+from jacobian_operations import JC_random_element, HEC_random_point, new_coordinates, precomputation_general_div, precomputation_degenerate_div
 from pairing_types import twisted_ate_cp8, ate_i
 from random import randint
 
@@ -37,35 +37,14 @@ def test_bilinearity_Twisted_Ate(curves, jacobians, fields, c_vec, F, U, p, r, h
         if case == 'case1':
             # case 1 => Degenerate Divisor
             Q = HEC_random_point(Ct)
-            xQ, yQ = Q[0], Q[1]
-            # Q = Ct([xQ, yQ])
-            xQ, yQ = xQ / (c2), yQ / (c5)
-            # Q = C8([xQ, yQ])
-
-            Q1 = [-xQ, yQ]
-            Q1_prec = [xQ ** 2, -xQ ** 3]
+            Q1 = Q
+            Q1_prec = precomputation_degenerate_div(Q1)
             Q2 = Q1
             Q2_prec = Q1_prec
             randint_Q = 1
         else:
             Q = JC_random_element(Ct)
-            u1 = Q[0][1]
-            u0 = Q[0][0]
-            v1 = Q[1][1]
-            v0 = Q[1][0]
-
-            u1 = u1 / (c2)
-            u0 = u0 / (c4)
-            v1 = v1 / (c3)
-            v0 = v0 / (c5)
-
-            Fp8x = Fp8['x']
-            (x,) = Fp8x._first_ngens(1)
-            ux = x ** 2 + u1 * x + u0
-            vx = v1 * x + v0
-
-            Q2 = J8([ux, vx])
-            Q2 = h_ * Q2
+            Q2 = h_ * Q
             Q2_prec = precomputation_general_div(Q2)
 
             randint_Q = randint(0, r - 1)
@@ -90,7 +69,7 @@ def test_bilinearity_Twisted_Ate(curves, jacobians, fields, c_vec, F, U, p, r, h
     return None
 
 
-def test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, length_miller):
+def test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length_miller):
     """
     :param curves:
     :param jacobians:
@@ -131,8 +110,8 @@ def test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, 
             xP, yP = P[0], P[1]
             P = C([xP, yP])
 
-            P1 = [-xP, yP]
-            P1_prec = [xP ** 2, -xP ** 3]
+            P1 = P
+            P1_prec = precomputation_degenerate_div(P1)
             P2 = P1
             P2_prec = P1_prec
             randint_P = 1
@@ -145,16 +124,16 @@ def test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, 
             P1 = randint_P * P2
             P1_prec = precomputation_general_div(P1)
 
-        pairing_value1 = ate_i(Q1, P1, P1_prec, c_vec, F, length_miller, U, pow, case)
+        pairing_value1 = ate_i(Q1, P1, P1_prec, c_vec, F, length_miller, U, W, case)
         print('pairing value 1 = ', pairing_value1)
-        pairing_value2 = ate_i(Q2, P2, P2_prec, c_vec, F, length_miller, U, pow, case) ** (
+        pairing_value2 = ate_i(Q2, P2, P2_prec, c_vec, F, length_miller, U, W, case) ** (
                 randint_Q * randint_P)
         print('pairing value 2 = ', pairing_value2)
         print('bilinearity test: ', pairing_value1 == pairing_value2)
 
-        pairing_value_naf1 = ate_i(Q1, P1, P1_prec, c_vec, F, length_miller, U, pow, case, NAF_rep=True)
+        pairing_value_naf1 = ate_i(Q1, P1, P1_prec, c_vec, F, length_miller, U, W, case, NAF_rep=True)
         print('pairing value NAF 1 = ', pairing_value_naf1)
-        pairing_value_naf2 = ate_i(Q2, P2, P2_prec, c_vec, F, length_miller, U, pow, case, NAF_rep=True) ** (
+        pairing_value_naf2 = ate_i(Q2, P2, P2_prec, c_vec, F, length_miller, U, W, case, NAF_rep=True) ** (
                 randint_Q * randint_P)
         print('pairing value NAF 2 = ', pairing_value_naf2)
         print('bilinearity NAF test: ', pairing_value_naf1 == pairing_value_naf2)

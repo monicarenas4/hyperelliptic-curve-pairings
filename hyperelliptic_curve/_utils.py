@@ -90,3 +90,28 @@ def NAf_hamming_weight(naf_x: list) -> int:
             count = count + 1
 
     return count
+
+def w_p_i(w, p, k, j):
+    w_power = []
+    for i in range(0, k):
+        w_ = (w**i)**(p**j)
+        w_power.append(w_)
+    return w_power
+
+def w_powers_p(w, p, k):
+    W = []
+    for j in range(0, k):
+        w_pow = w_p_i(w, p, k, j)
+        W.append(w_pow)
+    return W
+
+def frobenius_power(f, k, W, j):
+    k_ = k // 2
+    f_coeff = []
+    for i in range(0, k_):
+        f_frob = (f[i]).frobenius(j)
+        f_coeff.append(f_frob)
+    f_power = f_coeff[0]
+    for i in range(1, k_):
+        f_power = f_power + (f_coeff[i]*W[j][i])
+    return f_power
