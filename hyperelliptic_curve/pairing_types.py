@@ -27,7 +27,7 @@ def twisted_ate_cp8(P, Q, Q_prec, c_vec, F, length_miller, U, K, case: str = 'ca
     return pairing_value
 
 
-def ate_i(Q, P, P_prec, c_vec, F, length_miller, U, K, case: str = 'case1', NAF_rep=False):
+def ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, case: str = 'case1', NAF_rep=False):
     """
     :param Q:
     :param P:
@@ -47,6 +47,6 @@ def ate_i(Q, P, P_prec, c_vec, F, length_miller, U, K, case: str = 'case1', NAF_
         Q_neg = [Q[0], Q[1], -Q[2], -Q[3], Q[4], Q[5], Q[6], Q[7]]
         miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case, twist='k16', P_neg=Q_neg)
 
-    pairing_value = final_exponentiation_k16(miller_fun, U, K)
+    pairing_value = final_exponentiation_k16(miller_fun, U, W)
 
     return pairing_value

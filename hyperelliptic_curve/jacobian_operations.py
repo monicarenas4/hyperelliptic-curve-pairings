@@ -7,13 +7,18 @@ def line_case1(D2_vec, D2, C, L, twist: str = None):
     :return: evaluation of the line
     """
 
-    x2, y2, x22, x23 = D2[0], D2[1], D2_vec[0], D2_vec[1]
     l3, l2, l1, l0, l = C[0], C[1], C[2], C[3], C[4]
     c, c2, c3, c5 = L[0], L[1], L[2], L[3]
 
     if twist == None:
+        x2, y2, x22, x23 = -D2[0], D2[1], D2_vec[0], D2_vec[1]
+        x2 = x2 / c ** 2
+        y2 = y2 / c ** 5
+        x22 = x22 / c ** 4
+        x23 = x23 / c ** 6
         l3, l2, l1, l0 = l3, l2, l1, l0
     else:
+        x2, y2, x22, x23 = -D2[0], D2[1], D2_vec[0], D2_vec[1]
         l3, l2, l1, l0 = (l3 * c), (l2 / c), (l1 / c ** 3), (l0 / c ** 5)
 
     cD2 = (y2 * l + l3 * x23 - l2 * x22 + l1 * x2 - l0)  # M4
@@ -48,16 +53,16 @@ def line_case2(D2_vec, D2, D3, C, L, twist=None):
     w5, w6, w7 = (l2 * t12), (l1 * t9), (l0 * t8)  # M5
 
     if twist == None:
-        w8 = w3 - w4 + w5 - w6 - w7
+        w8 = w3 / (c ** 10) - w4 / (c ** 11) + w5 / (c ** 9) - w6 / (c ** 7) - w7 / (c ** 5)
         w9 = w1 * w8  # M6
         w10, w11, w12, w13 = (w2 * t20), (l2 * t21), (l1 * t23), (l0 * t25)  # M10
-        w14 = w10 - w11 + w12 - w13
+        w14 = w10 / (c ** 12) - w11 / (c ** 10) + w12 / (c ** 8) - w13 / (c ** 6)
         w15 = w2 * w14  # M11
         w16, w17, w18 = (l2 * t19), (l1 * t18), (l0 * t22)  # M14
-        w19 = w16 - w17 + w18
+        w19 = w16 / (c ** 8) - w17 / (c ** 6) + w18 / (c ** 4)
         w20 = l2 * w19  # M15
         w21, w22 = (l1 * u20), (l0 * u21)  # M17
-        w23 = w21 - w22
+        w23 = w21 / (c ** 4) - w22 / (c ** 2)
         w24, w25 = (l1 * w23), (l0 ** 2)  # M18 S1
         cD2 = (w9 + w15 + w20 + w24 + w25)
     else:
@@ -83,7 +88,6 @@ def line_case2(D2_vec, D2, D3, C, L, twist=None):
     # lD2 = cD2
 
     return cD2
-
 
 def precomputation_degenerate_div(P):
     """
