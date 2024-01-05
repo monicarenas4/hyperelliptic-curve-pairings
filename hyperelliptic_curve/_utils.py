@@ -27,6 +27,32 @@ def head_text_file(file_name: str):
     return
 
 
+def head_operations_file(file_name: str):
+    """
+    :param file_name: file name
+    :return: txt file
+    """
+    with open(file_name, 'w') as f:
+        f.write('date' + '\t'
+                + 'case' + '\t'
+                + 'twist' + '\t'
+                + 'ADD' + '\t'
+                + 'ADD M' + '\t'
+                + 'ADD S' + '\t'
+                + 'DBL M' + '\t'
+                + 'DBL S' + '\t'
+                + 'PDD M' + '\t'
+                + 'PDD S' + '\t'
+                + 'PGD M' + '\t'
+                + 'PGD S' + '\t'
+                + 'line_case1 M' + '\t'
+                + 'line_case1 S' + '\t'
+                + 'line_case2 M' + '\t'
+                + 'line_case2 S' + '\t'
+                + '\n')
+    return
+
+
 def write_results(date, file_name: str, pairing_name: str, tf_miller: float, tf_pairing: float):
     with open(file_name, 'a') as file:
         file.write(date + '\t'
@@ -34,6 +60,21 @@ def write_results(date, file_name: str, pairing_name: str, tf_miller: float, tf_
                    + f'{tf_miller}' + '\t'
                    + f'{tf_pairing}' + '\t'
                    + f'{tf_miller + tf_pairing}'
+                   + '\n')
+    return
+
+
+def write_operations(date, file_name: str, case: str, twist, mult_DBL: int, sq_DBL: int, mult_ADD: int,
+                     sq_ADD: int):
+    with open(file_name, 'a') as file:
+        file.write(date + '\t'
+                   # + file_name + '\t'
+                   + case + '\t'
+                   + f'{twist}' + '\t'
+                   + f'{mult_DBL}' + '\t'
+                   + f'{sq_DBL}' + '\t'
+                   + f'{mult_ADD}' + '\t'
+                   + f'{sq_ADD}' + '\t'
                    + '\n')
     return
 
@@ -60,7 +101,7 @@ def NAF(x: int):
         assert rr == 0
     assert x == sum([r * 2 ** i for i, r in enumerate(naf_x)])
 
-#    print(time.time() - t0)
+    #    print(time.time() - t0)
     # naf_x1 = naf_x.reverse()
 
     return naf_x
@@ -91,21 +132,44 @@ def NAf_hamming_weight(naf_x: list) -> int:
 
     return count
 
+
 def w_p_i(w, p, k, j):
+    """
+    :param w:
+    :param p:
+    :param k:
+    :param j:
+    :return:
+    """
     w_power = []
     for i in range(0, k):
-        w_ = (w**i)**(p**j)
+        w_ = (w ** i) ** (p ** j)
         w_power.append(w_)
     return w_power
 
+
 def w_powers_p(w, p, k):
+    """
+    :param w:
+    :param p:
+    :param k:
+    :return:
+    """
     W = []
     for j in range(0, k):
         w_pow = w_p_i(w, p, k, j)
         W.append(w_pow)
     return W
 
+
 def frobenius_power(f, k, W, j):
+    """
+    :param f:
+    :param k:
+    :param W:
+    :param j:
+    :return:
+    """
     k_ = k // 2
     f_coeff = []
     for i in range(0, k_):
@@ -113,5 +177,5 @@ def frobenius_power(f, k, W, j):
         f_coeff.append(f_frob)
     f_power = f_coeff[0]
     for i in range(1, k_):
-        f_power = f_power + (f_coeff[i]*W[j][i])
+        f_power = f_power + (f_coeff[i] * W[j][i])
     return f_power
