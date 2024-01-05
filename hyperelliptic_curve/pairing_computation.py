@@ -3,7 +3,7 @@ from jacobian_operations import JC_random_element, HEC_random_point, new_coordin
 from pairing_types import twisted_ate_cp8, ate_i
 
 
-def test_twisted_ate_cp8(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, length_miller):
+def test_twisted_ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, length_miller):
     """
     :param curves:
     :param jacobians:
@@ -46,10 +46,10 @@ def test_twisted_ate_cp8(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, le
         pairing_value_naf = twisted_ate_cp8(P, Q, Q_prec, c_vec, F, length_miller, U, Fp, case, NAF_rep=True)
         print('pairing value NAF = ', pairing_value_naf)
 
-    return 0
+    return None
 
 
-def test_twisted_ate_k16(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length_miller):
+def test_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length_miller):
     """
     :param curves:
     :param jacobians:
@@ -95,4 +95,4 @@ def test_twisted_ate_k16(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_,
         pairing_value_naf = ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, case, NAF_rep=True)
         print('pairing value NAF = ', pairing_value_naf)
 
-    return 0
+    return None
