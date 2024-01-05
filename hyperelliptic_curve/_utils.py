@@ -101,7 +101,8 @@ def NAF(x: int):
         assert rr == 0
     assert x == sum([r * 2 ** i for i, r in enumerate(naf_x)])
 
-    print(time.time() - t0)
+    #    print(time.time() - t0)
+    # naf_x1 = naf_x.reverse()
 
     return naf_x
 
