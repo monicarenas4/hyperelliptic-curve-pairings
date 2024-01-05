@@ -1,10 +1,11 @@
 from _utils import frobenius_power
 
+
 def final_exponentiation_cp8(f, U: list, K):
     """
     :param f: output of the miller loop
     :param U: 4-elements vector
-    :param K: field Fp
+    :param K:
     :return: final pairing output
     """
     u, u0, lx, ly = U[0], U[1], U[2], U[3]
@@ -58,11 +59,12 @@ def final_exponentiation_cp8(f, U: list, K):
     return t0
 
 
-def final_exponentiation_k16(f, U, W, k = 16):
+def final_exponentiation_k16(f, U, W, k=16):
     """
     :param f:
     :param U:
-    :param K: field Fp
+    :param W:
+    :param k:
     :return:
     """
     u, um = U[0], U[1]
