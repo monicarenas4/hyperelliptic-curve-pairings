@@ -16,13 +16,15 @@ def miller_function(P, Q, Q_prec, c_vec, F, length_miller, case: str, twist: str
     :param NAF_rep:
     :return:
     """
+    global P_neg
+
     if not NAF_rep:
         length_miller = Integer(length_miller).digits(2)
     else:
         length_miller = NAF(length_miller)
+        P_neg = [P[0], P[1], -P[2], -P[3], P[4], P[5], P[6], P[7]]
 
     T, fc = P, 1
-    P_neg = [P[0], P[1], -P[2], -P[3], P[4], P[5], P[6], P[7]]
 
     for i in range(len(length_miller) - 2, -1, -1):
         T, lc = DBL(T, Q_prec, Q, F, c_vec, case=case, twist=twist)
