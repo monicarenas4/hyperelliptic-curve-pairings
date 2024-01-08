@@ -1,6 +1,7 @@
 # Table of Content
 - [General notes on genus 2 hyperelliptic curves](#general-notes-on-genus-2-hyperelliptic-curves)
 - [Genus 2 pairings with embedding degree 8](#genus-2-pairings-with-embedding-degree-8)
+- [Genus 2 pairings with embedding degree 16](#genus-2-pairings-with-embedding-degree-16)
 
 
 # General notes on genus 2 hyperelliptic curves
@@ -288,3 +289,7 @@ def new_coordinates(D):
 
     return D_
 ```
+
+# Genus 2 pairings with embedding degree 16
+
+![alt text](k16_example.png)
