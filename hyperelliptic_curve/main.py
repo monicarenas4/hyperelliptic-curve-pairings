@@ -11,9 +11,9 @@ make_folder('results')
 txt_results = 'results/number_of_operations.txt'
 head_operations_file(txt_results) if not exists(txt_results) else None
 
-print('Example Jacobian CP8')
+print('+++++++++++++++++++++\nExample Jacobian CP8\n+++++++++++++++++++++')
 generate_jacobian()
 
-print('Example Jacobian k16')
+print('+++++++++++++++++++++\nExample Jacobian k16\n+++++++++++++++++++++')
 u = ZZ(0x100004003)
 generate_jacobian_k16(u)
