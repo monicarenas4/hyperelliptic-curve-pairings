@@ -4,7 +4,8 @@ from sage.rings.integer_ring import ZZ
 from sage.rings.rational_field import QQ
 
 from verification_operations import test_bilinearity_Ate_i
-from _utils import w_powers_p, w_p_i, frobenius_power
+from _utils import w_powers_p
+from pairing_computation import compute_ate_i
 
 
 def generate_jacobian_k16(u, k=16, a=7):
@@ -92,7 +93,7 @@ def generate_jacobian_k16(u, k=16, a=7):
 
     W = w_powers_p(w, p, k)
 
-    #    test_twisted_ate_k16(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u)
+    compute_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u)
     test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u)
 
     return None

@@ -1,6 +1,11 @@
 from sage.all import Integer
+from math import log2, floor
+
 from jacobian_operations import ADD, DBL
-from _utils import NAF
+from _utils import NAF, hamming_weight, NAf_hamming_weight
+from write_number_operations import operations_miller_loop, operations_miller_loop_head
+
+file_name = 'results/number_of_operations.txt'
 
 
 def miller_function(P, Q, Q_prec, c_vec, F, length_miller, case: str, twist: str = None, NAF_rep=False):
@@ -16,24 +21,35 @@ def miller_function(P, Q, Q_prec, c_vec, F, length_miller, case: str, twist: str
     :param NAF_rep:
     :return:
     """
-    global P_neg
+    global P_neg, mult_line, sq_line, mult_DBL, sq_DBL, mult_ADD, sq_ADD
 
     if not NAF_rep:
-        length_miller = Integer(length_miller).digits(2)
+        vector_miller = Integer(length_miller).digits(2)
     else:
-        length_miller = NAF(length_miller)
+        vector_miller = NAF(length_miller)
         P_neg = [P[0], P[1], -P[2], -P[3], P[4], P[5], P[6], P[7]]
 
     T, fc = P, 1
 
-    for i in range(len(length_miller) - 2, -1, -1):
-        T, lc = DBL(T, Q_prec, Q, F, c_vec, case=case, twist=twist)
+    for i in range(len(vector_miller) - 2, -1, -1):
+        T, lc, mult_line, sq_line, mult_DBL, sq_DBL = DBL(T, Q_prec, Q, F, c_vec, case=case, twist=twist)
         fc = lc * fc ** 2  # M1 S1
-        if length_miller[i] == 1:
-            T, lc = ADD(P, T, Q_prec, Q, F, c_vec, case=case, twist=twist)
+        if vector_miller[i] == 1:
+            T, lc, mult_line, sq_line, mult_ADD, sq_ADD = ADD(P, T, Q_prec, Q, F, c_vec, case=case, twist=twist)
             fc = lc * fc  # M2
-        elif length_miller[i] == -1:
-            T, lc = ADD(P_neg, T, Q_prec, Q, F, c_vec, case=case, twist=twist)
+        elif vector_miller[i] == -1:
+            T, lc, mult_line, sq_line, mult_ADD, sq_ADD = ADD(P_neg, T, Q_prec, Q, F, c_vec, case=case, twist=twist)
             fc = lc * fc  # M2
+
+    operations_miller_loop_head(file_name)
+
+    if not NAF_rep:
+        operations_miller_loop(file_name, 'miller', case, twist, NAF_rep,
+                               floor(log2(length_miller) - 1), hamming_weight(vector_miller),
+                               mult_line, sq_line, mult_DBL, sq_DBL, mult_ADD, sq_ADD, 2, 1)
+    else:
+        operations_miller_loop(file_name, 'miller', case, twist, NAF_rep,
+                               floor(log2(length_miller) - 1), NAf_hamming_weight(vector_miller),
+                               mult_line, sq_line, mult_DBL, sq_DBL, mult_ADD, sq_ADD, 2, 1)
 
     return fc

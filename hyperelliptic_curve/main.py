@@ -3,17 +3,18 @@ from sage.rings.integer_ring import ZZ
 from generate_jacobian_cp8 import generate_jacobian
 from generate_jacobian_k16 import generate_jacobian_k16
 import datetime
-from os.path import exists
-from _utils import make_folder, head_operations_file, write_results
+from _utils import make_folder
+from write_number_operations import operations_main
 
 TODAY = str(datetime.date.today()).replace('-', '')
 make_folder('results')
-txt_results = 'results/number_of_operations.txt'
-head_operations_file(txt_results) if not exists(txt_results) else None
+file_name = 'results/number_of_operations.txt'
 
 print('+++++++++++++++++++++\nExample Jacobian CP8\n+++++++++++++++++++++')
+operations_main(file_name, 'generate_jacobian_cp8')
 generate_jacobian()
 
 print('+++++++++++++++++++++\nExample Jacobian k16\n+++++++++++++++++++++')
+operations_main(file_name, 'generate_jacobian_k16')
 u = ZZ(0x100004003)
 generate_jacobian_k16(u)

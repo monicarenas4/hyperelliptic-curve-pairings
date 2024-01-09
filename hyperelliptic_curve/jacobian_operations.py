@@ -23,7 +23,7 @@ def line_case1(D2_vec, D2, C, L, twist: str = None):
 
     cD2 = (y2 * l + l3 * x23 - l2 * x22 + l1 * x2 - l0)  # M4
 
-    return cD2
+    return cD2, 4, 0
 
 
 def line_case2(D2_vec, D2, D3, C, L, twist=None):
@@ -87,7 +87,7 @@ def line_case2(D2_vec, D2, D3, C, L, twist=None):
     # u3D2 = i3 + i4 + i9 + i10
     # lD2 = cD2
 
-    return cD2
+    return cD2, 18, 1
 
 
 def precomputation_degenerate_div(P):
@@ -100,7 +100,7 @@ def precomputation_degenerate_div(P):
     b = -a * xP  # M1
     P_prec = [a, b]
 
-    return P_prec
+    return P_prec, 1, 1
 
 
 def precomputation_general_div(D2):
@@ -139,7 +139,7 @@ def precomputation_general_div(D2):
     Q = [t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19, t20, t21, t22, t23, t24,
          t25]
 
-    return Q
+    return Q, 13, 3
 
 
 def ADD(D1, D2, Q_vec, Q, F, L=None, case: str = 'case1', twist: str = None):
@@ -192,15 +192,15 @@ def ADD(D1, D2, Q_vec, Q, F, L=None, case: str = 'case1', twist: str = None):
 
     D3 = [U31, U30, V31, V30, Z31, Z32, z31, z32]
     if case == 'case1' and twist is not None:
-        lcE = line_case1(Q_vec, Q, line, L, twist='k16')
+        lcE, mult_line, sq_line = line_case1(Q_vec, Q, line, L, twist='k16')
     elif case == 'case1':
-        lcE = line_case1(Q_vec, Q, line, L)
+        lcE, mult_line, sq_line = line_case1(Q_vec, Q, line, L)
     elif case == 'case2' and twist is not None:
-        lcE = line_case2(Q_vec, Q, D3, line, L, twist='k16')
+        lcE, mult_line, sq_line = line_case2(Q_vec, Q, D3, line, L, twist='k16')
     else:
-        lcE = line_case2(Q_vec, Q, D3, line, L)
+        lcE, mult_line, sq_line = line_case2(Q_vec, Q, D3, line, L)
 
-    return D3, lcE
+    return D3, lcE, mult_line, sq_line, 36, 5
 
 
 def DBL(D1, Q_vec, Q, F, L=None, case: str = 'case1', twist: str = None):
@@ -262,15 +262,15 @@ def DBL(D1, Q_vec, Q, F, L=None, case: str = 'case1', twist: str = None):
     D3 = [U31, U30, V31, V30, Z31, Z32, z31, z32]
 
     if case == 'case1' and twist is not None:
-        lcE = line_case1(Q_vec, Q, line, L, twist='k16')
+        lcE, mult_line, sq_line = line_case1(Q_vec, Q, line, L, twist='k16')
     elif case == 'case1':
-        lcE = line_case1(Q_vec, Q, line, L)
+        lcE, mult_line, sq_line = line_case1(Q_vec, Q, line, L)
     elif case == 'case2' and twist is not None:
-        lcE = line_case2(Q_vec, Q, D3, line, L, twist='k16')
+        lcE, mult_line, sq_line = line_case2(Q_vec, Q, D3, line, L, twist='k16')
     else:
-        lcE = line_case2(Q_vec, Q, D3, line, L)
+        lcE, mult_line, sq_line = line_case2(Q_vec, Q, D3, line, L)
 
-    return D3, lcE
+    return D3, lcE, mult_line, sq_line, 38, 6
 
 
 def new_coordinates(D) -> list:
