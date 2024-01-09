@@ -5,7 +5,7 @@ from sage.rings.rational_field import QQ
 
 from verification_operations import test_bilinearity_Ate_i
 from _utils import w_powers_p, w_p_i, frobenius_power
-
+from _utils import generate_curve_eq
 
 def generate_jacobian_k16(u, k=16, a=7):
     """
@@ -30,17 +30,6 @@ def generate_jacobian_k16(u, k=16, a=7):
     Y = ZZ(Yx(u))
 
     U = [u, u - 1, 0, 0]
-    F = [0, 7, 0, 0, 0]
-
-    # Construct the prime field Fp
-    Fp = GF(p, proof=False)  # Fix the prime field Fp
-    Fpx = Fp['x']
-    (x,) = Fpx._first_ngens(1)  # Fpx: ring of polynomials in x, with coefficients in Fp
-
-    # Hyperelliptic curve C
-    C = HyperellipticCurve(x ** 5 + a * x)  # Set the equation of the hyperelliptic curve C
-    # Jacobian of C
-    J = C.jacobian()  # J is the Jacobian of the curve C over Fp
 
     # Compute the order of the Jacobian with the characteristic polynomial of Frobenius
     Zx = ZZ['t']
@@ -51,6 +40,18 @@ def generate_jacobian_k16(u, k=16, a=7):
     n = xt(t=1)
     # cofactor of the Jacobian J
     h = n // r
+
+    # Construct the prime field Fp
+    a = generate_curve_eq(p, n)
+    Fp = GF(p, proof=False)  # Fix the prime field Fp
+    Fpx = Fp['x']
+    (x,) = Fpx._first_ngens(1)  # Fpx: ring of polynomials in x, with coefficients in Fp
+
+    # Hyperelliptic curve C
+    C = HyperellipticCurve(x ** 5 + a * x)  # Set the equation of the hyperelliptic curve C
+    # Jacobian of C
+    J = C.jacobian()  # J is the Jacobian of the curve C over Fp
+    F = [0, 7, 0, 0, 0]
 
     Fpz = Fp['z']
     (z,) = Fpz._first_ngens(1)  # Fpw: polynomial ring in w with coefficients in Fp
