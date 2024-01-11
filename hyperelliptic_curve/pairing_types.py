@@ -1,4 +1,4 @@
-from final_exponentiation import final_exponentiation_cp8, final_exponentiation_k16
+from final_exponentiation import final_exponentiation_cp8, final_exponentiation_k16, final_exponentiation_new_k16
 from miller_loop import miller_function
 
 
@@ -45,6 +45,6 @@ def ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, case: str = 'case1', NAF_
     else:
         miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case, twist='k16', NAF_rep=NAF_rep)
 
-    pairing_value = final_exponentiation_k16(miller_fun, U, W)
+    pairing_value = final_exponentiation_new_k16(miller_fun, U, W)
 
     return pairing_value

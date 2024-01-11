@@ -107,3 +107,57 @@ def final_exponentiation_k16(f, U, W, k=16):
     t0 = N / M
 
     return t0
+
+def final_exponentiation_new_k16(f, U, W, k=16):
+    """
+    :param f:
+    :param U:
+    :param W:
+    :param k:
+    :return:
+    """
+    u = U[0]
+    up = U[1]
+    t0 = 1
+    f = frobenius_power(f, k, W, 8) / f
+    f1 = f
+    f2 = f1 ** 2
+    f4 = f2 ** 2
+    f8 = f4 ** 2
+    fup1 = f ** up
+    fup12 = fup1 ** up
+    gu1 = fup12 ** u
+    gu2 = gu1 ** u
+    gu3 = gu2 ** u
+    gu4 = gu3 ** u
+    gu5 = gu4 ** u
+    gu6 = gu5 ** u
+    y1 = gu6
+    y2 = 1/gu5
+    y3 = y1 * y2
+    y4 = y3 ** 2
+    y5 = y4 ** 2
+    y6 = y5 * gu4
+    y7 = y6 ** 2
+    fl0 = f8*fup12*y7
+    fl0u1 = fl0 ** u
+    fl0u2 = fl0u1 ** u
+    fl0u3 = fl0u2 ** u
+    fl1 = f8*fl0u3
+    hu1 = fl1 ** u
+    hu2 = hu1 ** u
+    hu3 = hu2 ** u
+    hu4 = hu3 ** u
+    N0 = fl0
+    N1 = frobenius_power(fl1, k, W, 1)
+    N2 = frobenius_power(hu3, k, W, 2)
+    N3 = frobenius_power(fl0u1, k, W, 3)
+    N4 = frobenius_power(hu1, k, W, 4)
+    N5 = frobenius_power(hu4, k, W, 5)
+    N6 = frobenius_power(fl0u2, k, W, 6)
+    N7 = frobenius_power(hu2, k, W, 7)
+    N = N0*N2*N3*N5*N6
+    M = N1*N4*N7
+    t0 = N/M
+    
+    return t0

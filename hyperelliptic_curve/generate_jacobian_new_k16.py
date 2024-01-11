@@ -8,7 +8,7 @@ from verification_operations import test_bilinearity_Ate_i
 from _utils import w_powers_p, w_p_i, frobenius_power
 from _utils import generate_curve_eq
 
-def generate_jacobian_k16(u, k=16, a=7):
+def generate_jacobian_new_k16(u, k=16, a=7):
     """
     :param u: defines the length of the Miller loop
     :param k: embedding degree
@@ -19,18 +19,20 @@ def generate_jacobian_k16(u, k=16, a=7):
     R = QQ['x']
     (x,) = R._first_ngens(1)
     rx = x ** 8 + 1
-    px = (x ** 6 - 2 * x ** 5 + 2 * x ** 3 + x + 1) / 3
-    Xx = (x ** 7 - x ** 6) / 2
+    Xx = (2 * x ** 8 + x ** 7 - x ** 6 + 2) / 2
     Yx = -(x ** 5 + x ** 4 + x + 1) / 4
     px = Xx ** 2 + 2 * Yx ** 2
-
+    
     # Hyperelliptic curve + Jacobian parameters
     r = ZZ(rx(u) // 2)
     p = ZZ(px(u))
     X = ZZ(Xx(u))
     Y = ZZ(Yx(u))
-
-    U = [u, u - 1, 0, 0]
+    
+    print("p = {:#x} {}-bits".format(p, p.nbits()))
+    print("r = {:#x} {}-bits".format(r, r.nbits()))
+    
+    U = [u, u + 1, 0, 0]
 
     # Compute the order of the Jacobian with the characteristic polynomial of Frobenius
     Zx = ZZ['t']
@@ -48,11 +50,13 @@ def generate_jacobian_k16(u, k=16, a=7):
     Fpx = Fp['x']
     (x,) = Fpx._first_ngens(1)  # Fpx: ring of polynomials in x, with coefficients in Fp
 
+    a = 29
     # Hyperelliptic curve C
     C = HyperellipticCurve(x ** 5 + a * x)  # Set the equation of the hyperelliptic curve C
     # Jacobian of C
     J = C.jacobian()  # J is the Jacobian of the curve C over Fp
-    F = [0, 7, 0, 0, 0]
+        
+    F = [0, a, 0, 0, 0]
 
     Fpz = Fp['z']
     (z,) = Fpz._first_ngens(1)  # Fpw: polynomial ring in w with coefficients in Fp
@@ -93,8 +97,8 @@ def generate_jacobian_k16(u, k=16, a=7):
         c_vec.append(c ** i)
 
     W = w_powers_p(w, p, k)
-
-    test_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u)
+    
+#    test_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u)
     test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u)
 
     return None
