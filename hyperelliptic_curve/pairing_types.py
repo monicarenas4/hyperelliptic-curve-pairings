@@ -1,6 +1,6 @@
 from final_exponentiation import final_exponentiation_cp8, final_exponentiation_k16
 from miller_loop import miller_function
-from write_number_operations import operations_bilinearity_check, operations_bilinearity_check_head
+from write_number_operations import write_number_operations
 
 file_name = 'results/number_of_operations.txt'
 
@@ -24,10 +24,10 @@ def twisted_ate_cp8(P, Q, Q_prec, c_vec, F, length_miller, U, K, case: str = 'ca
     else:
         miller_fun = miller_function(P, Q, Q_prec, c_vec, F, length_miller, case, NAF_rep=NAF_rep)
 
-    pairing_value, mult_FE, sq_FE = final_exponentiation_cp8(miller_fun, U, K)
+    pairing_value, exp_u, exp_u0, exp_lx, mult, sq, inv, frob = final_exponentiation_cp8(miller_fun, U, K)
 
-    operations_bilinearity_check_head(file_name)
-    operations_bilinearity_check(file_name, 'final_exp twisted_ate_cp8', case, NAF_rep, mult_FE, sq_FE)
+    write_number_operations(file_name, 'final_exp twisted_ate_cp8', case, NAF_rep=NAF_rep,
+                            exp_u=exp_u, exp_u0=exp_u0, exp_lx=exp_lx, mult_FE=mult, sq_FE=sq, inv_FE=inv, frobenius=frob)
 
     return pairing_value
 
@@ -51,9 +51,9 @@ def ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, case: str = 'case1', NAF_
     else:
         miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case, twist='k16', NAF_rep=NAF_rep)
 
-    pairing_value, mult_FE, sq_FE = final_exponentiation_k16(miller_fun, U, W)
+    pairing_value, exp_u, exp_um, mult, sq, inv, frob_power = final_exponentiation_k16(miller_fun, U, W)
 
-    operations_bilinearity_check_head(file_name)
-    operations_bilinearity_check(file_name, 'final_exp ate_i', case, NAF_rep, mult_FE, sq_FE)
+    write_number_operations(file_name, 'final_exp ate_i', case, NAF_rep=NAF_rep,
+                            exp_u=exp_u, exp_um=exp_um, mult_FE=mult, sq_FE=sq, inv_FE=inv, frob_power=frob_power)
 
     return pairing_value

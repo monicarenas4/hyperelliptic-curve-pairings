@@ -6,6 +6,7 @@ from sage.rings.rational_field import QQ
 from verification_operations import test_bilinearity_Ate_i
 from _utils import w_powers_p
 from pairing_computation import compute_ate_i
+from poly_families_k16 import polynomial_family_k16
 
 
 def generate_jacobian_k16(u, k=16, a=7):
@@ -16,19 +17,20 @@ def generate_jacobian_k16(u, k=16, a=7):
     :return:
     """
     # Polynomial family for k = 16
-    R = QQ['x']
-    (x,) = R._first_ngens(1)
-    rx = x ** 8 + 1
-    px = (x ** 6 - 2 * x ** 5 + 2 * x ** 3 + x + 1) / 3
-    Xx = (x ** 7 - x ** 6) / 2
-    Yx = -(x ** 5 + x ** 4 + x + 1) / 4
-    px = Xx ** 2 + 2 * Yx ** 2
-
-    # Hyperelliptic curve + Jacobian parameters
-    r = ZZ(rx(u) // 2)
-    p = ZZ(px(u))
-    X = ZZ(Xx(u))
-    Y = ZZ(Yx(u))
+    r, p, X, Y = polynomial_family_k16(u)
+    # R = QQ['x']
+    # (x,) = R._first_ngens(1)
+    # rx = x ** 8 + 1
+    # px = (x ** 6 - 2 * x ** 5 + 2 * x ** 3 + x + 1) / 3
+    # Xx = (x ** 7 - x ** 6) / 2
+    # Yx = -(x ** 5 + x ** 4 + x + 1) / 4
+    # px = Xx ** 2 + 2 * Yx ** 2
+    #
+    # # Hyperelliptic curve + Jacobian parameters
+    # r = ZZ(rx(u) // 2)
+    # p = ZZ(px(u))
+    # X = ZZ(Xx(u))
+    # Y = ZZ(Yx(u))
 
     U = [u, u - 1, 0, 0]
     F = [0, 7, 0, 0, 0]

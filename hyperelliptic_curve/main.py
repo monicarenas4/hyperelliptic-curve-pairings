@@ -4,17 +4,18 @@ from generate_jacobian_cp8 import generate_jacobian
 from generate_jacobian_k16 import generate_jacobian_k16
 import datetime
 from _utils import make_folder
-from write_number_operations import operations_main
+from write_number_operations import operations_main, write_number_operations_head
 
 TODAY = str(datetime.date.today()).replace('-', '')
 make_folder('results')
 file_name = 'results/number_of_operations.txt'
 
 print('+++++++++++++++++++++\nExample Jacobian CP8\n+++++++++++++++++++++')
-operations_main(file_name, 'generate_jacobian_cp8')
+write_number_operations_head(file_name)
+operations_main(file_name, 'Generate Jacobian CP8')
 generate_jacobian()
 
 print('+++++++++++++++++++++\nExample Jacobian k16\n+++++++++++++++++++++')
-operations_main(file_name, 'generate_jacobian_k16')
+operations_main(file_name, 'Generate Jacobian k16')
 u = ZZ(0x100004003)
 generate_jacobian_k16(u)

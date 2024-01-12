@@ -3,7 +3,7 @@ from math import log2, floor
 
 from jacobian_operations import ADD, DBL
 from _utils import NAF, hamming_weight, NAf_hamming_weight
-from write_number_operations import operations_miller_loop, operations_miller_loop_head
+from write_number_operations import write_number_operations
 
 file_name = 'results/number_of_operations.txt'
 
@@ -41,15 +41,19 @@ def miller_function(P, Q, Q_prec, c_vec, F, length_miller, case: str, twist: str
             T, lc, mult_line, sq_line, mult_ADD, sq_ADD = ADD(P_neg, T, Q_prec, Q, F, c_vec, case=case, twist=twist)
             fc = lc * fc  # M2
 
-    operations_miller_loop_head(file_name)
-
     if not NAF_rep:
-        operations_miller_loop(file_name, 'miller', case, twist, NAF_rep,
-                               floor(log2(length_miller) - 1), hamming_weight(vector_miller),
-                               mult_line, sq_line, mult_DBL, sq_DBL, mult_ADD, sq_ADD, 2, 1)
+        write_number_operations(file_name, 'miller', case, twist, NAF_rep,
+                                size_DBL=floor(log2(length_miller) - 1), size_ADD=hamming_weight(vector_miller),
+                                mult_line=mult_line, sq_line=sq_line,
+                                mult_DBL=mult_DBL, sq_DBL=sq_DBL,
+                                mult_ADD=mult_ADD, sq_ADD=sq_ADD,
+                                mult_miller=2, sq_miller=1)
     else:
-        operations_miller_loop(file_name, 'miller', case, twist, NAF_rep,
-                               floor(log2(length_miller) - 1), NAf_hamming_weight(vector_miller),
-                               mult_line, sq_line, mult_DBL, sq_DBL, mult_ADD, sq_ADD, 2, 1)
+        write_number_operations(file_name, 'miller', case, twist, NAF_rep,
+                                size_DBL=floor(log2(length_miller) - 1), size_ADD=NAf_hamming_weight(vector_miller),
+                                mult_line=mult_line, sq_line=sq_line,
+                                mult_DBL=mult_DBL, sq_DBL=sq_DBL,
+                                mult_ADD=mult_ADD, sq_ADD=sq_ADD,
+                                mult_miller=2, sq_miller=1)
 
     return fc
