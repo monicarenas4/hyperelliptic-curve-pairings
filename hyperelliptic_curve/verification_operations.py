@@ -71,7 +71,7 @@ def test_bilinearity_Twisted_Ate(curves, jacobians, fields, c_vec, F, U, p, r, h
     return None
 
 
-def test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length_miller):
+def test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length_miller, family='k16'):
     """
     :param curves:
     :param jacobians:
@@ -128,16 +128,15 @@ def test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h
             P1_prec = precomputation_general_div(P1)
 
         print('CASE:', case)
-        pairing_value1 = ate_i(Q1, P1, P1_prec, c_vec, F, length_miller, U, W, case)
+        pairing_value1 = ate_i(Q1, P1, P1_prec, c_vec, F, length_miller, U, W, case, family=family)
         print('pairing value 1 = ', pairing_value1)
-        pairing_value2 = ate_i(Q2, P2, P2_prec, c_vec, F, length_miller, U, W, case) ** (
-                randint_Q * randint_P)
+        pairing_value2 = ate_i(Q2, P2, P2_prec, c_vec, F, length_miller, U, W, case, family=family) ** (randint_Q * randint_P)
         print('pairing value 2 = ', pairing_value2)
         print('bilinearity test: ', pairing_value1 == pairing_value2)
 
-        pairing_value_naf1 = ate_i(Q1, P1, P1_prec, c_vec, F, length_miller, U, W, case, NAF_rep=True)
+        pairing_value_naf1 = ate_i(Q1, P1, P1_prec, c_vec, F, length_miller, U, W, case, NAF_rep=True, family=family)
         print('pairing value NAF 1 = ', pairing_value_naf1)
-        pairing_value_naf2 = ate_i(Q2, P2, P2_prec, c_vec, F, length_miller, U, W, case, NAF_rep=True) ** (
+        pairing_value_naf2 = ate_i(Q2, P2, P2_prec, c_vec, F, length_miller, U, W, case, NAF_rep=True, family=family) ** (
                 randint_Q * randint_P)
         print('pairing value NAF 2 = ', pairing_value_naf2)
         print('bilinearity NAF test: ', pairing_value_naf1 == pairing_value_naf2)

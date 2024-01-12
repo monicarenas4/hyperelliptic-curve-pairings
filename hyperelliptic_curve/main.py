@@ -17,8 +17,8 @@ generate_jacobian()
 
 print('Example Jacobian Kawazoe-Takahashi k = 16')
 u = ZZ(0x100004003)
-generate_jacobian_k16(u)
+generate_jacobian_k16(u, family='k16')
 
 print('Example Jacobian from new family for k = 16')
 u = ZZ(0xeffeffff7fff)
-generate_jacobian_new_k16(u)
+generate_jacobian_new_k16(u, family='afk16')

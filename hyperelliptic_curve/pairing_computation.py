@@ -49,7 +49,7 @@ def test_twisted_ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, length
     return None
 
 
-def test_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length_miller):
+def test_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length_miller, family='k16'):
     """
     :param curves:
     :param jacobians:
@@ -90,9 +90,9 @@ def test_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length_mi
             P = h * P
             P_prec = precomputation_general_div(P)
 
-        pairing_value = ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, case)
+        pairing_value = ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, case, family=family)
         print('pairing value = ', pairing_value)
-        pairing_value_naf = ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, case, NAF_rep=True)
+        pairing_value_naf = ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, case, NAF_rep=True, family=family)
         print('pairing value NAF = ', pairing_value_naf)
 
     return None

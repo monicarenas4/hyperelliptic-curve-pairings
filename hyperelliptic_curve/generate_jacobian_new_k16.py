@@ -8,7 +8,7 @@ from verification_operations import test_bilinearity_Ate_i
 from _utils import w_powers_p, w_p_i, frobenius_power
 from _utils import generate_curve_eq
 
-def generate_jacobian_new_k16(u, k=16, a=7):
+def generate_jacobian_new_k16(u, k=16, a=7, family='k16'):
     """
     :param u: defines the length of the Miller loop
     :param k: embedding degree
@@ -98,7 +98,7 @@ def generate_jacobian_new_k16(u, k=16, a=7):
 
     W = w_powers_p(w, p, k)
     
-#    test_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u)
-    test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u)
+    test_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u, family)
+    test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u, family)
 
     return None
