@@ -5,79 +5,13 @@ from jacobian_operations import JC_random_element
 from sage.rings.finite_rings.finite_field_constructor import FiniteField, GF
 from sage.schemes.hyperelliptic_curves.constructor import HyperellipticCurve
 
+
 def make_folder(folder_name: str):
     """
     :param folder_name: folder name
     :return:
     """
     os.makedirs(folder_name) if not os.path.exists(folder_name) else None
-    return
-
-
-def head_text_file(file_name: str):
-    """
-    :param file_name: file name
-    :return: txt file
-    """
-    with open(file_name, 'w') as f:
-        f.write('date' + '\t'
-                + 'pairing_type' + '\t'
-                + 'miller_loop' + '\t'
-                + 'final_exp' + '\t'
-                + 'total_pairing'
-                + '\n')
-    return
-
-
-def head_operations_file(file_name: str):
-    """
-    :param file_name: file name
-    :return: txt file
-    """
-    with open(file_name, 'w') as f:
-        f.write('date' + '\t'
-                + 'case' + '\t'
-                + 'twist' + '\t'
-                + 'ADD' + '\t'
-                + 'ADD M' + '\t'
-                + 'ADD S' + '\t'
-                + 'DBL M' + '\t'
-                + 'DBL S' + '\t'
-                + 'PDD M' + '\t'
-                + 'PDD S' + '\t'
-                + 'PGD M' + '\t'
-                + 'PGD S' + '\t'
-                + 'line_case1 M' + '\t'
-                + 'line_case1 S' + '\t'
-                + 'line_case2 M' + '\t'
-                + 'line_case2 S' + '\t'
-                + '\n')
-    return
-
-
-def write_results(date, file_name: str, pairing_name: str, tf_miller: float, tf_pairing: float):
-    with open(file_name, 'a') as file:
-        file.write(date + '\t'
-                   + pairing_name + '\t'
-                   + f'{tf_miller}' + '\t'
-                   + f'{tf_pairing}' + '\t'
-                   + f'{tf_miller + tf_pairing}'
-                   + '\n')
-    return
-
-
-def write_operations(date, file_name: str, case: str, twist, mult_DBL: int, sq_DBL: int, mult_ADD: int,
-                     sq_ADD: int):
-    with open(file_name, 'a') as file:
-        file.write(date + '\t'
-                   # + file_name + '\t'
-                   + case + '\t'
-                   + f'{twist}' + '\t'
-                   + f'{mult_DBL}' + '\t'
-                   + f'{sq_DBL}' + '\t'
-                   + f'{mult_ADD}' + '\t'
-                   + f'{sq_ADD}' + '\t'
-                   + '\n')
     return
 
 
@@ -102,9 +36,6 @@ def NAF(x: int):
         xx, rr = xx.quo_rem(2)
         assert rr == 0
     assert x == sum([r * 2 ** i for i, r in enumerate(naf_x)])
-
-    #    print(time.time() - t0)
-    # naf_x1 = naf_x.reverse()
 
     return naf_x
 
@@ -182,16 +113,22 @@ def frobenius_power(f, k, W, j):
         f_power = f_power + (f_coeff[i] * W[j][i])
     return f_power
 
+
 def generate_curve_eq(p, n):
+    """
+    :param p:
+    :param n:
+    :return:
+    """
     Fp = GF(p, proof=False)  # Fix the prime field Fp
     Fpx = Fp['x']
     (x,) = Fpx._first_ngens(1)  # Fpx: ring of polynomials in x, with coefficients in Fp
-    
-    for i in range(1,100):
+
+    for i in range(1, 100):
         C = HyperellipticCurve(x ** 5 + i * x)
         J = C.jacobian()
         P = JC_random_element(C)
-        P = n*P
+        P = n * P
         if P[0] == 1:
             a = i
             return a

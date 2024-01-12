@@ -14,7 +14,6 @@ def final_exponentiation_cp8(f, U: list, K):
     fp = f.frobenius(1)
     fu1 = f ** u
     f1 = fp * fu1
-    # fp2 = Frobenius(f1, K, 2)
     fp2 = f1.frobenius(2)
     f1u1 = f1 ** u
     f1u2 = f1u1 ** u
@@ -56,7 +55,9 @@ def final_exponentiation_cp8(f, U: list, K):
     M = m4 * y23
     t0 = N / M
 
-    return t0
+    exp_u, exp_u0, exp_lx, mult, sq, inv, frob = 3, 4, 3, 17, 17, 2, 3
+
+    return t0, exp_u, exp_u0, exp_lx, mult, sq, inv, frob
 
 
 def final_exponentiation_k16(f, U, W, k=16):
@@ -75,7 +76,7 @@ def final_exponentiation_k16(f, U, W, k=16):
     f8 = f4 ** 2
     fum1 = f ** um
     fu1 = fum1 * f1
-    fup1 = fu1 * f1
+    # fup1 = fu1 * f1
     fum2 = fum1 ** um
     f2u1 = fu1 ** 2
     f4u1 = f2u1 ** 2
@@ -106,7 +107,10 @@ def final_exponentiation_k16(f, U, W, k=16):
     N, M = (N0 * N2 * N3 * N5 * N6), (N1 * N4 * N7)
     t0 = N / M
 
-    return t0
+    exp_u, exp_um, mult, sq, inv, frob_power = 11, 2, 12, 6, 2, 8
+
+    return t0, exp_u, exp_um, mult, sq, inv, frob_power
+
 
 def final_exponentiation_new_k16(f, U, W, k=16):
     """
@@ -116,8 +120,7 @@ def final_exponentiation_new_k16(f, U, W, k=16):
     :param k:
     :return:
     """
-    u = U[0]
-    up = U[1]
+    u, up = U[0], U[1]
     t0 = 1
     f = frobenius_power(f, k, W, 8) / f
     f1 = f
@@ -133,17 +136,17 @@ def final_exponentiation_new_k16(f, U, W, k=16):
     gu5 = gu4 ** u
     gu6 = gu5 ** u
     y1 = gu6
-    y2 = 1/gu5
+    y2 = 1 / gu5
     y3 = y1 * y2
     y4 = y3 ** 2
     y5 = y4 ** 2
     y6 = y5 * gu4
     y7 = y6 ** 2
-    fl0 = f8*fup12*y7
+    fl0 = f8 * fup12 * y7
     fl0u1 = fl0 ** u
     fl0u2 = fl0u1 ** u
     fl0u3 = fl0u2 ** u
-    fl1 = f8*fl0u3
+    fl1 = f8 * fl0u3
     hu1 = fl1 ** u
     hu2 = hu1 ** u
     hu3 = hu2 ** u
@@ -156,8 +159,10 @@ def final_exponentiation_new_k16(f, U, W, k=16):
     N5 = frobenius_power(hu4, k, W, 5)
     N6 = frobenius_power(fl0u2, k, W, 6)
     N7 = frobenius_power(hu2, k, W, 7)
-    N = N0*N2*N3*N5*N6
-    M = N1*N4*N7
-    t0 = N/M
-    
-    return t0
+    N = N0 * N2 * N3 * N5 * N6
+    M = N1 * N4 * N7
+    t0 = N / M
+
+    exp_u, exp_up, mult, sq, inv, frob_power = 13, 2, 13, 6, 3, 8
+
+    return t0, exp_u, exp_up, mult, sq, inv, frob_power

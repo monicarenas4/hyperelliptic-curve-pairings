@@ -4,21 +4,24 @@ from generate_jacobian_cp8 import generate_jacobian
 from generate_jacobian_k16 import generate_jacobian_k16
 from generate_jacobian_new_k16 import generate_jacobian_new_k16
 import datetime
-from os.path import exists
-from _utils import make_folder, head_operations_file, write_results
+from _utils import make_folder
+from write_number_operations import operations_main, write_number_operations_head
 
 TODAY = str(datetime.date.today()).replace('-', '')
 make_folder('results')
-txt_results = 'results/number_of_operations.txt'
-head_operations_file(txt_results) if not exists(txt_results) else None
+file_name = 'results/number_of_operations.txt'
 
-print('Example Jacobian CP8')
-generate_jacobian()
-
-print('Example Jacobian Kawazoe-Takahashi k = 16')
+# print('+++++++++++++++++++++\nExample Jacobian CP8\n+++++++++++++++++++++')
+# write_number_operations_head(file_name)
+# operations_main(file_name, 'Jacobian CP8')
+# generate_jacobian()
+#
+# print('+++++++++++++++++++++\nExample Jacobian Kawazoe-Takahashi k = 16\n+++++++++++++++++++++')
+# operations_main(file_name, 'Jacobian k16')
 u = ZZ(0x100004003)
 generate_jacobian_k16(u, family='k16')
 
-print('Example Jacobian from new family for k = 16')
+print('+++++++++++++++++++++\nExample Jacobian from new family for k = 16\n+++++++++++++++++++++')
+# operations_main(file_name, 'Jacobian new family k16')
 u = ZZ(0xeffeffff7fff)
-generate_jacobian_new_k16(u, family='afk16')
+generate_jacobian_k16(u, family='new_k16')

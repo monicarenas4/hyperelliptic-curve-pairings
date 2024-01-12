@@ -2,9 +2,10 @@ from sage.rings.finite_rings.finite_field_constructor import FiniteField, GF
 from sage.schemes.hyperelliptic_curves.constructor import HyperellipticCurve
 from sage.rings.integer_ring import ZZ
 
-from pairing_computation import test_twisted_ate
+from pairing_computation import compute_twisted_ate
 from verification_operations import test_bilinearity_Twisted_Ate
 from _utils import generate_curve_eq
+
 
 def generate_jacobian_cp8(u, X, Y, lx, ly, l, k=8):
     """
@@ -90,7 +91,7 @@ def generate_jacobian_cp8(u, X, Y, lx, ly, l, k=8):
     for i in range(1, k):
         c_vec.append(c ** i)
 
-    test_twisted_ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, u)
+    compute_twisted_ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, u)
     test_bilinearity_Twisted_Ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, u)
 
     return None
