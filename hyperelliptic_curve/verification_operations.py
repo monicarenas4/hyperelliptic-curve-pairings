@@ -62,8 +62,8 @@ def test_bilinearity_Twisted_Ate(curves, jacobians, fields, c_vec, F, U, p, r, h
         pairing_value1 = twisted_ate_cp8(P1, Q1, Q1_prec, c_vec, F, length_miller, U, Fp, case)
         pairing_value2 = twisted_ate_cp8(P2, Q2, Q2_prec, c_vec, F, length_miller, U, Fp, case) ** (
                 randint_P * randint_Q)
-        print('pairing value 1 = ', pairing_value1)
-        print('pairing value 2 = ', pairing_value2)
+#        print('pairing value 1 = ', pairing_value1)
+#        print('pairing value 2 = ', pairing_value2)
         print('bilinearity test:',
               pairing_value1 == pairing_value2) if (pairing_value1 and pairing_value2) != 1 else print('review code')
 

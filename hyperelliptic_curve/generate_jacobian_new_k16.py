@@ -3,7 +3,7 @@ from sage.schemes.hyperelliptic_curves.constructor import HyperellipticCurve
 from sage.rings.integer_ring import ZZ
 from sage.rings.rational_field import QQ
 
-from pairing_computation import test_ate_i
+from pairing_computation import compute_ate_i
 from verification_operations import test_bilinearity_Ate_i
 from _utils import w_powers_p, w_p_i, frobenius_power
 from _utils import generate_curve_eq

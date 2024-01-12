@@ -11,13 +11,13 @@ TODAY = str(datetime.date.today()).replace('-', '')
 make_folder('results')
 file_name = 'results/number_of_operations.txt'
 
-# print('+++++++++++++++++++++\nExample Jacobian CP8\n+++++++++++++++++++++')
-# write_number_operations_head(file_name)
-# operations_main(file_name, 'Jacobian CP8')
-# generate_jacobian()
-#
-# print('+++++++++++++++++++++\nExample Jacobian Kawazoe-Takahashi k = 16\n+++++++++++++++++++++')
-# operations_main(file_name, 'Jacobian k16')
+print('+++++++++++++++++++++\nExample Jacobian CP8\n+++++++++++++++++++++')
+write_number_operations_head(file_name)
+operations_main(file_name, 'Jacobian CP8')
+generate_jacobian()
+
+print('+++++++++++++++++++++\nExample Jacobian Kawazoe-Takahashi k = 16\n+++++++++++++++++++++')
+operations_main(file_name, 'Jacobian k16')
 u = ZZ(0x100004003)
 generate_jacobian_k16(u, family='k16')
 
