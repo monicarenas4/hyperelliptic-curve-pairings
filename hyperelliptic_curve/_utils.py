@@ -1,6 +1,9 @@
 import os
 import time
 from sage.all import Integer
+from jacobian_operations import JC_random_element
+from sage.rings.finite_rings.finite_field_constructor import FiniteField, GF
+from sage.schemes.hyperelliptic_curves.constructor import HyperellipticCurve
 
 
 def make_folder(folder_name: str):
@@ -33,9 +36,6 @@ def NAF(x: int):
         xx, rr = xx.quo_rem(2)
         assert rr == 0
     assert x == sum([r * 2 ** i for i, r in enumerate(naf_x)])
-
-    #    print(time.time() - t0)
-    # naf_x1 = naf_x.reverse()
 
     return naf_x
 
@@ -112,3 +112,23 @@ def frobenius_power(f, k, W, j):
     for i in range(1, k_):
         f_power = f_power + (f_coeff[i] * W[j][i])
     return f_power
+
+
+def generate_curve_eq(p, n):
+    """
+    :param p:
+    :param n:
+    :return:
+    """
+    Fp = GF(p, proof=False)  # Fix the prime field Fp
+    Fpx = Fp['x']
+    (x,) = Fpx._first_ngens(1)  # Fpx: ring of polynomials in x, with coefficients in Fp
+
+    for i in range(1, 100):
+        C = HyperellipticCurve(x ** 5 + i * x)
+        J = C.jacobian()
+        P = JC_random_element(C)
+        P = n * P
+        if P[0] == 1:
+            a = i
+            return a
