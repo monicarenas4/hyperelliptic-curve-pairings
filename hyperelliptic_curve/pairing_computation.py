@@ -49,7 +49,7 @@ def compute_twisted_ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, len
     return None
 
 
-def compute_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length_miller):
+def compute_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length_miller, family='k16'):
     """
     :param curves:
     :param jacobians:
@@ -79,7 +79,7 @@ def compute_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length
 
     cases = ['case1', 'case2']
     # case1 => Degenerate Divisor
-    # case2 => General Divisor
+    # case2 =>
 
     for case in cases:
         if case == 'case1':
@@ -90,8 +90,8 @@ def compute_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length
             P = h * P
             P_prec, _, _ = precomputation_general_div(P)
 
-        pairing_value = ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, case)
-        pairing_value_naf = ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, case, NAF_rep=True)
+        pairing_value = ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, case, family=family)
+        pairing_value_naf = ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, case, NAF_rep=True, family=family)
         print('pairing value = ', pairing_value)
         print('pairing value NAF = ', pairing_value_naf)
 
