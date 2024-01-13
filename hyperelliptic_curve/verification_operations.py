@@ -60,27 +60,27 @@ def test_bilinearity_Twisted_Ate(curves, jacobians, fields, c_vec, F, U, p, r, h
 
         print('----------------\nCASE: %s\n----------------' % case)
         pairing_value1 = twisted_ate_cp8(P1, Q1, Q1_prec, c_vec, F, length_miller, U, Fp, case)
-        # print('pairing value 1 =\n', pairing_value1)
         pairing_value2 = twisted_ate_cp8(P2, Q2, Q2_prec, c_vec, F, length_miller, U, Fp, case) ** (
                 randint_P * randint_Q)
-        # print('pairing value 2 =\n', pairing_value2)
+#        print('pairing value 1 = ', pairing_value1)
+#        print('pairing value 2 = ', pairing_value2)
         print('bilinearity test:',
-              pairing_value1 == pairing_value2) if pairing_value1 != 1 and pairing_value2 != 1 else print('review code')
+              pairing_value1 == pairing_value2) if (pairing_value1 and pairing_value2) != 1 else print('review code')
 
         pairing_value_naf1 = twisted_ate_cp8(P1, Q1, Q1_prec, c_vec, F, length_miller, U, Fp, case,
                                              NAF_rep=True)
-        # print('pairing value NAF 1 =\n', pairing_value_naf1)
         pairing_value_naf2 = twisted_ate_cp8(P2, Q2, Q2_prec, c_vec, F, length_miller, U, Fp, case,
                                              NAF_rep=True) ** (randint_P * randint_Q)
-        # print('pairing value NAF 2 =\n', pairing_value_naf2)
+        # print('pairing value NAF 1 = ', pairing_value_naf1)
+        # print('pairing value NAF 2 = ', pairing_value_naf2)
         print('bilinearity NAF test:',
-              pairing_value_naf1 == pairing_value_naf2) if pairing_value_naf1 != 1 and pairing_value_naf2 != 1 \
+              pairing_value_naf1 == pairing_value_naf2) if (pairing_value_naf1 and pairing_value_naf2) != 1 \
             else print('review code')
 
     return None
 
 
-def test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length_miller):
+def test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length_miller, family='k16'):
     """
     :param curves:
     :param jacobians:
@@ -111,8 +111,6 @@ def test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h
     Q2 = new_coordinates(Q2)
     Q1 = new_coordinates(Q1)
 
-    # pow = (p ** 16 - 1) // r
-
     cases = ['case1', 'case2']
 
     for case in cases:
@@ -138,21 +136,20 @@ def test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h
 
         write_number_operations(file_name, 'test_bilinearity_Twisted_Ate', case, mult_pre=mult_pre, sq_pre=sq_pre)
 
-
         print('----------------\nCASE: %s\n----------------' % case)
-        pairing_value1 = ate_i(Q1, P1, P1_prec, c_vec, F, length_miller, U, W, case)
-        # print('pairing value 1 =\n', pairing_value1)
-        pairing_value2 = ate_i(Q2, P2, P2_prec, c_vec, F, length_miller, U, W, case) ** (
+        pairing_value1 = ate_i(Q1, P1, P1_prec, c_vec, F, length_miller, U, W, case, family=family)
+        pairing_value2 = ate_i(Q2, P2, P2_prec, c_vec, F, length_miller, U, W, case, family=family) ** (
                 randint_Q * randint_P)
-        # print('pairing value 2 =\n', pairing_value2)
+        # print('pairing value 1 = ', pairing_value1)
+        # print('pairing value 2 = ', pairing_value2)
         print('bilinearity test:',
-              pairing_value1 == pairing_value2) if pairing_value1 != 1 and pairing_value2 != 1 else print('review code')
+              pairing_value1 == pairing_value2) if (pairing_value1 and pairing_value2) != 1 else print('review code')
 
-        pairing_value_naf1 = ate_i(Q1, P1, P1_prec, c_vec, F, length_miller, U, W, case, NAF_rep=True)
-        # print('pairing value NAF 1 =\n', pairing_value_naf1)
-        pairing_value_naf2 = ate_i(Q2, P2, P2_prec, c_vec, F, length_miller, U, W, case, NAF_rep=True) ** (
-                randint_Q * randint_P)
-        # print('pairing value NAF 2 =\n', pairing_value_naf2)
+        pairing_value_naf1 = ate_i(Q1, P1, P1_prec, c_vec, F, length_miller, U, W, case, NAF_rep=True, family=family)
+        pairing_value_naf2 = ate_i(Q2, P2, P2_prec, c_vec, F, length_miller, U, W, case, NAF_rep=True,
+                                   family=family) ** (randint_Q * randint_P)
+        # print('pairing value NAF 1 = ', pairing_value_naf1)
+        # print('pairing value NAF 2 = ', pairing_value_naf2)
         print('bilinearity NAF test:',
               pairing_value_naf1 == pairing_value_naf2) if pairing_value_naf1 != 1 and pairing_value_naf2 != 1 \
             else print('review code')
