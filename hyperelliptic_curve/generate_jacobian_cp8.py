@@ -2,11 +2,12 @@ from sage.rings.finite_rings.finite_field_constructor import FiniteField, GF
 from sage.schemes.hyperelliptic_curves.constructor import HyperellipticCurve
 from sage.rings.integer_ring import ZZ
 
-from pairing_computation import test_twisted_ate
+from pairing_computation import compute_twisted_ate
 from verification_operations import test_bilinearity_Twisted_Ate
+from _utils import generate_curve_eq
 
 
-def generate_jacobian_cp8(u, X, Y, lx, ly, l, k=8, a=3):
+def generate_jacobian_cp8(u, X, Y, lx, ly, l, k=8):
     """
     :param u: defines the length of the Miller loop
     :param X: used to construct the prime p as: p = X^2 + 2Y^2
@@ -27,17 +28,6 @@ def generate_jacobian_cp8(u, X, Y, lx, ly, l, k=8, a=3):
     p = X ** 2 + 2 * Y ** 2
 
     U = [u, (u // 4), lx, ly]
-    F = [0, 3, 0, 0, 0]
-
-    # Construct the prime field Fp
-    Fp = GF(p, proof=False)  # Fix the prime field Fp
-    Fpx = Fp['x']
-    (x,) = Fpx._first_ngens(1)  # Fpx: ring of polynomials in x, with coefficients in Fp
-
-    # Hyperelliptic curve C
-    C = HyperellipticCurve(x ** 5 + a * x)  # Set the equation of the hyperelliptic curve C
-    # Jacobian of C
-    J = C.jacobian()  # J is the Jacobian of the curve C over Fp
 
     # Compute the order of the Jacobian with the characteristic polynomial of Frobenius
     Zx = ZZ['t']
@@ -48,6 +38,18 @@ def generate_jacobian_cp8(u, X, Y, lx, ly, l, k=8, a=3):
     n = xt(t=1)
     # cofactor of the Jacobian J
     h = n // r
+
+    # Construct the prime field Fp
+    Fp = GF(p, proof=False)  # Fix the prime field Fp
+    Fpx = Fp['x']
+    (x,) = Fpx._first_ngens(1)  # Fpx: ring of polynomials in x, with coefficients in Fp
+
+    # Hyperelliptic curve C
+    a = generate_curve_eq(p, n)
+    C = HyperellipticCurve(x ** 5 + a * x)  # Set the equation of the hyperelliptic curve C
+    # Jacobian of C
+    J = C.jacobian()  # J is the Jacobian of the curve C over Fp
+    F = [0, 3, 0, 0, 0]
 
     # Construct the degree 8 twist Ct of C
     # The curve Ct and its Jacobian are defined over Fp
@@ -89,7 +91,7 @@ def generate_jacobian_cp8(u, X, Y, lx, ly, l, k=8, a=3):
     for i in range(1, k):
         c_vec.append(c ** i)
 
-    test_twisted_ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, u)
+    compute_twisted_ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, u)
     test_bilinearity_Twisted_Ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, u)
 
     return None

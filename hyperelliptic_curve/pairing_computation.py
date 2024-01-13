@@ -3,7 +3,7 @@ from jacobian_operations import JC_random_element, HEC_random_point, new_coordin
 from pairing_types import twisted_ate_cp8, ate_i
 
 
-def test_twisted_ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, length_miller):
+def compute_twisted_ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, length_miller):
     """
     :param curves:
     :param jacobians:
@@ -35,21 +35,21 @@ def test_twisted_ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, length
             Q = HEC_random_point(Ct)
             xQ, yQ = Q[0], Q[1]
             Q = Ct([xQ, yQ])
-            Q_prec = precomputation_degenerate_div(Q)
+            Q_prec, _, _ = precomputation_degenerate_div(Q)
         else:
             Q = JC_random_element(Ct)
             Q = h_ * Q
-            Q_prec = precomputation_general_div(Q)
+            Q_prec, _, _ = precomputation_general_div(Q)
 
         pairing_value = twisted_ate_cp8(P, Q, Q_prec, c_vec, F, length_miller, U, Fp, case)
-        print('pairing value = ', pairing_value)
         pairing_value_naf = twisted_ate_cp8(P, Q, Q_prec, c_vec, F, length_miller, U, Fp, case, NAF_rep=True)
+        print('pairing value = ', pairing_value)
         print('pairing value NAF = ', pairing_value_naf)
 
     return None
 
 
-def test_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length_miller):
+def compute_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length_miller, family='k16'):
     """
     :param curves:
     :param jacobians:
@@ -84,15 +84,15 @@ def test_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length_mi
     for case in cases:
         if case == 'case1':
             P = HEC_random_point(C)
-            P_prec = precomputation_degenerate_div(P)
+            P_prec, _, _ = precomputation_degenerate_div(P)
         else:
             P = JC_random_element(C)
             P = h * P
-            P_prec = precomputation_general_div(P)
+            P_prec, _, _ = precomputation_general_div(P)
 
-        pairing_value = ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, case)
+        pairing_value = ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, case, family=family)
+        pairing_value_naf = ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, case, NAF_rep=True, family=family)
         print('pairing value = ', pairing_value)
-        pairing_value_naf = ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, case, NAF_rep=True)
         print('pairing value NAF = ', pairing_value_naf)
 
     return None
