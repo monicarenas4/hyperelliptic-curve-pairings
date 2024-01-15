@@ -1,8 +1,8 @@
 from sage.rings.integer_ring import ZZ
+import datetime
 
 from generate_jacobian_cp8 import generate_jacobian
 from generate_jacobian_k16 import generate_jacobian_k16
-import datetime
 from _utils import make_folder
 from write_number_operations import operations_main, write_number_operations_head
 
