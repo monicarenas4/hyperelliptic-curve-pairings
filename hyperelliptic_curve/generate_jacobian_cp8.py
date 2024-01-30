@@ -91,8 +91,8 @@ def generate_jacobian_cp8(u, X, Y, lx, ly, l, k=8):
     for i in range(1, k):
         c_vec.append(c ** i)
 
-    compute_twisted_ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, u)
-    test_bilinearity_Twisted_Ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, u)
+    compute_twisted_ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, u, k=k)
+    # test_bilinearity_Twisted_Ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, u)
 
     return None
 

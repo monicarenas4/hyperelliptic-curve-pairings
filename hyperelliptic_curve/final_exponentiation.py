@@ -1,18 +1,20 @@
-from _utils import frobenius_power
+from _utils import frobenius_power, hamming_weight, NAf_hamming_weight, NAF
+from math import log2, floor, ceil
+from sage.all import Integer
 
 
-def final_exponentiation_cp8(f, U: list, K):
+def final_exponentiation_cp8(miller_fun, U: list, Fp, NAF_rep=False):
     """
-    :param f: output of the miller loop
+    :param miller_fun: output of the miller loop
     :param U: 4-elements vector
-    :param K:
+    :param Fp:
     :return: final pairing output
     """
     u, u0, lx, ly = U[0], U[1], U[2], U[3]
     t0 = 1
-    f = f.frobenius(4) / f
-    fp = f.frobenius(1)
-    fu1 = f ** u
+    miller_fun = miller_fun.frobenius(4) / miller_fun
+    fp = miller_fun.frobenius(1)
+    fu1 = miller_fun ** u
     f1 = fp * fu1
     fp2 = f1.frobenius(2)
     f1u1 = f1 ** u
@@ -45,7 +47,7 @@ def final_exponentiation_cp8(f, U: list, K):
     x4 = x3 ** lx
     z1 = y41625 * y385
     z2 = z1 * f22
-    N = f * x4 * z2
+    N = miller_fun * x4 * z2
     y22 = y2 ** 2
     y23 = y22 * y2
     y22lx = y22 ** lx
@@ -55,12 +57,26 @@ def final_exponentiation_cp8(f, U: list, K):
     M = m4 * y23
     t0 = N / M
 
-    exp_u, exp_u0, exp_lx, mult, sq, inv, frob = 3, 4, 3, 17, 17, 2, 3
+    mk, sk, fk, sk_cyclo, ik = 27, 18, 6, 12, 69
+    exp_u_n, exp_u0_n, exp_ulx_n, mult, sq, inv, frob_power = 3, 4, 3, 17, 17, 2, 3
 
-    return t0, exp_u, exp_u0, exp_lx, mult, sq, inv, frob
+    if not NAF_rep:
+        exp_u = (floor(log2(u)) - 1) * sk_cyclo + (hamming_weight(Integer(u).digits(2)) - 1) * mk
+        exp_u0 = (floor(log2(u0)) - 1) * sk_cyclo + (hamming_weight(Integer(u0).digits(2)) - 1) * mk
+        exp_lx = (floor(log2(lx)) - 1) * sk_cyclo + (hamming_weight(Integer(lx).digits(2)) - 1) * mk
+    else:
+        exp_u = (ceil(log2(u)) - 1) * sk_cyclo + (NAf_hamming_weight(NAF(u)) - 1) * mk
+        exp_u0 = (ceil(log2(u0)) - 1) * sk_cyclo + (NAf_hamming_weight(NAF(u0)) - 1) * mk
+        exp_lx = (floor(log2(lx)) - 1) * sk_cyclo + (NAf_hamming_weight(NAF(lx)) - 1) * mk
+
+    # count over Fp
+    mult, sq, inv, frob = (mult * mk), (sq * sk), (inv * ik), (frob_power * fk)
+    total_ops = (exp_u_n * exp_u) + (exp_u0_n * exp_u0) + (exp_ulx_n * exp_lx) + mult + sq + inv + frob
+
+    return t0, exp_u, exp_u0, exp_lx, mult, sq, inv, frob, total_ops
 
 
-def final_exponentiation_k16(f, U, W, k=16):
+def final_exponentiation_k16(f, U, W, k=16, NAF_rep=False):
     """
     :param f:
     :param U:
@@ -107,12 +123,24 @@ def final_exponentiation_k16(f, U, W, k=16):
     N, M = (N0 * N2 * N3 * N5 * N6), (N1 * N4 * N7)
     t0 = N / M
 
-    exp_u, exp_um, mult, sq, inv, frob_power = 11, 2, 12, 6, 2, 8
+    mk, sk, fk, sk_cyclo, ik = 81, 54, 14, 36, 159
+    exp_u_n, exp_um_n, mult, sq, inv, frob_power = 11, 2, 12, 6, 2, 8
 
-    return t0, exp_u, exp_um, mult, sq, inv, frob_power
+    if not NAF_rep:
+        exp_u = (floor(log2(u)) - 1) * sk_cyclo + (hamming_weight(Integer(u).digits(2)) - 1) * mk
+        exp_um = (floor(log2(um)) - 1) * sk_cyclo + (hamming_weight(Integer(um).digits(2)) - 1) * mk
+    else:
+        exp_u = (ceil(log2(u)) - 1) * sk_cyclo + (NAf_hamming_weight(NAF(u)) - 1) * mk
+        exp_um = (ceil(log2(um)) - 1) * sk_cyclo + (NAf_hamming_weight(NAF(um)) - 1) * mk
+
+    # count over Fp
+    mult, sq, inv, frob = (mult * mk), (sq * sk), (inv * ik), (frob_power * fk)
+    total_ops = (exp_u_n * exp_u) + (exp_um_n * exp_um) + mult + sq + inv + frob
+
+    return t0, exp_u, exp_um, mult, sq, inv, frob, total_ops
 
 
-def final_exponentiation_new_k16(f, U, W, k=16):
+def final_exponentiation_new_k16(f, U, W, k=16, NAF_rep=False):
     """
     :param f:
     :param U:
@@ -136,7 +164,7 @@ def final_exponentiation_new_k16(f, U, W, k=16):
     gu5 = gu4 ** u
     gu6 = gu5 ** u
     y1 = gu6
-    y2 = 1 / gu5
+    y2 = frobenius_power(gu5, k, W, 8)  # 1 / gu5
     y3 = y1 * y2
     y4 = y3 ** 2
     y5 = y4 ** 2
@@ -161,8 +189,21 @@ def final_exponentiation_new_k16(f, U, W, k=16):
     N7 = frobenius_power(hu2, k, W, 7)
     N = N0 * N2 * N3 * N5 * N6
     M = N1 * N4 * N7
-    t0 = N / M
+    t1 = frobenius_power(M, k, W, 8)
+    t0 = N * t1  # / M
 
-    exp_u, exp_up, mult, sq, inv, frob_power = 13, 2, 13, 6, 3, 8
+    mk, sk, fk, sk_cyclo, ik = 81, 54, 14, 36, 159
+    exp_u_n, exp_up_n, mult, sq, inv, frob_power = 13, 2, 13, 6, 1, 8
 
-    return t0, exp_u, exp_up, mult, sq, inv, frob_power
+    if not NAF_rep:
+        exp_u = (floor(log2(u)) - 1) * sk_cyclo + (hamming_weight(Integer(u).digits(2)) - 1) * mk
+        exp_up = (floor(log2(up)) - 1) * sk_cyclo + (hamming_weight(Integer(up).digits(2)) - 1) * mk
+    else:
+        exp_u = (ceil(log2(u)) - 1) * sk_cyclo + (NAf_hamming_weight(NAF(u)) - 1) * mk
+        exp_up = (ceil(log2(up)) - 1) * sk_cyclo + (NAf_hamming_weight(NAF(up)) - 1) * mk
+
+    # count over Fp
+    mult, sq, inv, frob = (mult * mk), (sq * sk), (inv * ik), (frob_power * fk)
+    total_ops = (exp_u_n * exp_u) + (exp_up_n * exp_up) + mult + sq + inv + frob
+
+    return t0, exp_u, exp_up, mult, sq, inv, frob, total_ops

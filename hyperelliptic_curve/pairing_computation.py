@@ -1,9 +1,12 @@
+from write_number_operations import write_number_operations
 from jacobian_operations import JC_random_element, HEC_random_point, new_coordinates, precomputation_general_div, \
     precomputation_degenerate_div
 from pairing_types import twisted_ate_cp8, ate_i
 
+file_name = 'results/number_of_operations.txt'
 
-def compute_twisted_ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, length_miller):
+
+def compute_twisted_ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, length_miller, k: int):
     """
     :param curves:
     :param jacobians:
@@ -28,28 +31,31 @@ def compute_twisted_ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, len
     P = new_coordinates(P)
 
     cases = ['case1', 'case2']
+    # case 1 => Degenerate Divisor
 
     for case in cases:
         if case == 'case1':
-            # case 1 => Degenerate Divisor
             Q = HEC_random_point(Ct)
             xQ, yQ = Q[0], Q[1]
             Q = Ct([xQ, yQ])
-            Q_prec, _, _ = precomputation_degenerate_div(Q)
+            Q_prec, mult_pre, sq_pre = precomputation_degenerate_div(Q)
         else:
             Q = JC_random_element(Ct)
             Q = h_ * Q
-            Q_prec, _, _ = precomputation_general_div(Q)
+            Q_prec, mult_pre, sq_pre = precomputation_general_div(Q)
 
-        pairing_value = twisted_ate_cp8(P, Q, Q_prec, c_vec, F, length_miller, U, Fp, case)
-        pairing_value_naf = twisted_ate_cp8(P, Q, Q_prec, c_vec, F, length_miller, U, Fp, case, NAF_rep=True)
+        write_number_operations(file_name, embedding_degree=k, function='twisted_ate',
+                                case=case, mult_pre=mult_pre, sq_pre=sq_pre)
+
+        pairing_value = twisted_ate_cp8(P, Q, Q_prec, c_vec, F, length_miller, U, Fp, k=k, case=case)
+        pairing_value_naf = twisted_ate_cp8(P, Q, Q_prec, c_vec, F, length_miller, U, Fp, k=k, case=case, NAF_rep=True)
         print('pairing value = ', pairing_value)
         print('pairing value NAF = ', pairing_value_naf)
 
     return None
 
 
-def compute_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length_miller, family='k16'):
+def compute_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length_miller, k: int, family='k16'):
     """
     :param curves:
     :param jacobians:
@@ -84,14 +90,18 @@ def compute_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length
     for case in cases:
         if case == 'case1':
             P = HEC_random_point(C)
-            P_prec, _, _ = precomputation_degenerate_div(P)
+            P_prec, mult_pre, sq_pre = precomputation_degenerate_div(P)
         else:
             P = JC_random_element(C)
             P = h * P
-            P_prec, _, _ = precomputation_general_div(P)
+            P_prec, mult_pre, sq_pre = precomputation_general_div(P)
 
-        pairing_value = ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, case, family=family)
-        pairing_value_naf = ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, case, NAF_rep=True, family=family)
+        write_number_operations(file_name, function='ate_i', embedding_degree=k,
+                                case=case, mult_pre=mult_pre, sq_pre=sq_pre)
+
+        pairing_value = ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, k=k, case=case, family=family)
+        pairing_value_naf = ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, k=k,
+                                  case=case, NAF_rep=True, family=family)
         print('pairing value = ', pairing_value)
         print('pairing value NAF = ', pairing_value_naf)
 
