@@ -133,3 +133,22 @@ def generate_curve_eq(p, n):
         P = n * P
         if P[0] == 1:
             return a
+
+
+def field_conversion(k: int):
+    """
+    :param k: embedding degree
+    :return: m, s
+    """
+    m, s = 1, 1
+    if k == 8:
+        m1, s1 = 1, 1
+        m, s = (m * m1), (s * s1)
+    elif k == 16:
+        m2, s2 = 3, 2
+        m, s = (m * m2), (s * s2)
+    elif k == 24:
+        m3, s3 = 6, 5
+        m, s = (m * m3), (s * s3)
+
+    return m, s

@@ -22,7 +22,7 @@ def miller_function(P, Q, Q_prec, c_vec, F, length_miller, case: str, k: int, tw
     :return:
     """
     global P_neg, mult_DBL, sq_DBL, mult_ADD, sq_ADD, mult_line_DBL, sq_line_DBL
-    global mult_line_ADD, sq_line_ADD, sk, mk, mult_miller_DBL
+    global mult_line_ADD, sq_line_ADD, sk, mk, s, m, mk_DBL, mult_miller_DBL
 
     if not NAF_rep:
         vector_miller = Integer(length_miller).digits(2)
@@ -35,14 +35,14 @@ def miller_function(P, Q, Q_prec, c_vec, F, length_miller, case: str, k: int, tw
 
     for i in range(len(vector_miller) - 2, -1, -1):
         T, lc, mult_line_DBL, sq_line_DBL, mult_DBL, sq_DBL = DBL(T, Q_prec, Q, F, c_vec, case=case, twist=twist)
-        fc = lc * fc ** 2  # 1m_8, 1s_8 (sparse)
+        fc = lc * fc ** 2  # 1_m8, 1_s8 (sparse)
         if vector_miller[i] == 1:
             T, lc, mult_line_ADD, sq_line_ADD, mult_ADD, sq_ADD = ADD(P, T, Q_prec, Q, F, c_vec, case=case, twist=twist)
-            fc = lc * fc  # 1m_8 (sparse)
+            fc = lc * fc  # 1_m8 (sparse)
         elif vector_miller[i] == -1:
             T, lc, mult_line_ADD, sq_line_ADD, mult_ADD, sq_ADD = ADD(P_neg, T, Q_prec, Q, F, c_vec, case=case,
                                                                       twist=twist)
-            fc = lc * fc  # 1m_8
+            fc = lc * fc  # 1_m8
 
     if not NAF_rep:
         number_of_ADD = hamming_weight(vector_miller) - 1
@@ -50,17 +50,15 @@ def miller_function(P, Q, Q_prec, c_vec, F, length_miller, case: str, k: int, tw
         number_of_ADD = NAf_hamming_weight(vector_miller) - 1
 
     if k == 8:
-        mk, mk_DBL, sk, fk, sk_cyclo, ik = 27, 18, 18, 6, 12, 69  # check
-        mult_miller_DBL = (mk_DBL * (number_of_DBL - 1))  # check
+        m, s, mk, mk_DBL, sk = 1, 1, 27, 18, 18
     elif k == 16:
-        mk, sk, fk, sk_cyclo, ik = 81, 54, 14, 36, 159
-        mult_miller_DBL = (mk * (number_of_DBL - 1))
+        m, s, mk, mk_DBL, sk = 3, 2, 81, 54, 54
 
-    mult_DBL = mult_DBL * number_of_DBL
-    sq_DBL = sq_DBL * number_of_DBL
-    mult_ADD = mult_ADD * number_of_ADD
-    sq_ADD = sq_ADD * number_of_ADD
-    # mult_miller_DBL = (mk * (number_of_DBL - 1))  # check
+    mult_DBL = ((number_of_DBL - 1) * (mult_DBL * m)) + (1 * 25 * m)
+    sq_DBL = ((number_of_DBL - 1) * (sq_DBL * s)) + (1 * 5 * s)
+    mult_ADD = (mult_ADD * m) * number_of_ADD
+    sq_ADD = (sq_ADD * s) * number_of_ADD
+    mult_miller_DBL = (mk_DBL * (number_of_DBL - 1))
     sq_miller_DBL = (sk * (number_of_DBL - 1))
     mult_miller_ADD = (mk * number_of_ADD)
     sq_miller_ADD = 0 * number_of_ADD
