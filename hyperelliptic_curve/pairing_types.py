@@ -43,44 +43,44 @@ def ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, k: int, case: str = 'case
     :param F:
     :param length_miller:
     :param U:
-    :param K:
+    :param W:
+    :param k: embedding degree
     :param case: case1 => degenerate divisor or case2 => general divisor
     :param NAF_rep: true or false
+    :param family:
     :return:
     """
     global pairing_value
 
-    if family == 'k16' and NAF_rep == False:
-        miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case, k=k, twist='k16')
-        pairing_value, exp_u, exp_um, mult, sq, inv, frob_power, total = final_exponentiation_k16(miller_fun, U, W)
-        # write the number of operations
-        write_number_operations(file_name, 'final_exp ate_i', embedding_degree=k, case=case, NAF_rep=NAF_rep,
-                                exp_u=exp_u, exp_um=exp_um, mult_FE=mult, sq_FE=sq, inv_FE=inv, frob_power=frob_power,
-                                total=total)
-    elif family == 'k16' and NAF_rep == True:
+    if family == "k16" and NAF_rep == True:
         miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case, k=k, twist='k16',
                                      NAF_rep=NAF_rep)
         pairing_value, exp_u, exp_um, mult, sq, inv, frob_power, total = final_exponentiation_k16(miller_fun, U, W,
                                                                                                   NAF_rep=NAF_rep)
-        # write the number of operations
         write_number_operations(file_name, 'final_exp ate_i', embedding_degree=k, case=case, NAF_rep=NAF_rep,
-                                exp_u=exp_u, exp_um=exp_um, mult_FE=mult, sq_FE=sq, inv_FE=inv, frob_power=frob_power,
+                                exp_u=exp_u, exp_um=exp_um, mult_FE=mult, sq_FE=sq, inv_FE=inv, frobenius=frob_power,
                                 total=total)
-    elif family != 'k16' and NAF_rep == False:
+
+    elif family == "k16":
         miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case, k=k, twist='k16')
-        pairing_value, exp_u, exp_up, mult, sq, inv, frob_power, total = final_exponentiation_new_k16(miller_fun, U, W)
-        # write the number of operations
-        write_number_operations(file_name, 'final_exp ate_i', embedding_degree=k, case=case,
-                                NAF_rep=NAF_rep, exp_u=exp_u, exp_up=exp_up, mult_FE=mult,
-                                sq_FE=sq, inv_FE=inv, frob_power=frob_power, total=total)
-    elif family != 'k16' and NAF_rep == True:
-        miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller,
-                                     case=case, k=k, twist='k16', NAF_rep=NAF_rep)
+        pairing_value, exp_u, exp_um, mult, sq, inv, frob_power, total = final_exponentiation_k16(miller_fun, U, W)
+        write_number_operations(file_name, 'final_exp ate_i', embedding_degree=k, case=case, exp_u=exp_u, exp_um=exp_um,
+                                mult_FE=mult, sq_FE=sq, inv_FE=inv, frobenius=frob_power, total=total)
+
+    elif family != "k16" and NAF_rep == True:
+        miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case,
+                                     k=k, twist='k16', NAF_rep=NAF_rep)
         pairing_value, exp_u, exp_up, mult, sq, inv, frob_power, total = final_exponentiation_new_k16(miller_fun, U, W,
                                                                                                       NAF_rep=NAF_rep)
-        # write the number of operations
         write_number_operations(file_name, 'final_exp ate_i', embedding_degree=k, case=case,
                                 NAF_rep=NAF_rep, exp_u=exp_u, exp_up=exp_up, mult_FE=mult,
-                                sq_FE=sq, inv_FE=inv, frob_power=frob_power, total=total)
+                                sq_FE=sq, inv_FE=inv, frobenius=frob_power, total=total)
+
+    elif family != "k16":
+        miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case, k=k, twist='k16')
+        pairing_value, exp_u, exp_up, mult, sq, inv, frob_power, total = final_exponentiation_new_k16(miller_fun, U, W)
+
+        write_number_operations(file_name, 'final_exp ate_i', embedding_degree=k, case=case, exp_u=exp_u, exp_up=exp_up,
+                                mult_FE=mult, sq_FE=sq, inv_FE=inv, frobenius=frob_power, total=total)
 
     return pairing_value

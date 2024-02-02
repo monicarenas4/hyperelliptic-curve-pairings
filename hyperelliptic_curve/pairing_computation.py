@@ -2,6 +2,7 @@ from write_number_operations import write_number_operations
 from jacobian_operations import JC_random_element, HEC_random_point, new_coordinates, precomputation_general_div, \
     precomputation_degenerate_div
 from pairing_types import twisted_ate_cp8, ate_i
+from _utils import field_conversion
 
 file_name = 'results/number_of_operations.txt'
 
@@ -19,6 +20,7 @@ def compute_twisted_ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, len
     :param h:
     :param h_:
     :param length_miller:
+    :param k: embedding degree
     :return:
     """
     C, Ct, C8 = curves[0], curves[1], curves[2]
@@ -31,7 +33,6 @@ def compute_twisted_ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, len
     P = new_coordinates(P)
 
     cases = ['case1', 'case2']
-    # case 1 => Degenerate Divisor
 
     for case in cases:
         if case == 'case1':
@@ -44,8 +45,10 @@ def compute_twisted_ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, len
             Q = h_ * Q
             Q_prec, mult_pre, sq_pre = precomputation_general_div(Q)
 
+        m, s = field_conversion(k)
+        mult_pre, sq_pre = (mult_pre * m), (sq_pre * s)
         write_number_operations(file_name, embedding_degree=k, function='twisted_ate',
-                                case=case, mult_pre=mult_pre, sq_pre=sq_pre)
+                                case=case, mult_pre=mult_pre, sq_pre=sq_pre, total=(mult_pre + sq_pre))
 
         pairing_value = twisted_ate_cp8(P, Q, Q_prec, c_vec, F, length_miller, U, Fp, k=k, case=case)
         pairing_value_naf = twisted_ate_cp8(P, Q, Q_prec, c_vec, F, length_miller, U, Fp, k=k, case=case, NAF_rep=True)
@@ -63,11 +66,14 @@ def compute_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length
     :param c_vec:
     :param F:
     :param U:
+    :param W:
     :param p:
     :param r:
     :param h:
     :param h_:
     :param length_miller:
+    :param k: embedding degree
+    :param family: polynomial family
     :return:
     """
     C, Ct, C16 = curves[0], curves[1], curves[2]
@@ -81,11 +87,7 @@ def compute_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length
     Q = h_ * Q  # Force Q to have order r
     Q = new_coordinates(Q)
 
-    pow = (p ** 16 - 1) // r
-
     cases = ['case1', 'case2']
-    # case1 => Degenerate Divisor
-    # case2 =>
 
     for case in cases:
         if case == 'case1':
@@ -96,8 +98,10 @@ def compute_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length
             P = h * P
             P_prec, mult_pre, sq_pre = precomputation_general_div(P)
 
-        write_number_operations(file_name, function='ate_i', embedding_degree=k,
-                                case=case, mult_pre=mult_pre, sq_pre=sq_pre)
+        m, s = field_conversion(k)
+        mult_pre, sq_pre = (mult_pre * m), (sq_pre * s)
+        write_number_operations(file_name, embedding_degree=k, function='ate_i',
+                                case=case, mult_pre=mult_pre, sq_pre=sq_pre, total=mult_pre + sq_pre)
 
         pairing_value = ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, k=k, case=case, family=family)
         pairing_value_naf = ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, k=k,
