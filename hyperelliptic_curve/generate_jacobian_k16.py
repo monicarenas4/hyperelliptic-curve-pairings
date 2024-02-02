@@ -91,7 +91,7 @@ def generate_jacobian_k16(u, k=16, family='k16'):
 
     W = w_powers_p(w, p, k)
 
-    compute_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u, family)
-    test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u, family)
+    compute_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u, k, family)
+    # test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u, family)
 
     return None

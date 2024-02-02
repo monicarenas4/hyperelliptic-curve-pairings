@@ -1,70 +1,72 @@
-def line_case1(D2_vec, D2, C, L, twist: str = None):
+def line_case1(Q_prec, Q, line, c_vec, twist: str = None):
     """
-    :param D2_vec:
-    :param D2: [-xQ, yQ, xQ^2, -xQ^3]
-    :param C: coefficients of the line
-    :param L: 4-element vector
+    :param Q_prec:
+    :param Q: [-xQ, yQ, xQ^2, -xQ^3]
+    :param line: coefficients of the line
+    :param c_vec: 4-element vector
     :return: evaluation of the line
     """
 
-    l3, l2, l1, l0, l = C[0], C[1], C[2], C[3], C[4]
-    c, c2, c3, c5 = L[0], L[1], L[2], L[3]
+    l3, l2, l1, l0, l = line[0], line[1], line[2], line[3], line[4]
+    c, c2, c3, c5 = c_vec[0], c_vec[1], c_vec[2], c_vec[3]
 
     if twist == None:
-        x2, y2, x22, x23 = -D2[0], D2[1], D2_vec[0], D2_vec[1]
+        x2, y2, x22, x23 = -Q[0], Q[1], Q_prec[0], Q_prec[1]
         x2 = x2 / c ** 2
         y2 = y2 / c ** 5
         x22 = x22 / c ** 4
         x23 = x23 / c ** 6
         l3, l2, l1, l0 = l3, l2, l1, l0
     else:
-        x2, y2, x22, x23 = -D2[0], D2[1], D2_vec[0], D2_vec[1]
+        x2, y2, x22, x23 = -Q[0], Q[1], Q_prec[0], Q_prec[1]
         l3, l2, l1, l0 = (l3 * c), (l2 / c), (l1 / c ** 3), (l0 / c ** 5)
 
     cD2 = (y2 * l + l3 * x23 - l2 * x22 + l1 * x2 - l0)  # M4
+    mult_, sq_ = 4, 0
 
-    return cD2, 4, 0
+    return cD2, mult_, sq_
 
 
-def line_case2(D2_vec, D2, D3, C, L, twist=None):
+def line_case2(Q_prec, Q, D3, line, c_vec, twist=None):
     """
-    :param D2_vec:
-    :param D2:
-    :param D3:
-    :param C:
+    :param Q_prec:
+    :param Q:
+    :param D3: not used because of the twist
+    :param line:
     :return:
     """
     # t1, t2, t3, t4, t5 = D2_vec[0], D2_vec[1], D2_vec[2], D2_vec[3], D2_vec[4]
-    t6, t7, t8, t9, t10 = D2_vec[5], D2_vec[6], D2_vec[7], D2_vec[8], D2_vec[9]
-    t11, t12, t13, t14, t15 = D2_vec[10], D2_vec[11], D2_vec[12], D2_vec[13], D2_vec[14]
-    t16, t17, t18, t19, t20 = D2_vec[15], D2_vec[16], D2_vec[17], D2_vec[18], D2_vec[19]
-    t21, t22, t23, t24, t25 = D2_vec[20], D2_vec[21], D2_vec[22], D2_vec[23], D2_vec[24]
+    t6, t7, t8, t9, t10 = Q_prec[5], Q_prec[6], Q_prec[7], Q_prec[8], Q_prec[9]
+    t11, t12, t13, t14, t15 = Q_prec[10], Q_prec[11], Q_prec[12], Q_prec[13], Q_prec[14]
+    t16, t17, t18, t19, t20 = Q_prec[15], Q_prec[16], Q_prec[17], Q_prec[18], Q_prec[19]
+    t21, t22, t23, t24, t25 = Q_prec[20], Q_prec[21], Q_prec[22], Q_prec[23], Q_prec[24]
 
-    c, c2, c3, c5 = L[0], L[1], L[2], L[3]
+    c, c2, c3, c5 = c_vec[0], c_vec[1], c_vec[2], c_vec[3]
 
-    u21, u20 = D2[0][1], D2[0][0]
+    u21, u20 = Q[0][1], Q[0][0]
     # v21, v20 = D2[1][1], D2[1][0]
 
     # U31, U30, z31 = D3[0], D3[1], D3[6]
-    l3, l2, l1, l0, l = C[0], C[1], C[2], C[3], C[4]
+    l3, l2, l1, l0, l = line[0], line[1], line[2], line[3], line[4]
 
     w1, w2 = l, l3
-    w3, w4 = (w1 * t6), (w2 * t17)  # M2
-    w5, w6, w7 = (l2 * t12), (l1 * t9), (l0 * t8)  # M5
+    w3, w4 = (w1 * t6), (w2 * t17)  # 2m
+    w5, w6, w7 = (l2 * t12), (l1 * t9), (l0 * t8)  # 3m
 
     if twist == None:
         w8 = w3 / (c ** 10) - w4 / (c ** 11) + w5 / (c ** 9) - w6 / (c ** 7) - w7 / (c ** 5)
-        w9 = w1 * w8  # M6
-        w10, w11, w12, w13 = (w2 * t20), (l2 * t21), (l1 * t23), (l0 * t25)  # M10
+        w9 = w1 * w8  # 4m
+        w10, w11, w12, w13 = (w2 * t20), (l2 * t21), (l1 * t23), (l0 * t25)  # 4m
         w14 = w10 / (c ** 12) - w11 / (c ** 10) + w12 / (c ** 8) - w13 / (c ** 6)
-        w15 = w2 * w14  # M11
-        w16, w17, w18 = (l2 * t19), (l1 * t18), (l0 * t22)  # M14
+        w15 = w2 * w14  # 4m
+        w16, w17, w18 = (l2 * t19), (l1 * t18), (l0 * t22)  # 3m
         w19 = w16 / (c ** 8) - w17 / (c ** 6) + w18 / (c ** 4)
-        w20 = l2 * w19  # M15
-        w21, w22 = (l1 * u20), (l0 * u21)  # M17
+        w20 = l2 * w19  # 3m
+        w21, w22 = (l1 * u20), (l0 * u21)  # 2m
         w23 = w21 / (c ** 4) - w22 / (c ** 2)
-        w24, w25 = (l1 * w23), (l0 ** 2)  # M18 S1
+        w24, w25 = (l1 * w23), (l0 ** 2)  # 2m 1s
         cD2 = (w9 + w15 + w20 + w24 + w25)
+        mult_, sq_ = 27, 1
     else:
         w8 = w3 / (c ** 2) - w4 / c + w5 / (c ** 3) - w6 / (c ** 5) - w7 / (c ** 7)
         w9 = w1 * w8
@@ -78,6 +80,7 @@ def line_case2(D2_vec, D2, D3, C, L, twist=None):
         w23 = w21 / (c ** 8) - w22 / (c ** 10)
         w24, w25 = (l1 * w23), (l0 ** 2)
         cD2 = (w9 + w15 + w20 + w24 + w25 / (c ** 12))
+        mult_, sq_ = 0, 0
 
     # i1, i2, i3 = (z31 ** 2), (z31 * U30), (U30 ** 2)
     # i4 = i1 * t19
@@ -87,7 +90,15 @@ def line_case2(D2_vec, D2, D3, C, L, twist=None):
     # u3D2 = i3 + i4 + i9 + i10
     # lD2 = cD2
 
-    return cD2, 18, 1
+    # print('w1=', w1)
+    # print('w8=', w8)
+    # print('w2=', w2)
+    # print('w14=', w14)
+    # print('w19=', w19)
+    # print('w23=', w23)
+    # print('cD2=', cD2)
+
+    return cD2, mult_, sq_
 
 
 def precomputation_degenerate_div(P):
@@ -142,28 +153,28 @@ def precomputation_general_div(D2):
     return Q, 13, 3
 
 
-def ADD(D1, D2, Q_vec, Q, F, L=None, case: str = 'case1', twist: str = None):
+def ADD(P, T, Q_prec, Q, F, c_vec=None, case: str = 'case1', twist: str = None):
     """
-    :param D1:
-    :param D2:
-    :param Q_vec:
+    :param P:
+    :param T:
+    :param Q_prec:
     :param Q:
     :param F:
     :param case: case1 => degenerate divisor or case2 => general divisor
     :return:
     """
-    f0, f1, f2, f3, f4 = F[0], F[1], F[2], F[3], F[4]
-    U11, U10, V11, V10 = D1[0], D1[1], D1[2], D1[3]
-    U21, U20, V21, V20 = D2[0], D2[1], D2[2], D2[3]
-    Z21, Z22, z21, z22 = D2[4], D2[5], D2[6], D2[7]
-    z23 = Z21 * Z22  # M1
-    z24 = z21 * z23  # M2
-    Ut11, Ut10 = (U11 * z21), (U10 * z21)  # M4
+    # f0, f1, f2, f3, f4 = F[0], F[1], F[2], F[3], F[4]
+    U11, U10, V11, V10 = P[0], P[1], P[2], P[3]
+    U21, U20, V21, V20 = T[0], T[1], T[2], T[3]
+    Z21, Z22, z21, z22 = T[4], T[5], T[6], T[7]
+    z23 = Z21 * Z22  # 1m
+    z24 = z21 * z23  # 1m
+    Ut11, Ut10 = (U11 * z21), (U10 * z21)  # 2m
     y1, y2 = (Ut11 - U21), (U20 - Ut10)
-    y3 = U11 * y1  # M5
+    y3 = U11 * y1  # 1m
     y4 = y2 + y3
 
-    r = y2 * y4 + y1 ** 2 * U10  # M6 S1
+    r = y2 * y4 + y1 ** 2 * U10  # 1m, 1s
     inv1, inv0 = y1, y4
     w0, w1 = (V10 * z24 - V20), (V11 * z24 - V21)  # M8
     w2, w3 = (inv0 * w0), (inv1 * w1)  # M10
@@ -190,31 +201,33 @@ def ADD(D1, D2, Q_vec, Q, F, L=None, case: str = 'case1', twist: str = None):
     V31 = U31 * w1 + z31 * (U30 - l1p)  # M36
     line = [l3, l2, l1, l0, l]
 
+    mult_, sq_ = 36, 5
+
     D3 = [U31, U30, V31, V30, Z31, Z32, z31, z32]
     if case == 'case1' and twist is not None:
-        lcE, mult_line, sq_line = line_case1(Q_vec, Q, line, L, twist='k16')
+        lcE, mult_line, sq_line = line_case1(Q_prec, Q, line, c_vec, twist='k16')
     elif case == 'case1':
-        lcE, mult_line, sq_line = line_case1(Q_vec, Q, line, L)
+        lcE, mult_line, sq_line = line_case1(Q_prec, Q, line, c_vec)
     elif case == 'case2' and twist is not None:
-        lcE, mult_line, sq_line = line_case2(Q_vec, Q, D3, line, L, twist='k16')
+        lcE, mult_line, sq_line = line_case2(Q_prec, Q, D3, line, c_vec, twist='k16')
     else:
-        lcE, mult_line, sq_line = line_case2(Q_vec, Q, D3, line, L)
+        lcE, mult_line, sq_line = line_case2(Q_prec, Q, D3, line, c_vec)
 
-    return D3, lcE, mult_line, sq_line, 36, 5
+    return D3, lcE, mult_line, sq_line, mult_, sq_
 
 
-def DBL(D1, Q_vec, Q, F, L=None, case: str = 'case1', twist: str = None):
+def DBL(T, Q_prec, Q, F, c_vec=None, case: str = 'case1', twist: str = None):
     """
-    :param D1:
-    :param Q_vec:
+    :param T: point over Fp
+    :param Q_prec:
     :param Q:
     :param F:
     :param case: case1 => degenerate divisor or case2 => general divisor
     :return:
     """
     f0, f1, f2, f3, f4 = F[0], F[1], F[2], F[3], F[4]
-    U11, U10, V11, V10 = D1[0], D1[1], D1[2], D1[3]
-    Z11, Z12, z11, z12 = D1[4], D1[5], D1[6], D1[7]
+    U11, U10, V11, V10 = T[0], T[1], T[2], T[3]
+    Z11, Z12, z11, z12 = T[4], T[5], T[6], T[7]
     Ut10 = U10 * z11  # M1
     Vt11 = 2 * V11
     Vt10 = 2 * V10
@@ -259,18 +272,20 @@ def DBL(D1, Q_vec, Q, F, L=None, case: str = 'case1', twist: str = None):
     V31 = U31 * w1 + z31 * (U30 - l1 * s1p)  # M38
     line = [l3, l2, l1, l0, l]
 
-    D3 = [U31, U30, V31, V30, Z31, Z32, z31, z32]
+    D3 = [U31, U30, V31, V30, Z31, Z32, z31, z32]  # 2*T, result of the doubling
+
+    mult_, sq_ = 38, 6
 
     if case == 'case1' and twist is not None:
-        lcE, mult_line, sq_line = line_case1(Q_vec, Q, line, L, twist='k16')
+        lcE, mult_line, sq_line = line_case1(Q_prec, Q, line, c_vec, twist='k16')
     elif case == 'case1':
-        lcE, mult_line, sq_line = line_case1(Q_vec, Q, line, L)
+        lcE, mult_line, sq_line = line_case1(Q_prec, Q, line, c_vec)
     elif case == 'case2' and twist is not None:
-        lcE, mult_line, sq_line = line_case2(Q_vec, Q, D3, line, L, twist='k16')
+        lcE, mult_line, sq_line = line_case2(Q_prec, Q, D3, line, c_vec, twist='k16')
     else:
-        lcE, mult_line, sq_line = line_case2(Q_vec, Q, D3, line, L)
+        lcE, mult_line, sq_line = line_case2(Q_prec, Q, D3, line, c_vec)
 
-    return D3, lcE, mult_line, sq_line, 38, 6
+    return D3, lcE, mult_line, sq_line, mult_, sq_
 
 
 def new_coordinates(D) -> list:
