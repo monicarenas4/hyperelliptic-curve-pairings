@@ -123,14 +123,15 @@ def generate_curve_eq(p, n):
     Fp = GF(p, proof=False)  # Fix the prime field Fp
     Fpx = Fp['x']
     (x,) = Fpx._first_ngens(1)  # Fpx: ring of polynomials in x, with coefficients in Fp
-
-    for i in range(1, 100):
-        C = HyperellipticCurve(x ** 5 + i * x)
+    a = 0
+    # for i in range(1, 100):
+    while True:
+        a = a + 1
+        C = HyperellipticCurve(x ** 5 + a * x)
         J = C.jacobian()
         P = JC_random_element(C)
         P = n * P
         if P[0] == 1:
-            a = i
             return a
 
 
