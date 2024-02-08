@@ -54,18 +54,18 @@ def test_bilinearity_Twisted_Ate(curves, jacobians, fields, c_vec, F, U, p, r, h
             Q1_prec, _, _ = precomputation_general_div(Q1)
 
         print('----------------\nCASE: %s\n----------------' % case)
-        pairing_value1 = twisted_ate_cp8(P1, Q1, Q1_prec, c_vec, F, length_miller, U, Fp, case)
-        pairing_value2 = twisted_ate_cp8(P2, Q2, Q2_prec, c_vec, F, length_miller, U, Fp, case) ** (
-                randint_P * randint_Q)
+        pairing_value1 = twisted_ate_cp8(P1, Q1, Q1_prec, c_vec, F, length_miller, U, Fp, k=8, case=case)
+        pairing_value2 = twisted_ate_cp8(P2, Q2, Q2_prec, c_vec, F, length_miller, U, Fp, k=8,
+                                         case=case) ** (randint_P * randint_Q)
         #        print('pairing value 1 = ', pairing_value1)
         #        print('pairing value 2 = ', pairing_value2)
         print('bilinearity test:',
               pairing_value1 == pairing_value2) if (pairing_value1 and pairing_value2) != 1 else print('review code')
 
-        pairing_value_naf1 = twisted_ate_cp8(P1, Q1, Q1_prec, c_vec, F, length_miller, U, Fp, case,
-                                             NAF_rep=True)
-        pairing_value_naf2 = twisted_ate_cp8(P2, Q2, Q2_prec, c_vec, F, length_miller, U, Fp, case,
-                                             NAF_rep=True) ** (randint_P * randint_Q)
+        pairing_value_naf1 = twisted_ate_cp8(P1, Q1, Q1_prec, c_vec, F, length_miller, U, Fp, k=8,
+                                             case=case, NAF_rep=True)
+        pairing_value_naf2 = twisted_ate_cp8(P2, Q2, Q2_prec, c_vec, F, length_miller, U, Fp, k=8,
+                                             case=case, NAF_rep=True) ** (randint_P * randint_Q)
         # print('pairing value NAF 1 = ', pairing_value_naf1)
         # print('pairing value NAF 2 = ', pairing_value_naf2)
         print('bilinearity NAF test:',
@@ -130,16 +130,18 @@ def test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h
             P1_prec, _, _ = precomputation_general_div(P1)
 
         print('----------------\nCASE: %s\n----------------' % case)
-        pairing_value1 = ate_i(Q1, P1, P1_prec, c_vec, F, length_miller, U, W, case, family=family)
-        pairing_value2 = ate_i(Q2, P2, P2_prec, c_vec, F, length_miller, U, W, case, family=family) ** (
-                randint_Q * randint_P)
+
+        pairing_value1 = ate_i(Q1, P1, P1_prec, c_vec, F, length_miller, U, W, k=16, case=case, family=family)
+        pairing_value2 = ate_i(Q2, P2, P2_prec, c_vec, F, length_miller, U, W, k=16, case=case,
+                               family=family) ** (randint_Q * randint_P)
         # print('pairing value 1 = ', pairing_value1)
         # print('pairing value 2 = ', pairing_value2)
         print('bilinearity test:',
               pairing_value1 == pairing_value2) if (pairing_value1 and pairing_value2) != 1 else print('review code')
 
-        pairing_value_naf1 = ate_i(Q1, P1, P1_prec, c_vec, F, length_miller, U, W, case, NAF_rep=True, family=family)
-        pairing_value_naf2 = ate_i(Q2, P2, P2_prec, c_vec, F, length_miller, U, W, case, NAF_rep=True,
+        pairing_value_naf1 = ate_i(Q1, P1, P1_prec, c_vec, F, length_miller, U, W, k=16, case=case, NAF_rep=True,
+                                   family=family)
+        pairing_value_naf2 = ate_i(Q2, P2, P2_prec, c_vec, F, length_miller, U, W, k=16, case=case, NAF_rep=True,
                                    family=family) ** (randint_Q * randint_P)
         # print('pairing value NAF 1 = ', pairing_value_naf1)
         # print('pairing value NAF 2 = ', pairing_value_naf2)
