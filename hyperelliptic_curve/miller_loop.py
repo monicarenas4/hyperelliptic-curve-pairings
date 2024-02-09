@@ -53,6 +53,8 @@ def miller_function(P, Q, Q_prec, c_vec, F, length_miller, case: str, k: int, tw
         m, s, mk, mk_DBL, sk = 1, 1, 27, 18, 18
     elif k == 16:
         m, s, mk, mk_DBL, sk = 3, 2, 81, 54, 54
+    elif k == 24:
+        m, s, mk, mk_DBL, sk = 1, 1, 1, 1, 1
 
     mult_DBL = ((number_of_DBL - 1) * (mult_DBL * m)) + (1 * 25 * m)
     sq_DBL = ((number_of_DBL - 1) * (sq_DBL * s)) + (1 * 5 * s)

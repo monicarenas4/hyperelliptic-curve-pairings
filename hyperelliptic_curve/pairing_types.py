@@ -1,4 +1,7 @@
-from final_exponentiation import final_exponentiation_cp8, final_exponentiation_k16, final_exponentiation_new_k16
+from final_exponentiation import final_exponentiation_cp8
+from final_exponentiation import final_exponentiation_k16, final_exponentiation_new_k16
+from final_exponentiation import final_exponentiation_k24
+
 from miller_loop import miller_function
 from write_number_operations import write_number_operations
 
@@ -67,7 +70,7 @@ def ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, k: int, case: str = 'case
         write_number_operations(file_name, 'final_exp ate_i', embedding_degree=k, case=case, exp_u=exp_u, exp_um=exp_um,
                                 mult_FE=mult, sq_FE=sq, inv_FE=inv, frobenius=frob_power, total=total)
 
-    elif family != "k16" and NAF_rep == True:
+    elif family == "new_k16" and NAF_rep == True:
         miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case,
                                      k=k, twist='k16', NAF_rep=NAF_rep)
         pairing_value, exp_u, exp_up, mult, sq, inv, frob_power, total = final_exponentiation_new_k16(miller_fun, U, W,
@@ -76,11 +79,19 @@ def ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, k: int, case: str = 'case
                                 NAF_rep=NAF_rep, exp_u=exp_u, exp_up=exp_up, mult_FE=mult,
                                 sq_FE=sq, inv_FE=inv, frobenius=frob_power, total=total)
 
-    elif family != "k16":
+    elif family == "new_k16":
         miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case, k=k, twist='k16')
         pairing_value, exp_u, exp_up, mult, sq, inv, frob_power, total = final_exponentiation_new_k16(miller_fun, U, W)
 
         write_number_operations(file_name, 'final_exp ate_i', embedding_degree=k, case=case, exp_u=exp_u, exp_up=exp_up,
                                 mult_FE=mult, sq_FE=sq, inv_FE=inv, frobenius=frob_power, total=total)
+
+    elif family == "k24" and NAF_rep == True:
+        miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case, k=k, twist='k24', NAF_rep=NAF_rep)
+        pairing_value = final_exponentiation_k24(miller_fun, U, W)
+
+    elif family == "k24":
+        miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case, k=k, twist='k24')
+        pairing_value = final_exponentiation_k24(miller_fun, U, W)
 
     return pairing_value
