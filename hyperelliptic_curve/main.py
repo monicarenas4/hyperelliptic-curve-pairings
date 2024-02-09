@@ -3,6 +3,7 @@ import datetime
 
 from generate_jacobian_cp8 import generate_jacobian
 from generate_jacobian_k16 import generate_jacobian_k16
+from generate_jacobian_k24 import generate_jacobian_k24
 from _utils import make_folder
 from write_number_operations import operations_main, write_number_operations_head
 
@@ -24,3 +25,13 @@ print('+++++++++++++++++++++\nExample Jacobian from new family for k = 16\n+++++
 operations_main(file_name, 'Jacobian new family k16')
 u = ZZ(0xeffeffff7fff)
 generate_jacobian_k16(u, family='new_k16')
+
+print('+++++++++++++++++++++\nExample Jacobian from new family for k = 24\n+++++++++++++++++++++')
+operations_main(file_name, 'Jacobian family k24')
+u0 = ZZ(49)
+u1 = ZZ(2**48 + 2**32 + 2**0)
+u2 = ZZ(2**47 + 2**34 + 2**4 + 2**0)
+u3 = ZZ(2**10 - 2**7 + 2**5 + 2**3 + 1)
+u4 = ZZ(2**48 + 2**44 + 2**6 + 2**4 + 2**3 + 1)
+
+generate_jacobian_k24(u4, family='k24')
