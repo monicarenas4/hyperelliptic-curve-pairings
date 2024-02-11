@@ -21,8 +21,8 @@ def miller_function(P, Q, Q_prec, c_vec, F, length_miller, case: str, k: int, tw
     :param NAF_rep:
     :return:
     """
-    global P_neg, mult_DBL, sq_DBL, mult_ADD, sq_ADD, mult_line_DBL, sq_line_DBL
-    global mult_line_ADD, sq_line_ADD, sk, mk, s, m, mk_DBL, mult_miller_DBL
+    global P_neg, mult_DBL, sq_DBL, mult_ADD, sq_ADD, const_mult_line_DBL, mult_line_DBL, sq_line_DBL
+    global const_mult_line_ADD, mult_line_ADD, sq_line_ADD, sk, mk, s, m, cm, mk_DBL, mult_miller_DBL
 
     if not NAF_rep:
         vector_miller = Integer(length_miller).digits(2)
@@ -31,16 +31,17 @@ def miller_function(P, Q, Q_prec, c_vec, F, length_miller, case: str, k: int, tw
         P_neg = [P[0], P[1], -P[2], -P[3], P[4], P[5], P[6], P[7]]
 
     T, fc = P, 1
-    number_of_DBL = floor(log2(length_miller)) - 1
+    # number_of_DBL = floor(log2(length_miller)) - 1
+    number_of_DBL = length_miller.nbits() - 1
 
     for i in range(len(vector_miller) - 2, -1, -1):
-        T, lc, mult_line_DBL, sq_line_DBL, mult_DBL, sq_DBL = DBL(T, Q_prec, Q, F, c_vec, case=case, twist=twist)
+        T, lc, const_mult_line_DBL, mult_line_DBL, sq_line_DBL, mult_DBL, sq_DBL = DBL(T, Q_prec, Q, F, c_vec, case=case, twist=twist)
         fc = lc * fc ** 2  # 1_m8, 1_s8 (sparse)
         if vector_miller[i] == 1:
-            T, lc, mult_line_ADD, sq_line_ADD, mult_ADD, sq_ADD = ADD(P, T, Q_prec, Q, F, c_vec, case=case, twist=twist)
+            T, lc, const_mult_line_ADD, mult_line_ADD, sq_line_ADD, mult_ADD, sq_ADD = ADD(P, T, Q_prec, Q, F, c_vec, case=case, twist=twist)
             fc = lc * fc  # 1_m8 (sparse)
         elif vector_miller[i] == -1:
-            T, lc, mult_line_ADD, sq_line_ADD, mult_ADD, sq_ADD = ADD(P_neg, T, Q_prec, Q, F, c_vec, case=case,
+            T, lc, const_mult_line_ADD, mult_line_ADD, sq_line_ADD, mult_ADD, sq_ADD = ADD(P_neg, T, Q_prec, Q, F, c_vec, case=case,
                                                                       twist=twist)
             fc = lc * fc  # 1_m8
 
@@ -50,19 +51,20 @@ def miller_function(P, Q, Q_prec, c_vec, F, length_miller, case: str, k: int, tw
         number_of_ADD = NAf_hamming_weight(vector_miller) - 1
 
     if k == 8:
-        m, s, mk, mk_DBL, sk = 1, 1, 27, 18, 18
+        m, s, cm, mk, mk_DBL, sk = 1, 1, 1, 27, 18, 18
     elif k == 16:
-        m, s, mk, mk_DBL, sk = 3, 2, 81, 54, 54
+        m, s, cm, mk, mk_DBL, sk = 3, 2, 2, 81, 54, 54
     elif k == 24:
-        m, s, mk, mk_DBL, sk = 1, 1, 1, 1, 1
+        m, s, cm, mk, mk_DBL, sk = 6, 5, 3, 162, 108, 108
 
-    mult_DBL = ((number_of_DBL - 1) * (mult_DBL * m)) + (1 * 25 * m)
-    sq_DBL = ((number_of_DBL - 1) * (sq_DBL * s)) + (1 * 5 * s)
-    mult_ADD = (mult_ADD * m) * number_of_ADD
-    sq_ADD = (sq_ADD * s) * number_of_ADD
+    mult_DBL = (((number_of_DBL - 1) * (mult_DBL * m + const_mult_line_DBL * cm + mult_line_DBL * m))
+                + (1 * 25 * m + const_mult_line_DBL * cm + mult_line_DBL * m))
+    sq_DBL = ((number_of_DBL - 1) * (sq_DBL * s + sq_line_DBL * s)) + (1 * 5 * s + sq_line_DBL * s)
+    mult_ADD = number_of_ADD * (mult_ADD * m + const_mult_line_ADD * cm + mult_line_ADD * m)
+    sq_ADD = number_of_ADD * (sq_ADD * s + sq_line_ADD * s)
     mult_miller_DBL = (mk_DBL * (number_of_DBL - 1))
     sq_miller_DBL = (sk * (number_of_DBL - 1))
-    mult_miller_ADD = (mk * number_of_ADD)
+    mult_miller_ADD = (mk_DBL * number_of_ADD)
     sq_miller_ADD = 0 * number_of_ADD
 
     total = mult_DBL + sq_DBL + mult_ADD + sq_ADD + mult_miller_DBL + sq_miller_DBL + mult_miller_ADD + sq_miller_ADD

@@ -1,4 +1,5 @@
 from sage.rings.integer_ring import ZZ
+from sage.all import Integer
 import datetime
 
 from generate_jacobian_cp8 import generate_jacobian
@@ -19,6 +20,7 @@ generate_jacobian()
 print('+++++++++++++++++++++\nExample Jacobian Kawazoe-Takahashi k = 16\n+++++++++++++++++++++')
 operations_main(file_name, 'Jacobian k16')
 u = ZZ(0x100004003)
+assert u == 2 ** 32 + 2 ** 14 + 2 ** 1 + 2 ** 0
 generate_jacobian_k16(u, family='k16')
 
 print('+++++++++++++++++++++\nExample Jacobian from new family for k = 16\n+++++++++++++++++++++')
@@ -33,5 +35,4 @@ u1 = ZZ(2**48 + 2**32 + 2**0)
 u2 = ZZ(2**47 + 2**34 + 2**4 + 2**0)
 u3 = ZZ(2**10 - 2**7 + 2**5 + 2**3 + 1)
 u4 = ZZ(2**48 + 2**44 + 2**6 + 2**4 + 2**3 + 1)
-
 generate_jacobian_k24(u4, family='k24')

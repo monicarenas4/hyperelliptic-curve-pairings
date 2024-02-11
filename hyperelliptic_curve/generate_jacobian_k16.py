@@ -3,7 +3,7 @@ from sage.schemes.hyperelliptic_curves.constructor import HyperellipticCurve
 from sage.rings.integer_ring import ZZ
 from sage.rings.rational_field import QQ
 
-from pairing_computation import compute_ate_i
+from pairing_computation import compute_ate_i, compute_twisted_ate
 from verification_operations import test_bilinearity_Ate_i
 from _utils import w_powers_p, w_p_i, frobenius_power
 from _utils import generate_curve_eq
@@ -34,6 +34,13 @@ def generate_jacobian_k16(u, k=16, family='k16'):
     n = xt(t=1)
     # cofactor of the Jacobian J
     h = n // r
+
+    print('---Instantiation---')
+    print("u = {:#x} {} bits".format(u, u.nbits()))
+    print("p = {:#x} {} bits".format(p, p.nbits()))
+    print("r = {:#x} {} bits".format(r, r.nbits()))
+    print("h = {:#x} {} bits".format(h, h.nbits()))
+    print("n = #E(Fp) = {:#x} {} bits".format(n, n.nbits()))
 
     if family == 'k16':
         a = generate_curve_eq(p, n)

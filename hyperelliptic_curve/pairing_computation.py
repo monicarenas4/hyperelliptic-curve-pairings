@@ -38,7 +38,6 @@ def compute_twisted_ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, len
         if case == 'case1':
             Q = HEC_random_point(Ct)
             xQ, yQ = Q[0], Q[1]
-            Q = Ct([xQ, yQ])
             Q_prec, mult_pre, sq_pre = precomputation_degenerate_div(Q)
         else:
             Q = JC_random_element(Ct)
