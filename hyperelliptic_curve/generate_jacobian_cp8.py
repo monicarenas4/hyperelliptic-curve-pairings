@@ -1,11 +1,11 @@
 from sage.rings.finite_rings.finite_field_constructor import FiniteField, GF
 from sage.schemes.hyperelliptic_curves.constructor import HyperellipticCurve
 from sage.rings.integer_ring import ZZ
+from sage.all import Integer
 
 from pairing_computation import compute_twisted_ate
 from verification_operations import test_bilinearity_Twisted_Ate
-from _utils import generate_curve_eq
-
+from _utils import generate_curve_eq, NAF
 
 def generate_jacobian_cp8(u, X, Y, lx, ly, l, k=8):
     """
@@ -38,6 +38,14 @@ def generate_jacobian_cp8(u, X, Y, lx, ly, l, k=8):
     n = xt(t=1)
     # cofactor of the Jacobian J
     h = n // r
+    print('Cocks-Pinch (CP) curve with embedding degree k = 8\n')
+    print('---Instantiation---')
+    print("u = {:#x} {} bits".format(u, u.nbits()))
+    print("p = {:#x} {} bits".format(p, p.nbits()))
+    print("r = {:#x} {} bits".format(r, r.nbits()))
+    print("h = {:#x} {} bits".format(h, h.nbits()))
+    print("n = #E(Fp) = {:#x} {} bits".format(n, n.nbits()))
+    print("lx = {:#x} {} bits".format(lx, lx.nbits()))
 
     # Construct the prime field Fp
     Fp = GF(p, proof=False)  # Fix the prime field Fp
@@ -49,12 +57,22 @@ def generate_jacobian_cp8(u, X, Y, lx, ly, l, k=8):
     C = HyperellipticCurve(x ** 5 + a * x)  # Set the equation of the hyperelliptic curve C
     # Jacobian of C
     J = C.jacobian()  # J is the Jacobian of the curve C over Fp
-    F = [0, 3, 0, 0, 0]
+    F = [0, a, 0, 0, 0]
+
+    print('\n')
+    print('Hyperelleiptic curve eq. and Jacobian over the base field Fp')
+    print(C)
+    print(J)
 
     # Construct the degree 8 twist Ct of C
     # The curve Ct and its Jacobian are defined over Fp
     Ct = HyperellipticCurve(x ** 5 + a * l * x)
     Jt = Ct.jacobian()
+
+    print('\n')
+    print('Degree 8 twist of hyperelleiptic curve eq. and Jacobian over the base field Fp')
+    print(Ct)
+    print(Jt)
 
     # Construct the degree 8 extension Fp8 of the prime field Fp
     Fpw = Fp['w']
@@ -72,6 +90,11 @@ def generate_jacobian_cp8(u, X, Y, lx, ly, l, k=8):
     (x,) = Fp8x._first_ngens(1)  # Fp8x: ring of polynomials in x, with coefficients in Fp8
     C8 = HyperellipticCurve(Fp8x([0, a, 0, 0, 0, 1]))
     J8 = C8.jacobian()
+
+    print('\n')
+    print('Hyperelleiptic curve eq. and Jacobian over the exxtension field Fp^8')
+    print(C8)
+    print(J8)
 
     # Compute the order of the Jacobian over Fp8
     Res = (t ** 8 - 1).resultant(xt)  # Compute the resultant  of the polynomials t^8 - 1 and \chi(t)
@@ -91,6 +114,7 @@ def generate_jacobian_cp8(u, X, Y, lx, ly, l, k=8):
     for i in range(1, k):
         c_vec.append(c ** i)
 
+    print('\n')
     compute_twisted_ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, u, k=k)
     # test_bilinearity_Twisted_Ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, u)
 
@@ -101,12 +125,14 @@ def generate_jacobian():
     # Paremeter initialization
     # u will define the length of the Miller loop
     u = ZZ(0xffc00020fffffffc)
+    assert u == 2 ** 64 - 2 ** 54 + 2 ** 37 + 2 ** 32 - 2 ** 2
     # X, Y, lx, ly are used to construct the prime p as: p = X^2 + 2Y^2
     X = ZZ(0x7fa0182f67431e596adfdc83eb3fe4757900039bffffffd8)
     Y = ZZ(0x3fc0181ce78635d69275eeda614d2265ac6f42ec69a058128c8ff985c000002d)
     lx = ZZ(0xa031)
+    assert lx == 2 ** 15 + 2 ** 13 + 2 ** 5 + 2 ** 4 + 1
     ly = ZZ(1)
     # l: is used to define the twist of the Hyperelliptic curve C
-    l = 0x21272a193842552162d1c40c5258df154c31bc12353118d7e6940aa62821cbbd442344f6878da532e48272bcb2daa5a6313a0e0bbe9dabc6b450259f8f3d210aa750d39a
-
+    # l = 0x21272a193842552162d1c40c5258df154c31bc12353118d7e6940aa62821cbbd442344f6878da532e48272bcb2daa5a6313a0e0bbe9dabc6b450259f8f3d210aa750d39a
+    l = 3
     generate_jacobian_cp8(u, X, Y, lx, ly, l)

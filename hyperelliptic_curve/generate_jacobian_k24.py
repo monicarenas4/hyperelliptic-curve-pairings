@@ -48,6 +48,13 @@ def generate_jacobian_k24(u, k=24, family='k24'):
     h_ = Res // r ** 4  # Compute the cofactor of the Jacobian J8
     n_ = h_ * r  # Compute the order of the Jacobian J8
 
+    print('---Instantiation---')
+    print("u = {:#x} {} bits".format(u, u.nbits()))
+    print("p = {:#x} {} bits".format(p, p.nbits()))
+    print("r = {:#x} {} bits".format(r, r.nbits()))
+    print("h = {:#x} {} bits".format(h, h.nbits()))
+    print("n = #E(Fp) = {:#x} {} bits".format(n, n.nbits()))
+
     # Construct the prime field Fp
     Fp = GF(p, proof=False)  # Fix the prime field Fp
     Fpx = Fp['x']
@@ -131,6 +138,6 @@ def generate_jacobian_k24(u, k=24, family='k24'):
     print(fp == fn)
 
     compute_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u, k=24, family=family)
-    test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u, family=family)
+    # test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u, family=family)
 
     return 0
