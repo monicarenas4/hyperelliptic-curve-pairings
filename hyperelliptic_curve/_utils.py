@@ -138,17 +138,18 @@ def generate_curve_eq(p, n):
 def field_conversion(k: int):
     """
     :param k: embedding degree
-    :return: m, s
+    :return: m, s, cm, mk, mk_DBL, sk
     """
-    m, s = 1, 1
+
+    m, s, cm, mk, mk_DBL, sk = 1, 1, 1, 1, 1, 1
     if k == 8:
         m1, s1 = 1, 1
-        m, s = (m * m1), (s * s1)
+        m, s, cm, mk, mk_DBL, sk = (m * m1), (s * s1), 1, 27, 18, 18
     elif k == 16:
         m2, s2 = 3, 2
-        m, s = (m * m2), (s * s2)
+        m, s, cm, mk, mk_DBL, sk = (m * m2), (s * s2), 2, 81, 54, 54
     elif k == 24:
         m3, s3 = 6, 5
-        m, s = (m * m3), (s * s3)
+        m, s, cm, mk, mk_DBL, sk = (m * m3), (s * s3), 3, 162, 108, 108
 
-    return m, s
+    return m, s, cm, mk, mk_DBL, sk
