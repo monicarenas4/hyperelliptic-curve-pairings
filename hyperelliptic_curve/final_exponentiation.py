@@ -211,7 +211,7 @@ def final_exponentiation_new_k16(f, U, W, k=16, NAF_rep: bool = False):
     return t0, exp_u, exp_up, mult, sq, inv, frob, total_ops
 
 
-def final_exponentiation_k24(f, U, W, k=24):
+def final_exponentiation_k24(f, U, W, k=24, NAF_rep: bool = False):
     """
     :param f:
     :param U:
@@ -219,12 +219,84 @@ def final_exponentiation_k24(f, U, W, k=24):
     :param k:
     :return:
     """
-    p = 127986680668455487902583272776597527184931623516192302056052221652345318942213021208502589516925179965136000549331214706623410587603554498076547338902102067893684380712411361
-    r = 63995560145816128259234865857573280107224142930766262992242874861039654232684076725049076391602255284139227431215841
+    u = U[0]
 
-    pow = (p ** k - 1) // r
-    t0 = f ** pow
+    # l0 = 0 0 0 8 1 -2 3 4 2 0 0 0
+    # l1 = 0 0 0 0 -8 -1 2 -3 -4 -2 0 0
+    # l2 = 0 0 0 0 0 8 1 -2 3 4 2 0
+    # l3 = 0 0 0 0 0 0 -8 -1 2 -3 -4 -2
+    # l4 = -1 2 -3 -4 -2 0 0 0 0 0 0 0
+    # l5 = 8 1 -2 3 4 2 0 0 0 0 0 0
+    # l6 = 0 -8 -1 2 -3 -4 -2 0 0 0 0 0
+    # l7 = 0 0 8 1 -2 3 4 2 0 0 0 0
 
-    exp_u, exp_up, mult, sq, inv, frob_power, total = 1, 1, 1, 1, 1, 1, 1
+    # l0 = 8 * u ** 3 + u ** 4 - 2 * u ** 5 + 3 * u ** 6 + 4 * u ** 7 + 2 * u ** 8
+    # l1 = -8 * u ** 4 - u ** 5 + 2 * u ** 6 - 3 * u ** 7 - 4 * u ** 8 - 2 * u ** 9
+    # l2 = 8 * u ** 5 + u ** 6 - 2 * u ** 7 + 3 * u ** 8 + 4 * u ** 9 + 2 * u ** 10
+    # l3 = -8 * u ** 6 - u ** 7 + 2 * u ** 8 - 3 * u ** 9 - 4 * u ** 10 - 2 * u ** 11
+    # l4 = -1 + 2 * u - 3 * u ** 2 - 4 * u ** 3 - 2 * u ** 4
+    # l5 = 8 + u - 2 * u ** 2 + 3 * u ** 3 + 4 * u ** 4 + 2 * u ** 5
+    # l6 = -8 * u - u ** 2 + 2 * u ** 3 - 3 * u ** 4 - 4 * u ** 5 - 2 * u ** 6
+    # l7 = 8 * u ** 2 + u ** 3 - 2 * u ** 4 + 3 * u ** 5 + 4 * u ** 6 + 2 * u ** 7
 
-    return t0, exp_u, exp_up, mult, sq, inv, frob_power, total
+    # easy part: f^(p^12 - 1)*(p^4 + 1)
+    fp12 = frobenius_power(f, k, W, 12)
+    invf = 1 / f
+    f = fp12 * invf
+    f = f * frobenius_power(f, k, W, 4)
+
+    # hard part: f^(p^8 - p^4 + 1)
+    fu1 = f ** u
+    fu2 = fu1 ** u
+    fu3 = fu2 ** u
+    fu4 = fu3 ** u
+    t1 = fu1 ** 2
+    t2 = fu2 ** 2
+    t2 = t2 * fu2
+    t3 = fu3 ** 2
+    t3 = t3 ** 2
+    t4 = fu4 ** 2
+    g1 = frobenius_power(t1, k, W, 12)
+    fl4 = f * g1 * t2 * t3 * t4
+
+    f2 = f ** 2
+    f4 = f2 ** 2
+    f8 = f4 ** 2
+    fl5 = fl4 ** u
+    fl5 = fl5 * f8
+
+    fl6 = fl5 ** u
+    fl7 = fl6 ** u
+    fl0 = fl7 ** u
+    fl1 = fl0 ** u
+    fl2 = fl1 ** u
+    fl3 = fl2 ** u
+
+    fl1 = frobenius_power(fl1, k, W, 1)
+    fl2 = frobenius_power(fl2, k, W, 2)
+    fl3 = frobenius_power(fl3, k, W, 3)
+    fl4 = frobenius_power(fl4, k, W, 4)
+    fl5 = frobenius_power(fl5, k, W, 5)
+    fl6 = frobenius_power(fl6, k, W, 6)
+    fl7 = frobenius_power(fl7, k, W, 7)
+
+    M = fl5*fl7*fl0*fl2
+    N = fl4*fl6*fl1*fl3
+    N = frobenius_power(N, k, W, 12)
+
+    t0 = M*N
+
+    mk, sk, fk, sk_cyclo, ik = 162, 108, 22, 54, 343
+    exp_u_n, mult, sq, inv, frob_power = 11, 13, 8, 1, 11
+
+    if not NAF_rep:
+        exp_u = (floor(log2(u)) - 1) * sk_cyclo + (hamming_weight(Integer(u).digits(2)) - 1) * mk
+    else:
+        exp_u = (ceil(log2(u)) - 1) * sk_cyclo + (NAf_hamming_weight(NAF(u)) - 1) * mk
+    exp_up = 0
+
+    # count over Fp
+    mult, sq, inv, frob = (mult * mk), (sq * sk), (inv * ik), (frob_power * fk)
+    total_ops = (exp_u_n * exp_u) + mult + sq + inv + frob
+
+    return t0, exp_u, exp_up, mult, sq, inv, frob, total_ops
