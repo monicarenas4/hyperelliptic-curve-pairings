@@ -2,13 +2,13 @@ from sage.all import Integer
 from math import log2, floor
 
 from jacobian_operations import ADD, DBL
-from _utils import NAF, hamming_weight, NAf_hamming_weight
+from _utils import NAF, hamming_weight, NAf_hamming_weight, field_conversion
 from write_number_operations import write_number_operations
 
 file_name = 'results/number_of_operations.txt'
 
 
-def miller_function(P, Q, Q_prec, c_vec, F, length_miller, case: str, k: int, twist: str = None, NAF_rep=False):
+def miller_function(P, Q, Q_prec, c_vec, F, length_miller, case: str, k: int, twist: bool = False, NAF_rep=False):
     """
     :param P: point over Fp
     :param Q:
@@ -31,18 +31,20 @@ def miller_function(P, Q, Q_prec, c_vec, F, length_miller, case: str, k: int, tw
         P_neg = [P[0], P[1], -P[2], -P[3], P[4], P[5], P[6], P[7]]
 
     T, fc = P, 1
-    # number_of_DBL = floor(log2(length_miller)) - 1
     number_of_DBL = length_miller.nbits() - 1
 
     for i in range(len(vector_miller) - 2, -1, -1):
-        T, lc, const_mult_line_DBL, mult_line_DBL, sq_line_DBL, mult_DBL, sq_DBL = DBL(T, Q_prec, Q, F, c_vec, case=case, twist=twist)
+        T, lc, const_mult_line_DBL, mult_line_DBL, sq_line_DBL, mult_DBL, sq_DBL = DBL(T, Q_prec, Q, F, c_vec,
+                                                                                       case=case, twist=twist)
         fc = lc * fc ** 2  # 1_m8, 1_s8 (sparse)
         if vector_miller[i] == 1:
-            T, lc, const_mult_line_ADD, mult_line_ADD, sq_line_ADD, mult_ADD, sq_ADD = ADD(P, T, Q_prec, Q, F, c_vec, case=case, twist=twist)
+            T, lc, const_mult_line_ADD, mult_line_ADD, sq_line_ADD, mult_ADD, sq_ADD = ADD(P, T, Q_prec, Q, F, c_vec,
+                                                                                           case=case, twist=twist)
             fc = lc * fc  # 1_m8 (sparse)
         elif vector_miller[i] == -1:
-            T, lc, const_mult_line_ADD, mult_line_ADD, sq_line_ADD, mult_ADD, sq_ADD = ADD(P_neg, T, Q_prec, Q, F, c_vec, case=case,
-                                                                      twist=twist)
+            T, lc, const_mult_line_ADD, mult_line_ADD, sq_line_ADD, mult_ADD, sq_ADD = ADD(P_neg, T, Q_prec, Q, F,
+                                                                                           c_vec, case=case,
+                                                                                           twist=twist)
             fc = lc * fc  # 1_m8
 
     if not NAF_rep:
@@ -50,12 +52,7 @@ def miller_function(P, Q, Q_prec, c_vec, F, length_miller, case: str, k: int, tw
     else:
         number_of_ADD = NAf_hamming_weight(vector_miller) - 1
 
-    if k == 8:
-        m, s, cm, mk, mk_DBL, sk = 1, 1, 1, 27, 18, 18
-    elif k == 16:
-        m, s, cm, mk, mk_DBL, sk = 3, 2, 2, 81, 54, 54
-    elif k == 24:
-        m, s, cm, mk, mk_DBL, sk = 6, 5, 3, 162, 108, 108
+    m, s, cm, mk, mk_DBL, sk = field_conversion(k)
 
     mult_DBL = (((number_of_DBL - 1) * (mult_DBL * m + const_mult_line_DBL * cm + mult_line_DBL * m))
                 + (1 * 25 * m + const_mult_line_DBL * cm + mult_line_DBL * m))
