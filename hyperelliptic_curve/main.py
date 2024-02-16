@@ -1,5 +1,4 @@
 from sage.rings.integer_ring import ZZ
-from sage.all import Integer
 import datetime
 
 from generate_jacobian_cp8 import generate_jacobian
@@ -12,8 +11,9 @@ TODAY = str(datetime.date.today()).replace('-', '')
 make_folder('results')
 file_name = 'results/number_of_operations.txt'
 
-print('+++++++++++++++++++++\nExample Jacobian CP8\n+++++++++++++++++++++')
 write_number_operations_head(file_name)
+
+print('+++++++++++++++++++++\nExample Jacobian CP8\n+++++++++++++++++++++')
 operations_main(file_name, 'Jacobian CP8')
 generate_jacobian()
 
