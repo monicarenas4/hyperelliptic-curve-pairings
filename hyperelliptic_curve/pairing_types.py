@@ -56,7 +56,7 @@ def ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, k: int, case: str = 'case
     global pairing_value
 
     if family == "k16" and NAF_rep == True:
-        miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case, k=k, twist='k16',
+        miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case, k=k, twist=True,
                                      NAF_rep=NAF_rep)
         pairing_value, exp_u, exp_um, mult, sq, inv, frob_power, total = final_exponentiation_k16(miller_fun, U, W,
                                                                                                   NAF_rep=NAF_rep)
@@ -65,14 +65,14 @@ def ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, k: int, case: str = 'case
                                 total=total)
 
     elif family == "k16":
-        miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case, k=k, twist='k16')
+        miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case, k=k, twist=True)
         pairing_value, exp_u, exp_um, mult, sq, inv, frob_power, total = final_exponentiation_k16(miller_fun, U, W)
         write_number_operations(file_name, 'final_exp ate_i', embedding_degree=k, case=case, exp_u=exp_u, exp_um=exp_um,
                                 mult_FE=mult, sq_FE=sq, inv_FE=inv, frobenius=frob_power, total=total)
 
     elif family == "new_k16" and NAF_rep == True:
         miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case,
-                                     k=k, twist='k16', NAF_rep=NAF_rep)
+                                     k=k, twist=True, NAF_rep=NAF_rep)
         pairing_value, exp_u, exp_up, mult, sq, inv, frob_power, total = final_exponentiation_new_k16(miller_fun, U, W,
                                                                                                       NAF_rep=NAF_rep)
         write_number_operations(file_name, 'final_exp ate_i', embedding_degree=k, case=case,
@@ -80,18 +80,25 @@ def ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, k: int, case: str = 'case
                                 sq_FE=sq, inv_FE=inv, frobenius=frob_power, total=total)
 
     elif family == "new_k16":
-        miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case, k=k, twist='k16')
+        miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case, k=k, twist=True)
         pairing_value, exp_u, exp_up, mult, sq, inv, frob_power, total = final_exponentiation_new_k16(miller_fun, U, W)
 
         write_number_operations(file_name, 'final_exp ate_i', embedding_degree=k, case=case, exp_u=exp_u, exp_up=exp_up,
                                 mult_FE=mult, sq_FE=sq, inv_FE=inv, frobenius=frob_power, total=total)
 
     elif family == "k24" and NAF_rep == True:
-        miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case, k=k, twist='k24', NAF_rep=NAF_rep)
-        pairing_value = final_exponentiation_k24(miller_fun, U, W)
+        miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case, k=k, twist=True, NAF_rep=NAF_rep)
+        pairing_value, exp_u, exp_up, mult, sq, inv, frob_power, total = final_exponentiation_k24(miller_fun, U, W)
+
+        write_number_operations(file_name, 'final_exp ate_i', embedding_degree=k, case=case, exp_u=exp_u, exp_up=exp_up,
+                                mult_FE=mult, sq_FE=sq, inv_FE=inv, frobenius=frob_power, total=total)
 
     elif family == "k24":
-        miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case, k=k, twist='k24')
-        pairing_value = final_exponentiation_k24(miller_fun, U, W)
+        miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case, k=k, twist=True)
+        pairing_value, exp_u, exp_up, mult, sq, inv, frob_power, total = final_exponentiation_k24(miller_fun, U, W)
+
+        write_number_operations(file_name, 'final_exp ate_i', embedding_degree=k, case=case, exp_u=exp_u, exp_up=exp_up,
+                                mult_FE=mult, sq_FE=sq, inv_FE=inv, frobenius=frob_power, total=total)
+
 
     return pairing_value
