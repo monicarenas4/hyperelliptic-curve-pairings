@@ -3,15 +3,16 @@ from math import log2, floor, ceil
 from sage.all import Integer
 
 
-def final_exponentiation_cp8(miller_fun, U: list, Fp, NAF_rep=False):
+def final_exponentiation_cp8(miller_fun, U, Fp, NAF_rep=False):
     """
     :param miller_fun: output of the miller loop
     :param U: 4-elements vector
     :param Fp:
+    :param NAF_rep:
     :return: final pairing output
     """
     u, u0, lx, ly = U[0], U[1], U[2], U[3]
-    t0 = 1
+
     miller_fun = miller_fun.frobenius(4) / miller_fun
     fp = miller_fun.frobenius(1)
     fu1 = miller_fun ** u
@@ -76,12 +77,13 @@ def final_exponentiation_cp8(miller_fun, U: list, Fp, NAF_rep=False):
     return t0, exp_u, exp_u0, exp_lx, mult, sq, inv, frob, total_ops
 
 
-def final_exponentiation_k16(f, U, W, k=16, NAF_rep=False):
+def final_exponentiation_k16(f, U, W, k=16, NAF_rep: bool = False):
     """
     :param f:
     :param U:
     :param W:
     :param k:
+    :param NAF_rep:
     :return:
     """
     u, um = U[0], U[1]
@@ -92,7 +94,6 @@ def final_exponentiation_k16(f, U, W, k=16, NAF_rep=False):
     f8 = f4 ** 2
     fum1 = f ** um
     fu1 = fum1 * f1
-    # fup1 = fu1 * f1
     fum2 = fum1 ** um
     f2u1 = fu1 ** 2
     f4u1 = f2u1 ** 2
@@ -140,12 +141,13 @@ def final_exponentiation_k16(f, U, W, k=16, NAF_rep=False):
     return t0, exp_u, exp_um, mult, sq, inv, frob, total_ops
 
 
-def final_exponentiation_new_k16(f, U, W, k=16, NAF_rep=False):
+def final_exponentiation_new_k16(f, U, W, k=16, NAF_rep: bool = False):
     """
     :param f:
     :param U:
     :param W:
     :param k:
+    :param NAF_rep:
     :return:
     """
     u, up = U[0], U[1]
@@ -210,11 +212,19 @@ def final_exponentiation_new_k16(f, U, W, k=16, NAF_rep=False):
 
 
 def final_exponentiation_k24(f, U, W, k=24):
+    """
+    :param f:
+    :param U:
+    :param W:
+    :param k:
+    :return:
+    """
     p = 127986680668455487902583272776597527184931623516192302056052221652345318942213021208502589516925179965136000549331214706623410587603554498076547338902102067893684380712411361
     r = 63995560145816128259234865857573280107224142930766262992242874861039654232684076725049076391602255284139227431215841
 
     pow = (p ** k - 1) // r
-
     t0 = f ** pow
 
-    return t0
+    exp_u, exp_up, mult, sq, inv, frob_power, total = 1, 1, 1, 1, 1, 1, 1
+
+    return t0, exp_u, exp_up, mult, sq, inv, frob_power, total
