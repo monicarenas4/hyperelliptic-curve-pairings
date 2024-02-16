@@ -1,11 +1,11 @@
 from sage.rings.finite_rings.finite_field_constructor import FiniteField, GF
 from sage.schemes.hyperelliptic_curves.constructor import HyperellipticCurve
 from sage.rings.integer_ring import ZZ
-from sage.all import Integer
 
 from pairing_computation import compute_twisted_ate
 from verification_operations import test_bilinearity_Twisted_Ate
-from _utils import generate_curve_eq, NAF
+from _utils import generate_curve_eq
+
 
 def generate_jacobian_cp8(u, X, Y, lx, ly, l, k=8):
     """
@@ -111,12 +111,13 @@ def generate_jacobian_cp8(u, X, Y, lx, ly, l, k=8):
     c = roots[7]
     c = c[0]
     c_vec = []
-    for i in range(1, k):
-        c_vec.append(c ** i)
+    c_vec.append(c)
+    for i in range(1, 13):
+        c_vec.append(1 / (c ** i))
 
     print('\n')
     compute_twisted_ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, u, k=k)
-    # test_bilinearity_Twisted_Ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, u)
+    test_bilinearity_Twisted_Ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, u, k=k)
 
     return None
 

@@ -1,11 +1,10 @@
 from sage.rings.finite_rings.finite_field_constructor import FiniteField, GF
 from sage.schemes.hyperelliptic_curves.constructor import HyperellipticCurve
 from sage.rings.integer_ring import ZZ
-from sage.rings.rational_field import QQ
 
-from pairing_computation import compute_ate_i, compute_twisted_ate
+from pairing_computation import compute_ate_i
 from verification_operations import test_bilinearity_Ate_i
-from _utils import w_powers_p, w_p_i, frobenius_power
+from _utils import w_powers_p
 from _utils import generate_curve_eq
 from polynomial_families import polynomial_family_k16, polynomial_family_new_k16
 
@@ -93,12 +92,13 @@ def generate_jacobian_k16(u, k=16, family='k16'):
 
     c = Fq8.gen(0)
     c_vec = []
-    for i in range(1, k):
-        c_vec.append(c ** i)
+    c_vec.append(c)
+    for i in range(1, 13):
+        c_vec.append(1 / (c ** i))
 
     W = w_powers_p(w, p, k)
 
-    compute_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u, k, family)
-    # test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u, family)
+    compute_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u, k=k, family=family)
+    test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u, k=k, family=family)
 
     return None
