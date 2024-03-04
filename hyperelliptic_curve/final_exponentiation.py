@@ -293,10 +293,9 @@ def final_exponentiation_k24(f, U, W, k=24, NAF_rep: bool = False):
         exp_u = (floor(log2(u)) - 1) * sk_cyclo + (hamming_weight(Integer(u).digits(2)) - 1) * mk
     else:
         exp_u = (ceil(log2(u)) - 1) * sk_cyclo + (NAf_hamming_weight(NAF(u)) - 1) * mk
-    exp_up = 0
 
     # count over Fp
     mult, sq, inv, frob = (mult * mk), (sq * sk), (inv * ik), (frob_power * fk)
     total_ops = (exp_u_n * exp_u) + mult + sq + inv + frob
 
-    return t0, exp_u, exp_up, mult, sq, inv, frob, total_ops
+    return t0, exp_u, mult, sq, inv, frob, total_ops
