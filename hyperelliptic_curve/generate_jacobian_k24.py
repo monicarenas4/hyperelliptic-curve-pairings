@@ -10,7 +10,7 @@ from _utils import w_powers_p, w_p_i, frobenius_power, generate_curve_eq
 from polynomial_families import polynomial_family_k24
 
 
-def generate_jacobian_k24(u, k=24, family='k24'):
+def generate_jacobian_k24(u, seed, k=24, family='k24'):
     """
     :param u: defines the length of the Miller loop
     :param k: embedding degree
@@ -61,15 +61,26 @@ def generate_jacobian_k24(u, k=24, family='k24'):
     Fpz = Fp['z']
     (z,) = Fpz._first_ngens(1)  # Fpw: polynomial ring in w with coefficients in Fp
     b = 1
-    while not (z ** 3 + b).is_irreducible():
-        b = b + 1
-    print("Fp3 = Fp[z]/(z^3+ {})".format(b))  # Fp8 = Fp[w]/(w^8 + b)
-    Fp3 = Fp.extension(z ** 3 + b, names=('z',))
+    if seed == "u1":
+        while not (z ** 3 + b + z).is_irreducible():
+            b = b + 1
+        print("Fp3 = Fp[z]/(z^3+ {})".format(b))  # Fp8 = Fp[w]/(w^8 + b)
+        Fp3 = Fp.extension(z ** 3 + b + z, names=('z',))
+    else:
+        while not (z ** 3 + b).is_irreducible():
+            b = b + 1
+        print("Fp3 = Fp[z]/(z^3+ {})".format(b))  # Fp8 = Fp[w]/(w^8 + b)
+        Fp3 = Fp.extension(z ** 3 + b, names=('z',))
+
     (z,) = Fp3._first_ngens(1)
     Fpw = Fp3['w']
     (w,) = Fpw._first_ngens(1)
 
-    i, j = 14, 0
+    if seed == "u1":
+        i, j = 9, 0
+    else:
+        i, j = 14, 0
+
     d = 8
     s = k // d
     print('p = ', p)
