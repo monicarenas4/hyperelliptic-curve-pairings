@@ -88,17 +88,16 @@ def ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, k: int, case: str = 'case
 
     elif family == "k24" and NAF_rep == True:
         miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case, k=k, twist=True, NAF_rep=NAF_rep)
-        pairing_value, exp_u, exp_up, mult, sq, inv, frob_power, total = final_exponentiation_k24(miller_fun, U, W)
+        pairing_value, exp_u, mult, sq, inv, frob_power, total = final_exponentiation_k24(miller_fun, U, W)
 
-        write_number_operations(file_name, 'final_exp ate_i', embedding_degree=k, case=case, exp_u=exp_u, exp_up=exp_up,
+        write_number_operations(file_name, 'final_exp ate_i', embedding_degree=k, case=case, exp_u=exp_u,
                                 mult_FE=mult, sq_FE=sq, inv_FE=inv, frobenius=frob_power, total=total)
 
     elif family == "k24":
         miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case, k=k, twist=True)
-        pairing_value, exp_u, exp_up, mult, sq, inv, frob_power, total = final_exponentiation_k24(miller_fun, U, W)
+        pairing_value, exp_u, mult, sq, inv, frob_power, total = final_exponentiation_k24(miller_fun, U, W)
 
-        write_number_operations(file_name, 'final_exp ate_i', embedding_degree=k, case=case, exp_u=exp_u, exp_up=exp_up,
+        write_number_operations(file_name, 'final_exp ate_i', embedding_degree=k, case=case, exp_u=exp_u,
                                 mult_FE=mult, sq_FE=sq, inv_FE=inv, frobenius=frob_power, total=total)
-
 
     return pairing_value
