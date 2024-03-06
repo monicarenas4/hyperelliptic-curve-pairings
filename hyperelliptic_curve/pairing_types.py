@@ -37,7 +37,7 @@ def twisted_ate_cp8(P, Q, Q_prec, c_vec, F, length_miller, U, Fp, k: int, case: 
     return pairing_value
 
 
-def ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, k: int, case: str = 'case1', NAF_rep=False, family='k16'):
+def ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, k: int, case: str = 'case1', NAF_rep=False, family='KT16'):
     """
     :param Q:
     :param P:
@@ -55,7 +55,7 @@ def ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, k: int, case: str = 'case
     """
     global pairing_value
 
-    if family == "k16" and NAF_rep == True:
+    if family == "KT16" and NAF_rep == True:
         miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case, k=k, twist=True,
                                      NAF_rep=NAF_rep)
         pairing_value, exp_u, exp_um, mult, sq, inv, frob_power, total = final_exponentiation_k16(miller_fun, U, W,
@@ -64,13 +64,13 @@ def ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, k: int, case: str = 'case
                                 exp_u=exp_u, exp_um=exp_um, mult_FE=mult, sq_FE=sq, inv_FE=inv, frobenius=frob_power,
                                 total=total)
 
-    elif family == "k16":
+    elif family == "KT16":
         miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case, k=k, twist=True)
         pairing_value, exp_u, exp_um, mult, sq, inv, frob_power, total = final_exponentiation_k16(miller_fun, U, W)
         write_number_operations(file_name, 'final_exp ate_i', embedding_degree=k, case=case, exp_u=exp_u, exp_um=exp_um,
                                 mult_FE=mult, sq_FE=sq, inv_FE=inv, frobenius=frob_power, total=total)
 
-    elif family == "new_k16" and NAF_rep == True:
+    elif family == "New16" and NAF_rep == True:
         miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case,
                                      k=k, twist=True, NAF_rep=NAF_rep)
         pairing_value, exp_u, exp_up, mult, sq, inv, frob_power, total = final_exponentiation_new_k16(miller_fun, U, W,
@@ -79,21 +79,21 @@ def ate_i(Q, P, P_prec, c_vec, F, length_miller, U, W, k: int, case: str = 'case
                                 NAF_rep=NAF_rep, exp_u=exp_u, exp_up=exp_up, mult_FE=mult,
                                 sq_FE=sq, inv_FE=inv, frobenius=frob_power, total=total)
 
-    elif family == "new_k16":
+    elif family == "New16":
         miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case, k=k, twist=True)
         pairing_value, exp_u, exp_up, mult, sq, inv, frob_power, total = final_exponentiation_new_k16(miller_fun, U, W)
 
         write_number_operations(file_name, 'final_exp ate_i', embedding_degree=k, case=case, exp_u=exp_u, exp_up=exp_up,
                                 mult_FE=mult, sq_FE=sq, inv_FE=inv, frobenius=frob_power, total=total)
 
-    elif family == "k24" and NAF_rep == True:
+    elif family == "New24" and NAF_rep == True:
         miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case, k=k, twist=True, NAF_rep=NAF_rep)
         pairing_value, exp_u, mult, sq, inv, frob_power, total = final_exponentiation_k24(miller_fun, U, W)
 
         write_number_operations(file_name, 'final_exp ate_i', embedding_degree=k, case=case, exp_u=exp_u,
                                 mult_FE=mult, sq_FE=sq, inv_FE=inv, frobenius=frob_power, total=total)
 
-    elif family == "k24":
+    elif family == "New24":
         miller_fun = miller_function(Q, P, P_prec, c_vec, F, length_miller, case=case, k=k, twist=True)
         pairing_value, exp_u, mult, sq, inv, frob_power, total = final_exponentiation_k24(miller_fun, U, W)
 

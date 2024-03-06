@@ -4,7 +4,6 @@ from pairing_types import twisted_ate_cp8, ate_i
 
 from random import randint
 
-
 def test_bilinearity_Twisted_Ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, length_miller, k: int):
     """
     :param curves:
@@ -71,7 +70,7 @@ def test_bilinearity_Twisted_Ate(curves, jacobians, fields, c_vec, F, U, p, r, h
     return None
 
 
-def test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length_miller, k: int, family='k16'):
+def test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length_miller, k: int, family='KT16'):
     """
     :param curves:
     :param jacobians:

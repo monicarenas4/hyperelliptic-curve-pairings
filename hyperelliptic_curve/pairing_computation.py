@@ -53,7 +53,7 @@ def compute_twisted_ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, len
     return None
 
 
-def compute_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length_miller, k: int, family='k16'):
+def compute_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, length_miller, k: int, family='KT16'):
     """
     :param curves:
     :param jacobians:
