@@ -1,7 +1,7 @@
 from sage.rings.rational_field import QQ
 from sage.rings.integer_ring import ZZ
 
-
+# Kawazoe-Takahashi polynomial family of pairing-friendly Jacobians with embedding degree 16
 def polynomial_family_KT16(u):
     """
     :param u: seed to evaluate polynomial family
@@ -22,7 +22,7 @@ def polynomial_family_KT16(u):
 
     return r, p, X, Y
 
-
+# New polynomial family of pairing-friendly Jacobians with embedding degree 16
 def polynomial_family_New16(u):
     """
     :param u: seed to evaluate polynomial family
@@ -43,7 +43,7 @@ def polynomial_family_New16(u):
 
     return r, p, X, Y
 
-
+# New polynomial family of pairing-friendly Jacobians with embedding degree 24
 def polynomial_family_New24(u):
     """
     :param u: seed to evaluate polynomial family

@@ -1,13 +1,17 @@
+# Evaluate line in case where 2nd pairing input is a degenerate divisor
+# See formulas in Fan et al. https://cacr.uwaterloo.ca/techreports/2008/cacr2008-03.pdf
 def line_case1(Q_prec, Q, line, c_vec, twist: bool = False):
     """
-    :param Q_prec:
-    :param Q: [-xQ, yQ, xQ^2, -xQ^3]
-    :param line: coefficients of the line
-    :param c_vec: n-element vector
-    :param twist:
-    :return: evaluation of the line
+    :param Q_prec: precomputation vector needed for line evaluation
+    :param Q: a point on the curve Ct(Fp^s); line will be evaluated at Q
+    :param line: coefficients of the line to be evaluated
+    :param c_vec: powers of c, the generator of the extension field Fq^d, used in line evaluation
+    :param twist: distinguish between twisted ate and ate_i pairings
+    :return: evaluation of the line c(Q)
     """
 
+    # line coefficients
+    # line 1 refers to case 1, i.e. the 2nd pairing input is a degenerate divisor
     l3, l2, l1, l0, l = line[0], line[1], line[2], line[3], line[4]
 
     if not twist:
@@ -19,33 +23,40 @@ def line_case1(Q_prec, Q, line, c_vec, twist: bool = False):
         l3, l2, l1, l0 = l3, l2, l1, l0
     else:
         x2, y2, x22, x23 = -Q[0], Q[1], Q_prec[0], Q_prec[1]
+        # transition from Fq = Fp^s to Fp^k = Fq^8
         l3, l2, l1, l0 = (l3 * c_vec[0]), (l2 * c_vec[1]), (l1 * c_vec[3]), (l0 * c_vec[5])
 
-    cD2 = (y2 * l + l3 * x23 - l2 * x22 + l1 * x2 - l0)  # M4
+    # line evaluation
+    cQ = (y2 * l + l3 * x23 - l2 * x22 + l1 * x2 - l0)  # M4
     const_mult_, mult_, sq_ = 4, 0, 0
 
-    return cD2, const_mult_, mult_, sq_
+    return cQ, const_mult_, mult_, sq_
 
 
 def line_case2(Q_prec, Q, D3, line, c_vec, twist: bool = False):
     """
-    :param Q_prec:
-    :param Q: [-xQ, yQ, xQ^2, -xQ^3]
+    :param Q_prec: precomputation vector needed for line evaluation
+    :param Q: a general divisor in Jt(Fp^s); line will be evaluated at Q
     :param D3: not used because of the twist
-    :param line: coefficients of the line
-    :param c_vec: n-element vector
-    :param twist:
-    :return: evaluation of the line
+    :param line: coefficients of the line to be evaluated
+    :param c_vec: powers of c, the generator of the extension field Fq^d, used in line evaluation
+    :param twist: distinguish between twisted ate and ate_i pairings
+    :return: evaluation of the line c(Q)
     """
 
+    # rename precomputation values to agree with Fan et al. formulas
     t6, t7, t8, t9, t10 = Q_prec[5], Q_prec[6], Q_prec[7], Q_prec[8], Q_prec[9]
     t11, t12, t13, t14, t15 = Q_prec[10], Q_prec[11], Q_prec[12], Q_prec[13], Q_prec[14]
     t16, t17, t18, t19, t20 = Q_prec[15], Q_prec[16], Q_prec[17], Q_prec[18], Q_prec[19]
     t21, t22, t23, t24, t25 = Q_prec[20], Q_prec[21], Q_prec[22], Q_prec[23], Q_prec[24]
 
     u21, u20 = Q[0][1], Q[0][0]
+
+    # line coefficients
+    # line 1 refers to case 1, i.e. the 2nd pairing input is a degenerate divisor
     l3, l2, l1, l0, l = line[0], line[1], line[2], line[3], line[4]
 
+    # line evaluation
     w1, w2 = l, l3
     w3, w4 = (w1 * t6), (w2 * t17)
     w5, w6, w7 = (l2 * t12), (l1 * t9), (l0 * t8)
@@ -62,7 +73,7 @@ def line_case2(Q_prec, Q, D3, line, c_vec, twist: bool = False):
         w21, w22 = (l1 * u20), (l0 * u21)
         w23 = w21 * c_vec[4] - w22 * c_vec[2]
         w24, w25 = (l1 * w23), (l0 ** 2)
-        cD2 = (w9 + w15 + w20 + w24 + w25)
+        cQ = (w9 + w15 + w20 + w24 + w25)
     else:
         w8 = w3 * c_vec[2] - w4 * c_vec[1] + w5 * c_vec[3] - w6 * c_vec[5] - w7 * c_vec[7]
         w9 = w1 * w8
@@ -75,19 +86,11 @@ def line_case2(Q_prec, Q, D3, line, c_vec, twist: bool = False):
         w21, w22 = (l1 * u20), (l0 * u21)
         w23 = w21 * c_vec[8] - w22 * c_vec[10]
         w24, w25 = (l1 * w23), (l0 ** 2)
-        cD2 = (w9 + w15 + w20 + w24 + w25 * c_vec[12])
+        cQ = (w9 + w15 + w20 + w24 + w25 * c_vec[12])
 
     const_mult_, mult_, sq_ = 14, 14, 1
 
-    # print('w1=', w1)
-    # print('w8=', w8)
-    # print('w2=', w2)
-    # print('w14=', w14)
-    # print('w19=', w19)
-    # print('w23=', w23)
-    # print('cD2=', cD2)
-
-    return cD2, const_mult_, mult_, sq_
+    return cQ, const_mult_, mult_, sq_
 
 
 def precomputation_degenerate_div(P):

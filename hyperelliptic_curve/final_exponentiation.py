@@ -5,11 +5,19 @@ from sage.all import Integer
 
 def final_exponentiation_cp8(miller_fun, U, Fp, NAF_rep=False):
     """
-    :param miller_fun: output of the miller loop
-    :param U: 4-elements vector
-    :param Fp:
-    :param NAF_rep:
+    :param miller_fun: Miller function, output of the miller loop
+    :param U: 4-elements vector U = [u, u/4, lx, ly]
+    :param Fp: base field
+    :param NAF_rep: determine whether NAF or binary representation is used
     :return: final pairing output
+
+    easy part: f^(p^4 - 1)
+    cost: 1 mult. + 1 inv. + 1 Frobenius
+
+    hard part: f^((p^4 + 1)/r)
+    hard part formula:
+    e = (p^4 + 1)/r = (lx^2 + 2*ly^2 + ly + 1/8)*u^4 + (lx + ly + 1/4)*u^3 - (lx + ly - 1/8)*u^2 - (ly + 1)*u + (lx^2 + 2*ly^2)
+    cost: 3 exp_u + 4 exp_u0 + 3 exp_lx + 16 mult. + 17 sq. + 1 inv. + 2 Frobenius
     """
     u, u0, lx, ly = U[0], U[1], U[2], U[3]
 
@@ -77,14 +85,31 @@ def final_exponentiation_cp8(miller_fun, U, Fp, NAF_rep=False):
     return t0, exp_u, exp_u0, exp_lx, mult, sq, inv, frob, total_ops
 
 
-def final_exponentiation_k16(f, U, W, k=16, NAF_rep: bool = False):
+def final_exponentiation_KT16(f, U, W, k=16, NAF_rep: bool = False):
     """
-    :param f:
-    :param U:
-    :param W:
-    :param k:
-    :param NAF_rep:
-    :return:
+    :param f: Miller function, output of the miller loop
+    :param U: 2-elements vector U = [u, u - 1]
+    :param W: powers of p^j of the generator w of Fq8 - needed for computing Frobenius powers for elements in Fq^8
+    :param k: embedding degree
+    :param NAF_rep: determine whether NAF or binary representation is used
+    :return: final pairing output
+
+    easy part: f^(p^8 - 1)
+    cost: 1 mult. + 1 inv. + 1 Frobenius
+
+    hard part: f^((p^8 + 1)/r)
+    hard part formula:
+    e = (p^8 + 1)/r = l0 + l1*p + l2*p^2 + l3*p^3 + l4*p^4 + l5*p^5 + l6*p^6 + l7*p^7
+
+    l0 = (u + 1)^2 + 2*u^4*(u - 1)^2
+    l1 = - 8 - u^3*l0
+    l2 = - u^3*l1
+    l3 = u*l0
+    l4 = u*l1
+    l5 = u*l2
+    l6 = u*l3
+    l7 = u*l4
+    cost: 11 exp_u + 2 exp_(u-1) + 11 mult. + 6 sq. + 1 inv. + 7 Frobenius
     """
     u, um = U[0], U[1]
     f = frobenius_power(f, k, W, 8) / f
@@ -141,14 +166,31 @@ def final_exponentiation_k16(f, U, W, k=16, NAF_rep: bool = False):
     return t0, exp_u, exp_um, mult, sq, inv, frob, total_ops
 
 
-def final_exponentiation_new_k16(f, U, W, k=16, NAF_rep: bool = False):
+def final_exponentiation_New16(f, U, W, k=16, NAF_rep: bool = False):
     """
-    :param f:
-    :param U:
-    :param W:
-    :param k:
-    :param NAF_rep:
-    :return:
+    :param f: Miller function, output of the miller loop
+    :param U: 2-elements vector U = [u, u + 1]
+    :param W: powers of p^j of the generator w of Fq8 - needed for computing Frobenius powers for elements in Fq^8
+    :param k: embedding degree
+    :param NAF_rep: determine whether NAF or binary representation is used
+    :return: final pairing output
+
+    easy part: f^(p^8 - 1)
+    cost: 1 mult. + 1 inv. + 1 Frobenius
+
+    hard part: f^((p^8 + 1)/r)
+    hard part formula:
+    e = (p^8 + 1)/r = l0 + l1*p + l2*p^2 + l3*p^3 + l4*p^4 + l5*p^5 + l6*p^6 + l7*p^7
+
+    l0 = 8 + (u + 1)^2 * (1 + 2*u^4 - 8*u^5 + 8*u^6)
+    l1 = - (8 + u^3*l0)
+    l2 = u^3*l1
+    l3 = u*l0
+    l4 = u*l1
+    l5 = -u^4*l1
+    l6 = u^2*l2
+    l7 = u^2*l1
+    cost: 13 exp_u + 2 exp_(u+1) + 12 mult. + 6 sq. + 1 inv. + 7 Frobenius
     """
     u, up = U[0], U[1]
     t0 = 1
@@ -211,33 +253,32 @@ def final_exponentiation_new_k16(f, U, W, k=16, NAF_rep: bool = False):
     return t0, exp_u, exp_up, mult, sq, inv, frob, total_ops
 
 
-def final_exponentiation_k24(f, U, W, k=24, NAF_rep: bool = False):
+def final_exponentiation_New24(f, U, W, k=24, NAF_rep: bool = False):
     """
-    :param f:
-    :param U:
-    :param W:
-    :param k:
-    :return:
+    :param f: Miller function, output of the miller loop
+    :param U: 1-element vector U = [u]
+    :param W: powers of p^j of the generator w of Fq8 - needed for computing Frobenius powers for elements in Fq^8
+    :param k: embedding degree
+    :return: final pairing output
+
+    easy part: f^(p^12 - 1)*(p^4 + 1)
+    cost: 2 mult. + 1 inv. + 2 Frobenius
+
+    hard part: f^((p^8 - p^4 + 1)/r)
+    hard part formula:
+    e = (p^8 - p^4 + 1)/r = l0 + l1*p + l2*p^2 + l3*p^3 + l4*p^4 + l5*p^5 + l6*p^6 + l7*p^7
+
+    l0 = u*l7
+    l1 = -u*l0
+    l2 = -u*l1
+    l3 = -u*l2
+    l4 = -1 + 2*u - 3*u^2 - 4*u^3 - 2*u^4
+    l5 = 8 - u*l4
+    l6 = -u*l5
+    l7 = -u*l6
+    cost: 11 exp_u + 13 mult. + 8 sq. + 1 inv. + 11 Frobenius
     """
     u = U[0]
-
-    # l0 = 0 0 0 8 1 -2 3 4 2 0 0 0
-    # l1 = 0 0 0 0 -8 -1 2 -3 -4 -2 0 0
-    # l2 = 0 0 0 0 0 8 1 -2 3 4 2 0
-    # l3 = 0 0 0 0 0 0 -8 -1 2 -3 -4 -2
-    # l4 = -1 2 -3 -4 -2 0 0 0 0 0 0 0
-    # l5 = 8 1 -2 3 4 2 0 0 0 0 0 0
-    # l6 = 0 -8 -1 2 -3 -4 -2 0 0 0 0 0
-    # l7 = 0 0 8 1 -2 3 4 2 0 0 0 0
-
-    # l0 = 8 * u ** 3 + u ** 4 - 2 * u ** 5 + 3 * u ** 6 + 4 * u ** 7 + 2 * u ** 8
-    # l1 = -8 * u ** 4 - u ** 5 + 2 * u ** 6 - 3 * u ** 7 - 4 * u ** 8 - 2 * u ** 9
-    # l2 = 8 * u ** 5 + u ** 6 - 2 * u ** 7 + 3 * u ** 8 + 4 * u ** 9 + 2 * u ** 10
-    # l3 = -8 * u ** 6 - u ** 7 + 2 * u ** 8 - 3 * u ** 9 - 4 * u ** 10 - 2 * u ** 11
-    # l4 = -1 + 2 * u - 3 * u ** 2 - 4 * u ** 3 - 2 * u ** 4
-    # l5 = 8 + u - 2 * u ** 2 + 3 * u ** 3 + 4 * u ** 4 + 2 * u ** 5
-    # l6 = -8 * u - u ** 2 + 2 * u ** 3 - 3 * u ** 4 - 4 * u ** 5 - 2 * u ** 6
-    # l7 = 8 * u ** 2 + u ** 3 - 2 * u ** 4 + 3 * u ** 5 + 4 * u ** 6 + 2 * u ** 7
 
     # easy part: f^(p^12 - 1)*(p^4 + 1)
     fp12 = frobenius_power(f, k, W, 12)
