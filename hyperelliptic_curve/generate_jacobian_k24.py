@@ -60,7 +60,7 @@ def generate_jacobian_k24(u, seed, k=24, family='New24'):
     J = C.jacobian()  # J is the Jacobian of the curve C over Fp
 
     print('\n')
-    print('Hyperelleiptic curve eq. and Jacobian over the base field Fp')
+    print('Hyperelliptic curve eq. and Jacobian over the base field Fp')
     print(C)
     print(J)
 
@@ -95,7 +95,7 @@ def generate_jacobian_k24(u, seed, k=24, family='New24'):
     Jt = Ct.jacobian()
 
     print('\n')
-    print('Degree 8 twist of hyperelleiptic curve eq. and Jacobian over the extension field Fq = Fp^3')
+    print('Degree 8 twist of hyperelliptic curve eq. and Jacobian over the extension field Fq = Fp^3')
     print(Ct)
     print(Jt)
 
@@ -112,7 +112,7 @@ def generate_jacobian_k24(u, seed, k=24, family='New24'):
     J24 = C24.jacobian()
 
     print('\n')
-    print('Hyperelleiptic curve eq. and Jacobian over the extension field Fq^8')
+    print('Hyperelliptic curve eq. and Jacobian over the extension field Fq^8')
     print(C24)
     print(J24)
 

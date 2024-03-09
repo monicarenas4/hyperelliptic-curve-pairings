@@ -60,7 +60,7 @@ def generate_jacobian_cp8(u, X_0, Y_0, lx, ly, l, k=8):
     F = [0, a, 0, 0, 0]
 
     print('\n')
-    print('Hyperelleiptic curve eq. and Jacobian over the base field Fp')
+    print('Hyperelliptic curve eq. and Jacobian over the base field Fp')
     print(C)
     print(J)
 
@@ -70,7 +70,7 @@ def generate_jacobian_cp8(u, X_0, Y_0, lx, ly, l, k=8):
     Jt = Ct.jacobian()
 
     print('\n')
-    print('Degree 8 twist of hyperelleiptic curve eq. and Jacobian over the base field Fp')
+    print('Degree 8 twist of hyperelliptic curve eq. and Jacobian over the base field Fp')
     print(Ct)
     print(Jt)
 
@@ -92,7 +92,7 @@ def generate_jacobian_cp8(u, X_0, Y_0, lx, ly, l, k=8):
     J8 = C8.jacobian()
 
     print('\n')
-    print('Hyperelleiptic curve eq. and Jacobian over the exxtension field Fp^8')
+    print('Hyperelliptic curve eq. and Jacobian over the extension field Fp^8')
     print(C8)
     print(J8)
 

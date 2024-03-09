@@ -1,5 +1,3 @@
-# Evaluate line in case where 2nd pairing input is a degenerate divisor
-# See formulas in Fan et al. https://cacr.uwaterloo.ca/techreports/2008/cacr2008-03.pdf
 def line_case1(Q_prec, Q, line, c_vec, twist: bool = False):
     """
     :param Q_prec: precomputation vector needed for line evaluation
@@ -8,6 +6,9 @@ def line_case1(Q_prec, Q, line, c_vec, twist: bool = False):
     :param c_vec: powers of c, the generator of the extension field Fq^d, used in line evaluation
     :param twist: distinguish between twisted ate and ate_i pairings
     :return: evaluation of the line c(Q)
+
+    Evaluate line in case where 2nd pairing input is a degenerate divisor
+    See formulas in Fan et al. https://cacr.uwaterloo.ca/techreports/2008/cacr2008-03.pdf
     """
 
     # line coefficients
@@ -33,7 +34,7 @@ def line_case1(Q_prec, Q, line, c_vec, twist: bool = False):
     return cQ, const_mult_, mult_, sq_
 
 
-def line_case2(Q_prec, Q, D3, line, c_vec, twist: bool = False):
+def line_case2(Q_prec, Q, line, c_vec, twist: bool = False):
     """
     :param Q_prec: precomputation vector needed for line evaluation
     :param Q: a general divisor in Jt(Fp^s); line will be evaluated at Q
@@ -42,13 +43,15 @@ def line_case2(Q_prec, Q, D3, line, c_vec, twist: bool = False):
     :param c_vec: powers of c, the generator of the extension field Fq^d, used in line evaluation
     :param twist: distinguish between twisted ate and ate_i pairings
     :return: evaluation of the line c(Q)
+
+    Evaluate line in case where 2nd pairing input is a general divisor
+    See formulas in Fan et al. https://cacr.uwaterloo.ca/techreports/2008/cacr2008-03.pdf
     """
 
     # rename precomputation values to agree with Fan et al. formulas
-    t6, t7, t8, t9, t10 = Q_prec[5], Q_prec[6], Q_prec[7], Q_prec[8], Q_prec[9]
-    t11, t12, t13, t14, t15 = Q_prec[10], Q_prec[11], Q_prec[12], Q_prec[13], Q_prec[14]
-    t16, t17, t18, t19, t20 = Q_prec[15], Q_prec[16], Q_prec[17], Q_prec[18], Q_prec[19]
-    t21, t22, t23, t24, t25 = Q_prec[20], Q_prec[21], Q_prec[22], Q_prec[23], Q_prec[24]
+    t6, t8, t9, t12 = Q_prec[0], Q_prec[1], Q_prec[2], Q_prec[3]
+    t17, t18, t19, t20 = Q_prec[4], Q_prec[5], Q_prec[6], Q_prec[7]
+    t21, t22, t23, t25 = Q_prec[8], Q_prec[9], Q_prec[10], Q_prec[11]
 
     u21, u20 = Q[0][1], Q[0][0]
 
@@ -62,31 +65,33 @@ def line_case2(Q_prec, Q, D3, line, c_vec, twist: bool = False):
     w5, w6, w7 = (l2 * t12), (l1 * t9), (l0 * t8)
 
     if not twist:
-        w8 = w3 * c_vec[10] - w4 * c_vec[11] + w5 * c_vec[9] - w6 * c_vec[7] - w7 * c_vec[5]
+        w8 = w3 * c_vec[10] - w4 * c_vec[11] + w5 * c_vec[9] - w6 * c_vec[7] - w7 * c_vec[5] # transition from Fq = Fp^s to Fp^k = Fq^8
         w9 = w1 * w8
         w10, w11, w12, w13 = (w2 * t20), (l2 * t21), (l1 * t23), (l0 * t25)
-        w14 = w10 * c_vec[12] - w11 * c_vec[10] + w12 * c_vec[8] - w13 * c_vec[6]
+        w14 = w10 * c_vec[12] - w11 * c_vec[10] + w12 * c_vec[8] - w13 * c_vec[6] # transition from Fq = Fp^s to Fp^k = Fq^8
         w15 = w2 * w14
         w16, w17, w18 = (l2 * t19), (l1 * t18), (l0 * t22)
-        w19 = w16 * c_vec[8] - w17 * c_vec[6] + w18 * c_vec[4]
+        w19 = w16 * c_vec[8] - w17 * c_vec[6] + w18 * c_vec[4] # transition from Fq = Fp^s to Fp^k = Fq^8
         w20 = l2 * w19
         w21, w22 = (l1 * u20), (l0 * u21)
-        w23 = w21 * c_vec[4] - w22 * c_vec[2]
+        w23 = w21 * c_vec[4] - w22 * c_vec[2]  # transition from Fq = Fp^s to Fp^k = Fq^8
         w24, w25 = (l1 * w23), (l0 ** 2)
+        # line evaluation
         cQ = (w9 + w15 + w20 + w24 + w25)
     else:
-        w8 = w3 * c_vec[2] - w4 * c_vec[1] + w5 * c_vec[3] - w6 * c_vec[5] - w7 * c_vec[7]
+        w8 = w3 * c_vec[2] - w4 * c_vec[1] + w5 * c_vec[3] - w6 * c_vec[5] - w7 * c_vec[7] # transition from Fq = Fp^s to Fp^k = Fq^8
         w9 = w1 * w8
         w10, w11, w12, w13 = (w2 * t20), (l2 * t21), (l1 * t23), (l0 * t25)
-        w14 = w10 - w11 * c_vec[2] + w12 * c_vec[4] - w13 * c_vec[6]
+        w14 = w10 - w11 * c_vec[2] + w12 * c_vec[4] - w13 * c_vec[6] # transition from Fq = Fp^s to Fp^k = Fq^8
         w15 = w2 * w14
         w16, w17, w18 = (l2 * t19), (l1 * t18), (l0 * t22)
-        w19 = w16 * c_vec[4] - w17 * c_vec[6] + w18 * c_vec[8]
+        w19 = w16 * c_vec[4] - w17 * c_vec[6] + w18 * c_vec[8] # transition from Fq = Fp^s to Fp^k = Fq^8
         w20 = l2 * w19
         w21, w22 = (l1 * u20), (l0 * u21)
-        w23 = w21 * c_vec[8] - w22 * c_vec[10]
+        w23 = w21 * c_vec[8] - w22 * c_vec[10] # transition from Fq = Fp^s to Fp^k = Fq^8
         w24, w25 = (l1 * w23), (l0 ** 2)
-        cQ = (w9 + w15 + w20 + w24 + w25 * c_vec[12])
+        # line evaluation
+        cQ = (w9 + w15 + w20 + w24 + w25 * c_vec[12]) # transition from Fq = Fp^s to Fp^k = Fq^8
 
     const_mult_, mult_, sq_ = 14, 14, 1
 
@@ -95,24 +100,29 @@ def line_case2(Q_prec, Q, D3, line, c_vec, twist: bool = False):
 
 def precomputation_degenerate_div(P):
     """
-    :param P:
-    :return:
+    :param P: a point on the curve C s.t. P = (xP, yP)
+    :return: precomputation of values needed for line 1 evaluation: P_prec = [xP^2, - xP^3]
     """
+    # Precomputation of values needed for line evaluation in case where 2nd pairing input is a degenerate divisor
+    # See formulas in Fan et al. https://cacr.uwaterloo.ca/techreports/2008/cacr2008-03.pdf
     xP, yP = P[0], P[1]
     a = xP ** 2
     b = -a * xP
+
+    # precomputation vector (2 elements)
     P_prec = [a, b]
     mult_, sq_ = 1, 1
 
     return P_prec, mult_, sq_
 
-
-def precomputation_general_div(D2):
+def precomputation_general_div(P):
     """
-    :param D2:
+    :param P: a general divisor in the Jacobian J s.t. P = [x^2 + u21*x + u21, v21*x + v20]
     :return:
     """
-    u21, u20, v21, v20 = D2[0][1], D2[0][0], D2[1][1], D2[1][0]
+    # Precomputation of values needed for line evaluation in case where 2nd pairing input is a general divisor
+    # See formulas in Fan et al. https://cacr.uwaterloo.ca/techreports/2008/cacr2008-03.pdf
+    u21, u20, v21, v20 = P[0][1], P[0][0], P[1][1], P[1][0]
 
     t1 = u20 * v21  # M1
     t2 = u21 * v20  # M2
@@ -140,26 +150,31 @@ def precomputation_general_div(D2):
     t24 = t22 - u20
     t25 = u21 * t24  # M13
 
-    Q = [t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19, t20, t21, t22, t23, t24,
-         t25]
+    # precomputation vector (25 elements)
+    P_prec = [t6, t8, t9, t12, t17, t18, t19, t20, t21, t22, t23, t25]
 
     mult_, sq_ = 13, 3
 
-    return Q, mult_, sq_
+    return P_prec, mult_, sq_
 
 
 def ADD(P, T, Q_prec, Q, F, c_vec, case: str = 'case1', twist: bool = False):
     """
-    :param P:
-    :param T:
-    :param Q_prec:
-    :param Q:
-    :param F:
-    :param c_vec:
+    :param P: general divisor P = [x^2 + U11*x + U10, V11*x + V10]
+    :param T: divisor in Fan et al. coordinate system T = [U21, U20, V21, V20, Z21, Z22, z21, z22]
+    :param Q_prec: precomputation vector related to divisor Q
+    :param Q: degenerate or general divisor for line evaluation
+    :param F: curve coefficients C/Fp: y^2 = f(x)
+    :param c_vec: powers of c, the generator of the extension field Fq^d, used in line evaluation
     :param case: case1 => degenerate divisor or case2 => general divisor
-    :param twist:
-    :return:
+    :param twist: twist = True => P in Jt(Fp^s), Q in J(Fp) or twist = False => P in J(Fp), Q in Jt(Fp^s)
+    :return: divisor: R = T + P (in Fan et al. coordinate system) and lcE: line evaluated at Q
+
+    Add two divisors T, P, where T = [U21, U20, V21, V20, Z21, Z22, z21, z22] and P = [x^2 + U11*x + U10, V11*x + V10]
+    Evaluate line at a degenerate or general divisor Q
+    See formulas in Fan et al. https://cacr.uwaterloo.ca/techreports/2008/cacr2008-03.pdf
     """
+
     U11, U10, V11, V10 = P[0], P[1], P[2], P[3]
     U21, U20, V21, V20 = T[0], T[1], T[2], T[3]
     Z21, Z22, z21, z22 = T[4], T[5], T[6], T[7]
@@ -197,31 +212,36 @@ def ADD(P, T, Q_prec, Q, F, c_vec, case: str = 'case1', twist: bool = False):
     V31 = U31 * w1 + z31 * (U30 - l1p)  # M37 2m
     line = [l3, l2, l1, l0, l]
 
+    # cost for addition + line computation: 37 mult. + 5 sq.
     mult_, sq_ = 37, 5
 
-    D3 = [U31, U30, V31, V30, Z31, Z32, z31, z32]
+    R = [U31, U30, V31, V30, Z31, Z32, z31, z32]
     if case == 'case1' and twist is True:
+        # line 1: for degenerate divisor Q in Jt(Fp^s)
         lcE, const_mult_line, mult_line, sq_line = line_case1(Q_prec, Q, line, c_vec, twist=True)
     elif case == 'case1':
+        # line 1: for degenerate divisor Q in J(Fp)
         lcE, const_mult_line, mult_line, sq_line = line_case1(Q_prec, Q, line, c_vec)
     elif case == 'case2' and twist is True:
-        lcE, const_mult_line, mult_line, sq_line = line_case2(Q_prec, Q, D3, line, c_vec, twist=True)
+        # line 2: for general divisor Q in Jt(Fp^s)
+        lcE, const_mult_line, mult_line, sq_line = line_case2(Q_prec, Q, line, c_vec, twist=True)
     else:
-        lcE, const_mult_line, mult_line, sq_line = line_case2(Q_prec, Q, D3, line, c_vec)
+        # line 2: for general divisor Q in J(Fp)
+        lcE, const_mult_line, mult_line, sq_line = line_case2(Q_prec, Q, line, c_vec)
 
-    return D3, lcE, const_mult_line, mult_line, sq_line, mult_, sq_
+    return R, lcE, const_mult_line, mult_line, sq_line, mult_, sq_
 
 
 def DBL(T, Q_prec, Q, F, c_vec=None, case: str = 'case1', twist: bool = False):
     """
-    :param T: point over Fp
-    :param Q_prec:
-    :param Q:
-    :param F:
-    :param c_vec:
+    :param T: divisor in Fan et al. coordinate system T = [U11, U10, V11, V10, Z11, Z12, z11, z12]
+    :param Q_prec: precomputation vector related to divisor Q
+    :param Q: degenerate or general divisor for line evaluation
+    :param F: curve coefficients C/Fp: y^2 = f(x)
+    :param c_vec: powers of c, the generator of the extension field Fq^d, used in line evaluation
     :param case: case1 => degenerate divisor or case2 => general divisor
-    :param twist:
-    :return:
+    :param twist: twist = True => P in Jt(Fp^s), Q in J(Fp) or twist = False => P in J(Fp), Q in Jt(Fp^s)
+    :return: R = [2]*T (in Fan et al. coordinate system) and lcE: line evaluated at Q
     """
     f0, f1, f2, f3, f4 = F[0], F[1], F[2], F[3], F[4]
     U11, U10, V11, V10 = T[0], T[1], T[2], T[3]
@@ -270,26 +290,31 @@ def DBL(T, Q_prec, Q, F, c_vec=None, case: str = 'case1', twist: bool = False):
     V31 = U31 * w1 + z31 * (U30 - l1 * s1p)  # M38
     line = [l3, l2, l1, l0, l]
 
-    D3 = [U31, U30, V31, V30, Z31, Z32, z31, z32]  # 2*T, result of the doubling
+    R = [U31, U30, V31, V30, Z31, Z32, z31, z32]  # 2*T, result of the doubling
 
+    # cost for doubling + line computation: 38 mult. + 6 sq.
     mult_, sq_ = 38, 6
 
     if case == 'case1' and twist is True:
+        # line 1: for degenerate divisor Q in Jt(Fp^s)
         lcE, const_mult_line, mult_line, sq_line = line_case1(Q_prec, Q, line, c_vec, twist=True)
     elif case == 'case1':
+        # line 1: for degenerate divisor Q in J(Fp)
         lcE, const_mult_line, mult_line, sq_line = line_case1(Q_prec, Q, line, c_vec)
     elif case == 'case2' and twist is True:
-        lcE, const_mult_line, mult_line, sq_line = line_case2(Q_prec, Q, D3, line, c_vec, twist=True)
+        # line 2: for general divisor Q in Jt(Fp^s)
+        lcE, const_mult_line, mult_line, sq_line = line_case2(Q_prec, Q, line, c_vec, twist=True)
     else:
-        lcE, const_mult_line, mult_line, sq_line = line_case2(Q_prec, Q, D3, line, c_vec)
+        # line 2: for general divisor Q in J(Fp)
+        lcE, const_mult_line, mult_line, sq_line = line_case2(Q_prec, Q, line, c_vec)
 
-    return D3, lcE, const_mult_line, mult_line, sq_line, mult_, sq_
+    return R, lcE, const_mult_line, mult_line, sq_line, mult_, sq_
 
 
 def new_coordinates(D) -> list:
     """
-    :param D: [x^2+U1x+U0, V1x + V0]
-    :return: 8-element vector
+    :param D: a divisor D in general form D = [u, v] = [x^2 + U1*x + U0, V1*x + V0]
+    :return: the divisor D_ in Fan et al. coordinate system D_ = [U1, U0, V1, V0, Z1, Z2, z1, z2]
     """
     U1, U0 = D[0][1], D[0][0]
     V1, V0 = D[1][1], D[1][0]
@@ -301,18 +326,27 @@ def new_coordinates(D) -> list:
 
 
 def HEC_random_point(C):
-    f = C.hyperelliptic_polynomials()[0]
+    """
+    :param C: the hyperelliptic curve equation over a finite field F => C/F: y^2 = f(x)
+    :return: A random point on the curve P = (xP, yP)
+    """
+    fx = C.hyperelliptic_polynomials()[0]
     while True:
-        x_r = f.base_ring().random_element()
-        y2 = f(x_r)
-        if y2.is_square():
-            return [x_r, y2.sqrt()]
+        xP = fx.base_ring().random_element()
+        yP2 = fx(xP)
+        if yP2.is_square():
+            yP = yP2.sqrt()
+            return [xP, yP]
 
 
-def HEC_random_points_uniq(C, n):
-    f = C.hyperelliptic_polynomials()[0]
+def HEC_distinct_random_points(C, g):
+    """
+    :param C: the hyperelliptic curve equation over a finite field F => C/F: y^2 = f(x)
+    :param g: the genus of the curve (g = 2)
+    :return: a list of g = 2 (distinct) points res = [P1, P2]
+    """
     res = []
-    for i in range(1, n + 1):
+    for i in range(1, g + 1):
         tries = 100
         found = False
         while tries > 0 and (not found):
@@ -326,14 +360,18 @@ def HEC_random_points_uniq(C, n):
 
 
 def JC_random_element(C):
-    f = C.hyperelliptic_polynomials()[0]
-    R = f.base_ring()['x']
+    """
+    :param C: the hyperelliptic curve equation over a finite field F => C/F: y^2 = f(x)
+    :return: a random divisor D in general form D = [u, v] = [x^2 + U1*x + U0, V1*x + V0]
+    """
+    fx = C.hyperelliptic_polynomials()[0]
+    R = fx.base_ring()['x']
     (x,) = R._first_ngens(1)
     J = C.jacobian()
-    points = HEC_random_points_uniq(C, C.genus())
+    points = HEC_distinct_random_points(C, C.genus())
     u = 1
     for point in points:
         u = u * (x - point[0])
-    v = f.parent().lagrange_polynomial(points)
+    v = fx.parent().lagrange_polynomial(points)
 
     return J([u, v])
