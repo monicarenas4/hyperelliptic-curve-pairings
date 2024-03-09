@@ -62,7 +62,7 @@ def generate_jacobian_k16(u, k=16, family='KT16'):
     F = [0, a, 0, 0, 0]
 
     print('\n')
-    print('Hyperelleiptic curve eq. and Jacobian over the base field Fp')
+    print('Hyperelliptic curve eq. and Jacobian over the base field Fp')
     print(C)
     print(J)
 
@@ -91,7 +91,7 @@ def generate_jacobian_k16(u, k=16, family='KT16'):
     Jt = Ct.jacobian()
 
     print('\n')
-    print('Degree 8 twist of hyperelleiptic curve eq. and Jacobian over the extension field Fq = Fp^2')
+    print('Degree 8 twist of hyperelliptic curve eq. and Jacobian over the extension field Fq = Fp^2')
     print(Ct)
     print(Jt)
 
@@ -108,7 +108,7 @@ def generate_jacobian_k16(u, k=16, family='KT16'):
     J16 = C16.jacobian()
 
     print('\n')
-    print('Hyperelleiptic curve eq. and Jacobian over the extension field Fq^8')
+    print('Hyperelliptic curve eq. and Jacobian over the extension field Fq^8')
     print(C16)
     print(J16)
 
