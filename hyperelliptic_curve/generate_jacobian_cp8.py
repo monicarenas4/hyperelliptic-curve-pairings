@@ -3,7 +3,7 @@ from sage.schemes.hyperelliptic_curves.constructor import HyperellipticCurve
 from sage.rings.integer_ring import ZZ
 
 from pairing_computation import compute_twisted_ate
-from verification_operations import test_bilinearity_Twisted_Ate
+from verification_operations import test_bilinearity_twisted_ate
 from _utils import generate_curve_eq
 
 
@@ -119,7 +119,7 @@ def generate_jacobian_cp8(u, X_0, Y_0, lx, ly, l, k=8):
 
     print('\n')
     compute_twisted_ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, u, k=k)
-    test_bilinearity_Twisted_Ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, u, k=k)
+    test_bilinearity_twisted_ate(curves, jacobians, fields, c_vec, F, U, p, r, h, h_, u, k=k)
 
     return None
 

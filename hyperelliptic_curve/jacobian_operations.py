@@ -9,6 +9,8 @@ def line_case1(Q_prec, Q, line, c_vec, twist: bool = False):
 
     Evaluate line in case where 2nd pairing input is a degenerate divisor
     See formulas in Fan et al. https://cacr.uwaterloo.ca/techreports/2008/cacr2008-03.pdf
+
+    cost: 4 mult.
     """
 
     # line coefficients
@@ -46,6 +48,8 @@ def line_case2(Q_prec, Q, line, c_vec, twist: bool = False):
 
     Evaluate line in case where 2nd pairing input is a general divisor
     See formulas in Fan et al. https://cacr.uwaterloo.ca/techreports/2008/cacr2008-03.pdf
+
+    cost: 14 constant mult. + 14 mult. + 1 sq.
     """
 
     # rename precomputation values to agree with Fan et al. formulas
@@ -102,6 +106,8 @@ def precomputation_degenerate_div(P):
     """
     :param P: a point on the curve C s.t. P = (xP, yP)
     :return: precomputation of values needed for line 1 evaluation: P_prec = [xP^2, - xP^3]
+
+    cost: 1 mult. + 1 sq.
     """
     # Precomputation of values needed for line evaluation in case where 2nd pairing input is a degenerate divisor
     # See formulas in Fan et al. https://cacr.uwaterloo.ca/techreports/2008/cacr2008-03.pdf
@@ -119,6 +125,8 @@ def precomputation_general_div(P):
     """
     :param P: a general divisor in the Jacobian J s.t. P = [x^2 + u21*x + u21, v21*x + v20]
     :return:
+
+    cost: 13 mult. + 3 sq.
     """
     # Precomputation of values needed for line evaluation in case where 2nd pairing input is a general divisor
     # See formulas in Fan et al. https://cacr.uwaterloo.ca/techreports/2008/cacr2008-03.pdf
@@ -173,6 +181,8 @@ def ADD(P, T, Q_prec, Q, F, c_vec, case: str = 'case1', twist: bool = False):
     Add two divisors T, P, where T = [U21, U20, V21, V20, Z21, Z22, z21, z22] and P = [x^2 + U11*x + U10, V11*x + V10]
     Evaluate line at a degenerate or general divisor Q
     See formulas in Fan et al. https://cacr.uwaterloo.ca/techreports/2008/cacr2008-03.pdf
+
+    cost: 37 mult. + 5 sq.
     """
 
     U11, U10, V11, V10 = P[0], P[1], P[2], P[3]
@@ -242,6 +252,8 @@ def DBL(T, Q_prec, Q, F, c_vec=None, case: str = 'case1', twist: bool = False):
     :param case: case1 => degenerate divisor or case2 => general divisor
     :param twist: twist = True => P in Jt(Fp^s), Q in J(Fp) or twist = False => P in J(Fp), Q in Jt(Fp^s)
     :return: R = [2]*T (in Fan et al. coordinate system) and lcE: line evaluated at Q
+
+    cost: 38 mult. + 6 sq.
     """
     f0, f1, f2, f3, f4 = F[0], F[1], F[2], F[3], F[4]
     U11, U10, V11, V10 = T[0], T[1], T[2], T[3]

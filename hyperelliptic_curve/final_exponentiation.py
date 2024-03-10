@@ -111,8 +111,9 @@ def final_exponentiation_KT16(f, U, W, k=16, NAF_rep: bool = False):
     l7 = u*l4
     cost: 11 exp_u + 2 exp_(u-1) + 11 mult. + 6 sq. + 1 inv. + 7 Frobenius
     """
+    d = 8 # degre of twist
     u, um = U[0], U[1]
-    f = frobenius_power(f, k, W, 8) / f
+    f = frobenius_power(f, k, W, d, 8) / f
     f1 = f
     f2 = f1 ** 2
     f4 = f2 ** 2
@@ -138,13 +139,13 @@ def final_exponentiation_KT16(f, U, W, k=16, NAF_rep: bool = False):
     fnu3 = fnu2 ** u
     fnu4 = fnu3 ** u
     N0 = fl0
-    N1 = frobenius_power(fn, k, W, 1)
-    N2 = frobenius_power(fnu3, k, W, 2)
-    N3 = frobenius_power(fl0u, k, W, 3)
-    N4 = frobenius_power(fnu1, k, W, 4)
-    N5 = frobenius_power(fnu4, k, W, 5)
-    N6 = frobenius_power(fl0u2, k, W, 6)
-    N7 = frobenius_power(fnu2, k, W, 7)
+    N1 = frobenius_power(fn, k, W, d, 1)
+    N2 = frobenius_power(fnu3, k, W, d, 2)
+    N3 = frobenius_power(fl0u, k, W, d, 3)
+    N4 = frobenius_power(fnu1, k, W, d, 4)
+    N5 = frobenius_power(fnu4, k, W, d, 5)
+    N6 = frobenius_power(fl0u2, k, W, d, 6)
+    N7 = frobenius_power(fnu2, k, W, d, 7)
 
     N, M = (N0 * N2 * N3 * N5 * N6), (N1 * N4 * N7)
     t0 = N / M
@@ -192,9 +193,10 @@ def final_exponentiation_New16(f, U, W, k=16, NAF_rep: bool = False):
     l7 = u^2*l1
     cost: 13 exp_u + 2 exp_(u+1) + 12 mult. + 6 sq. + 1 inv. + 7 Frobenius
     """
+    d = 8 # degree of twist
     u, up = U[0], U[1]
     t0 = 1
-    f = frobenius_power(f, k, W, 8) / f
+    f = frobenius_power(f, k, W, d, 8) / f
     f1 = f
     f2 = f1 ** 2
     f4 = f2 ** 2
@@ -208,7 +210,7 @@ def final_exponentiation_New16(f, U, W, k=16, NAF_rep: bool = False):
     gu5 = gu4 ** u
     gu6 = gu5 ** u
     y1 = gu6
-    y2 = frobenius_power(gu5, k, W, 8)  # 1 / gu5
+    y2 = frobenius_power(gu5, k, W, d, 8)  # 1 / gu5
     y3 = y1 * y2
     y4 = y3 ** 2
     y5 = y4 ** 2
@@ -224,16 +226,16 @@ def final_exponentiation_New16(f, U, W, k=16, NAF_rep: bool = False):
     hu3 = hu2 ** u
     hu4 = hu3 ** u
     N0 = fl0
-    N1 = frobenius_power(fl1, k, W, 1)
-    N2 = frobenius_power(hu3, k, W, 2)
-    N3 = frobenius_power(fl0u1, k, W, 3)
-    N4 = frobenius_power(hu1, k, W, 4)
-    N5 = frobenius_power(hu4, k, W, 5)
-    N6 = frobenius_power(fl0u2, k, W, 6)
-    N7 = frobenius_power(hu2, k, W, 7)
+    N1 = frobenius_power(fl1, k, W, d, 1)
+    N2 = frobenius_power(hu3, k, W, d, 2)
+    N3 = frobenius_power(fl0u1, k, W, d, 3)
+    N4 = frobenius_power(hu1, k, W, d, 4)
+    N5 = frobenius_power(hu4, k, W, d, 5)
+    N6 = frobenius_power(fl0u2, k, W, d, 6)
+    N7 = frobenius_power(hu2, k, W, d, 7)
     N = N0 * N2 * N3 * N5 * N6
     M = N1 * N4 * N7
-    t1 = frobenius_power(M, k, W, 8)
+    t1 = frobenius_power(M, k, W, d, 8)
     t0 = N * t1  # / M
 
     mk, sk, fk, sk_cyclo, ik = 81, 54, 14, 36, 159
@@ -278,13 +280,15 @@ def final_exponentiation_New24(f, U, W, k=24, NAF_rep: bool = False):
     l7 = -u*l6
     cost: 11 exp_u + 13 mult. + 8 sq. + 1 inv. + 11 Frobenius
     """
+    d = 8 # degree of twist
+
     u = U[0]
 
     # easy part: f^(p^12 - 1)*(p^4 + 1)
-    fp12 = frobenius_power(f, k, W, 12)
+    fp12 = frobenius_power(f, k, W, d, 12)
     invf = 1 / f
     f = fp12 * invf
-    f = f * frobenius_power(f, k, W, 4)
+    f = f * frobenius_power(f, k, W, d, 4)
 
     # hard part: f^(p^8 - p^4 + 1)
     fu1 = f ** u
@@ -297,7 +301,7 @@ def final_exponentiation_New24(f, U, W, k=24, NAF_rep: bool = False):
     t3 = fu3 ** 2
     t3 = t3 ** 2
     t4 = fu4 ** 2
-    g1 = frobenius_power(t1, k, W, 12)
+    g1 = frobenius_power(t1, k, W, d, 12)
     fl4 = f * g1 * t2 * t3 * t4
 
     f2 = f ** 2
@@ -313,17 +317,17 @@ def final_exponentiation_New24(f, U, W, k=24, NAF_rep: bool = False):
     fl2 = fl1 ** u
     fl3 = fl2 ** u
 
-    fl1 = frobenius_power(fl1, k, W, 1)
-    fl2 = frobenius_power(fl2, k, W, 2)
-    fl3 = frobenius_power(fl3, k, W, 3)
-    fl4 = frobenius_power(fl4, k, W, 4)
-    fl5 = frobenius_power(fl5, k, W, 5)
-    fl6 = frobenius_power(fl6, k, W, 6)
-    fl7 = frobenius_power(fl7, k, W, 7)
+    fl1 = frobenius_power(fl1, k, W, d, 1)
+    fl2 = frobenius_power(fl2, k, W, d, 2)
+    fl3 = frobenius_power(fl3, k, W, d, 3)
+    fl4 = frobenius_power(fl4, k, W, d, 4)
+    fl5 = frobenius_power(fl5, k, W, d, 5)
+    fl6 = frobenius_power(fl6, k, W, d, 6)
+    fl7 = frobenius_power(fl7, k, W, d, 7)
 
     M = fl5*fl7*fl0*fl2
     N = fl4*fl6*fl1*fl3
-    N = frobenius_power(N, k, W, 12)
+    N = frobenius_power(N, k, W, d, 12)
 
     t0 = M*N
 

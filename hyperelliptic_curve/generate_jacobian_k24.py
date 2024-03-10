@@ -5,7 +5,7 @@ from sage.rings.rational_field import QQ
 
 from jacobian_operations import JC_random_element
 from pairing_computation import compute_ate_i
-from verification_operations import test_bilinearity_Ate_i
+from verification_operations import test_bilinearity_ate_i
 from _utils import w_powers_p, w_p_i, frobenius_power, generate_curve_eq
 from polynomial_families import polynomial_family_New24
 
@@ -136,6 +136,6 @@ def generate_jacobian_k24(u, seed, k=24, family='New24'):
     W = w_powers_p(w, p, k)
 
     compute_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u, k=k, family=family)
-    test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u, k=k, family=family)
+    test_bilinearity_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u, k=k, family=family)
 
     return 0
