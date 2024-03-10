@@ -3,7 +3,7 @@ from sage.schemes.hyperelliptic_curves.constructor import HyperellipticCurve
 from sage.rings.integer_ring import ZZ
 
 from pairing_computation import compute_ate_i
-from verification_operations import test_bilinearity_Ate_i
+from verification_operations import test_bilinearity_ate_i
 from _utils import w_powers_p
 from _utils import generate_curve_eq
 from polynomial_families import polynomial_family_KT16, polynomial_family_New16
@@ -133,6 +133,6 @@ def generate_jacobian_k16(u, k=16, family='KT16'):
 
     print('\n')
     compute_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u, k=k, family=family)
-    test_bilinearity_Ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u, k=k, family=family)
+    test_bilinearity_ate_i(curves, jacobians, fields, c_vec, F, U, W, p, r, h, h_, u, k=k, family=family)
 
     return None
