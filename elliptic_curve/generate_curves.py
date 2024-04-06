@@ -49,3 +49,24 @@ def BLS12_curve(u: int, a: int = 0, b: int = -3, type: str = None):
         Q = Q_prime - Q
 
     return P, Q, p, r
+
+def FK12_curve(u: int):
+    R = QQ['x']
+    (x,) = R._first_ngens(1)
+
+    rx = 36 * x ** 4 + 36 * x ** 3 + 18 * x ** 2 + 6 * x + 1
+    tx = -6 * x ** 2 + 1  # trace polynomial
+    px = 1728 * x ** 6 + 2160 * x ** 5 + 1548 * x ** 4 + 756 * x ** 3 + 240 * x ** 2 + 54 * x + 7
+
+    r = ZZ(rx(u))
+    t = ZZ(tx(u))
+    p = ZZ(px(u))
+    n = p - t + 1  # order of the curve. #E = p - t + 1 = h*r
+    h = n / r  # co-factor
+
+    print("u = {:#x} {} bits".format(u, u.nbits()))
+    print("p = {:#x} {} bits".format(p, p.nbits()))
+    print("r = {:#x} {} bits".format(r, r.nbits()))
+
+    print(is_prime(r))
+    print(is_prime(p))
